@@ -28,7 +28,6 @@ namespace AddinArtama {
       try {
         var client = Api.GetClient(modulo: "ppcppadrao", endpoint: "operacao?situacao=1&paginacao=1000");
         var request = Api.CreateRequest(Method.GET);
-        request.AddHeader("empresa", "1");
         var response = await client.ExecuteAsync(request);
 
 

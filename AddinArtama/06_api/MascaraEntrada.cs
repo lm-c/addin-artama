@@ -13,7 +13,6 @@ namespace AddinArtama {
       public string estruturaNivel { get; set; }
       public string descricaoNivel { get; set; }
       public int? tamanho { get; set; } // Permite valores nulos
-      public List<DadosCustomizados> dadosCustomizados { get; set; }
     }
 
     private class ResponseMascara {
@@ -29,7 +28,6 @@ namespace AddinArtama {
         do {
           var client = Api.GetClient(modulo: "itens", endpoint: $"nivelMascara?{continuationToken}tipoMascara=E");
           var request = Api.CreateRequest(Method.GET);
-          request.AddHeader("empresa", "1");
           var response = await client.ExecuteAsync(request);
 
 

@@ -58,19 +58,24 @@
       this.msPerfilCad = new System.Windows.Forms.ToolStripMenuItem();
       this.msMaterialCad = new System.Windows.Forms.ToolStripMenuItem();
       this.msMateriaPrimaCad = new System.Windows.Forms.ToolStripMenuItem();
-      this.msItemDuplicacao = new System.Windows.Forms.ToolStripMenuItem();
       this.msRedefinirSenha = new System.Windows.Forms.ToolStripMenuItem();
+      this.msCSW = new LmCorbieUI.Controls.LmMenuItem();
+      this.msMenuCSW = new LmCorbieUI.Controls.LmDropdownMenu(this.components);
+      this.msCadastroProduto = new System.Windows.Forms.ToolStripMenuItem();
+      this.msCadastroEngenhariaProduto = new System.Windows.Forms.ToolStripMenuItem();
       this.msMenu.SuspendLayout();
       this.stpRodape.SuspendLayout();
       this.msMenuDesenho.SuspendLayout();
       this.msMenuExportar.SuspendLayout();
       this.msMenuRelatorio.SuspendLayout();
       this.msMenuCadastro.SuspendLayout();
+      this.msMenuCSW.SuspendLayout();
       this.SuspendLayout();
       // 
       // msMenu
       // 
       this.msMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(54)))), ((int)(((byte)(71)))));
+      this.msMenu.Controls.Add(this.msCSW);
       this.msMenu.Controls.Add(this.msConfig);
       this.msMenu.Controls.Add(this.msRelatorio);
       this.msMenu.Controls.Add(this.msCadastro);
@@ -391,21 +396,20 @@
             this.msPerfilCad,
             this.msMaterialCad,
             this.msMateriaPrimaCad,
-            this.msItemDuplicacao,
             this.msRedefinirSenha});
       this.msMenuCadastro.MenuItemHeight = 25;
       this.msMenuCadastro.MenuItemTextColor = System.Drawing.Color.Empty;
       this.msMenuCadastro.Name = "msMenuSistema";
       this.msMenuCadastro.NaoInverterCorImagem = false;
       this.msMenuCadastro.PrimaryColor = System.Drawing.Color.Empty;
-      this.msMenuCadastro.Size = new System.Drawing.Size(251, 182);
+      this.msMenuCadastro.Size = new System.Drawing.Size(232, 134);
       this.msMenuCadastro.Z_Teste = 0;
       // 
       // msUsuarioCad
       // 
       this.msUsuarioCad.Image = ((System.Drawing.Image)(resources.GetObject("msUsuarioCad.Image")));
       this.msUsuarioCad.Name = "msUsuarioCad";
-      this.msUsuarioCad.Size = new System.Drawing.Size(250, 26);
+      this.msUsuarioCad.Size = new System.Drawing.Size(231, 26);
       this.msUsuarioCad.Text = "Cadastro de Usuário";
       this.msUsuarioCad.Click += new System.EventHandler(this.MsUsuarioCad_Click);
       // 
@@ -413,7 +417,7 @@
       // 
       this.msPerfilCad.Image = ((System.Drawing.Image)(resources.GetObject("msPerfilCad.Image")));
       this.msPerfilCad.Name = "msPerfilCad";
-      this.msPerfilCad.Size = new System.Drawing.Size(250, 26);
+      this.msPerfilCad.Size = new System.Drawing.Size(231, 26);
       this.msPerfilCad.Text = "Cadastro de Perfil do Usuário";
       this.msPerfilCad.Click += new System.EventHandler(this.MsPerfilCad_Click);
       // 
@@ -421,7 +425,7 @@
       // 
       this.msMaterialCad.Image = ((System.Drawing.Image)(resources.GetObject("msMaterialCad.Image")));
       this.msMaterialCad.Name = "msMaterialCad";
-      this.msMaterialCad.Size = new System.Drawing.Size(250, 26);
+      this.msMaterialCad.Size = new System.Drawing.Size(231, 26);
       this.msMaterialCad.Text = "Cadastro de Material";
       this.msMaterialCad.Click += new System.EventHandler(this.MsMaterialCad_Click);
       // 
@@ -429,25 +433,65 @@
       // 
       this.msMateriaPrimaCad.Image = ((System.Drawing.Image)(resources.GetObject("msMateriaPrimaCad.Image")));
       this.msMateriaPrimaCad.Name = "msMateriaPrimaCad";
-      this.msMateriaPrimaCad.Size = new System.Drawing.Size(250, 26);
+      this.msMateriaPrimaCad.Size = new System.Drawing.Size(231, 26);
       this.msMateriaPrimaCad.Text = "Cadastro de Matéria Prima";
       this.msMateriaPrimaCad.Click += new System.EventHandler(this.MsMateriaPrimaCad_Click);
-      // 
-      // msItemDuplicacao
-      // 
-      this.msItemDuplicacao.Image = ((System.Drawing.Image)(resources.GetObject("msItemDuplicacao.Image")));
-      this.msItemDuplicacao.Name = "msItemDuplicacao";
-      this.msItemDuplicacao.Size = new System.Drawing.Size(250, 26);
-      this.msItemDuplicacao.Text = "Cadastro de Item Par Duplicação";
-      this.msItemDuplicacao.Click += new System.EventHandler(this.MsItemDuplicacao_Click);
       // 
       // msRedefinirSenha
       // 
       this.msRedefinirSenha.Image = ((System.Drawing.Image)(resources.GetObject("msRedefinirSenha.Image")));
       this.msRedefinirSenha.Name = "msRedefinirSenha";
-      this.msRedefinirSenha.Size = new System.Drawing.Size(250, 26);
+      this.msRedefinirSenha.Size = new System.Drawing.Size(231, 26);
       this.msRedefinirSenha.Text = "Redefinir Senha";
       this.msRedefinirSenha.Click += new System.EventHandler(this.MsRedefinirSenha_Click);
+      // 
+      // msCSW
+      // 
+      this.msCSW.Dock = System.Windows.Forms.DockStyle.Left;
+      this.msCSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.msCSW.Image = ((System.Drawing.Image)(resources.GetObject("msCSW.Image")));
+      this.msCSW.Location = new System.Drawing.Point(180, 0);
+      this.msCSW.Name = "msCSW";
+      this.msCSW.Size = new System.Drawing.Size(30, 30);
+      this.msCSW.TabIndex = 13;
+      this.msCSW.TabStop = false;
+      this.msCSW.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.cmxToolTip1.SetToolTip(this.msCSW, "Relatórios");
+      this.msCSW.UseSelectable = true;
+      this.msCSW.UseVisualStyleBackColor = false;
+      this.msCSW.Click += new System.EventHandler(this.MsCSW_Click);
+      // 
+      // msMenuCSW
+      // 
+      this.msMenuCSW.ImageScalingSize = new System.Drawing.Size(20, 20);
+      this.msMenuCSW.IsMainMenu = false;
+      this.msMenuCSW.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.msCadastroProduto,
+            this.msCadastroEngenhariaProduto});
+      this.msMenuCSW.MenuItemHeight = 25;
+      this.msMenuCSW.MenuItemTextColor = System.Drawing.Color.Empty;
+      this.msMenuCSW.Name = "msMenuSistema";
+      this.msMenuCSW.NaoInverterCorImagem = false;
+      this.msMenuCSW.PrimaryColor = System.Drawing.Color.Empty;
+      this.msMenuCSW.Size = new System.Drawing.Size(266, 78);
+      this.msMenuCSW.Z_Teste = 0;
+      // 
+      // msCadastroProduto
+      // 
+      this.msCadastroProduto.Image = ((System.Drawing.Image)(resources.GetObject("msCadastroProduto.Image")));
+      this.msCadastroProduto.Name = "msCadastroProduto";
+      this.msCadastroProduto.Size = new System.Drawing.Size(265, 26);
+      this.msCadastroProduto.Text = "Cadastro de Item Genérico";
+      this.msCadastroProduto.Click += new System.EventHandler(this.MsCadastroProduto_Click);
+      // 
+      // msCadastroEngenhariaProduto
+      // 
+      this.msCadastroEngenhariaProduto.Image = ((System.Drawing.Image)(resources.GetObject("msCadastroEngenhariaProduto.Image")));
+      this.msCadastroEngenhariaProduto.Name = "msCadastroEngenhariaProduto";
+      this.msCadastroEngenhariaProduto.Size = new System.Drawing.Size(265, 26);
+      this.msCadastroEngenhariaProduto.Text = "Cadastro de Engenharia de Produto";
+      this.msCadastroEngenhariaProduto.Visible = false;
+      this.msCadastroEngenhariaProduto.Click += new System.EventHandler(this.MsCadastroEngenhariaProduto_Click);
       // 
       // UcPainelTarefas
       // 
@@ -466,6 +510,7 @@
       this.msMenuExportar.ResumeLayout(false);
       this.msMenuRelatorio.ResumeLayout(false);
       this.msMenuCadastro.ResumeLayout(false);
+      this.msMenuCSW.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -506,6 +551,9 @@
     internal LmCorbieUI.Controls.LmPanel msMenu;
     internal LmCorbieUI.Controls.LmStatusStrip stpRodape;
     internal LmCorbieUI.Controls.LmPanel pnlMain;
-    private System.Windows.Forms.ToolStripMenuItem msItemDuplicacao;
+    private LmCorbieUI.Controls.LmMenuItem msCSW;
+    private LmCorbieUI.Controls.LmDropdownMenu msMenuCSW;
+    private System.Windows.Forms.ToolStripMenuItem msCadastroProduto;
+    private System.Windows.Forms.ToolStripMenuItem msCadastroEngenhariaProduto;
   }
 }

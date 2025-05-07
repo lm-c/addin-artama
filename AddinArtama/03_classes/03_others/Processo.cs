@@ -45,13 +45,16 @@ namespace AddinArtama {
         /* teste pegar mascaras */
         //var mascaras = await Api.GetMascarasAsync();
         /* teste duplicar item */
-        using (ContextoDados db = new ContextoDados()) {
-          var temp = db.item_generico_duplicacao.Where(x => x.id == 4).FirstOrDefault();
-          temp.descricaoItem = "LEONARDO TESTE";
-          temp.descricaoCompleta = "LEONARDO TESTE DESC CCOMPLETA";
+        //Api.ItemGenerico item = new Api.ItemGenerico();
+        //using (ContextoDados db = new ContextoDados()) {
+        //  item.Nome = "TESTE LEO CADASTRO ADDIN";
+        //  item.UnidadeMedida = "CJ";
+        //  item.Tipo = TipoDucumento.Montagem;
+        //  item.PesoBruto = 12.5;
+        //  item.PesoLiquido = 11.33;
 
-          Api.CadasterItemGenericoAsync(temp);
-        }
+        //  Api.CadasterItemGenericoAsync(item);
+        //}
 
         var operacoes = await Api.GetOpsAsync();
         foreach (var operacao in operacoes) {

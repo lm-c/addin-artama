@@ -145,11 +145,6 @@ namespace AddinArtama {
       AbrirFormFilho(frm);
     }
 
-    private void MsItemDuplicacao_Click(object sender, EventArgs e) {
-      FrmItemDuplicacaoCad frm = new FrmItemDuplicacaoCad();
-      AbrirFormFilho(frm);
-    }
-
     private void MsRedefinirSenha_Click(object sender, EventArgs e) {
       FrmAlterarSenha frm = new FrmAlterarSenha();
       AbrirFormFilho(frm);
@@ -182,6 +177,19 @@ namespace AddinArtama {
     private void MsReportWorks_Click(object sender, EventArgs e) {
       var frm = new FrmReportWorks();
       frm.Show();
+    }
+
+    private void MsCSW_Click(object sender, EventArgs e) {
+      msMenuCSW.Show((LmMenuItem)sender, ((LmMenuItem)sender).Width, ((LmMenuItem)sender).Height);
+    }
+
+    private void MsCadastroProduto_Click(object sender, EventArgs e) {
+      var frm = new FrmProdutoImport();
+      AbrirFormFilho(frm);
+    }
+
+    private void MsCadastroEngenhariaProduto_Click(object sender, EventArgs e) {
+
     }
 
     private void MsConfig_Click(object sender, EventArgs e) {

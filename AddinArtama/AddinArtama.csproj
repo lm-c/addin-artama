@@ -290,12 +290,6 @@
     <Compile Include="02_formularios\05_cadastros\FrmAlterarSenha.Designer.cs">
       <DependentUpon>FrmAlterarSenha.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmItemDuplicacaoCad.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmItemDuplicacaoCad.Designer.cs">
-      <DependentUpon>FrmItemDuplicacaoCad.cs</DependentUpon>
-    </Compile>
     <Compile Include="02_formularios\05_cadastros\FrmMaterialCad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -368,10 +362,17 @@
     <Compile Include="02_formularios\07_relatorios\FrmReportWorks.Designer.cs">
       <DependentUpon>FrmReportWorks.cs</DependentUpon>
     </Compile>
-    <Compile Include="03_classes\01_tables\item_generico_duplicacao.cs" />
+    <Compile Include="02_formularios\08_integrador\FrmProdutoImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="02_formularios\08_integrador\FrmProdutoImport.Designer.cs">
+      <DependentUpon>FrmProdutoImport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="03_classes\01_tables\configuracao_api.cs" />
     <Compile Include="03_classes\01_tables\materiais.cs" />
     <Compile Include="03_classes\01_tables\materia_primas.cs" />
     <Compile Include="03_classes\01_tables\perfis.cs" />
+    <Compile Include="03_classes\01_tables\produto_erp.cs" />
     <Compile Include="03_classes\01_tables\templates.cs" />
     <Compile Include="03_classes\01_tables\usuario_alocados.cs" />
     <Compile Include="03_classes\01_tables\usuarios.cs" />
@@ -384,6 +385,7 @@
     <Compile Include="03_classes\03_others\Corbie_Admin.cs" />
     <Compile Include="03_classes\03_others\Desenho.cs" />
     <Compile Include="03_classes\03_others\DesenhosAtualizar.cs" />
+    <Compile Include="03_classes\03_others\ProdutoErp.cs" />
     <Compile Include="03_classes\03_others\DrawExport.cs" />
     <Compile Include="03_classes\03_others\DxfExport.cs" />
     <Compile Include="03_classes\03_others\ListaCorte.cs" />
@@ -456,9 +458,6 @@
     <EmbeddedResource Include="02_formularios\05_cadastros\FrmAlterarSenha.resx">
       <DependentUpon>FrmAlterarSenha.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\05_cadastros\FrmItemDuplicacaoCad.resx">
-      <DependentUpon>FrmItemDuplicacaoCad.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="02_formularios\05_cadastros\FrmMaterialCad.resx">
       <DependentUpon>FrmMaterialCad.cs</DependentUpon>
     </EmbeddedResource>
@@ -494,6 +493,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="02_formularios\07_relatorios\FrmReportWorks.resx">
       <DependentUpon>FrmReportWorks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="02_formularios\08_integrador\FrmProdutoImport.resx">
+      <DependentUpon>FrmProdutoImport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

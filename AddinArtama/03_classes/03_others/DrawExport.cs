@@ -158,7 +158,7 @@ namespace AddinArtama {
           //  continue;
 
           try {
-            drawExport.Denominacao = swTableAnnotation.get_Text(i, 5);
+            drawExport.Denominacao = swTableAnnotation.get_Text(i, 6);
           } catch (Exception ex) {
             LmException.ShowException(ex, $"E-DE-009:\r\n{ex.Message}");
           }

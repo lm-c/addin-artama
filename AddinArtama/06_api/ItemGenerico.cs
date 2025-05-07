@@ -3,91 +3,172 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using LmCorbieUI;
 using RestSharp;
 using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Asn1.Ocsp;
-using LmCorbieUI.Metodos;
+using static AddinArtama.Api;
+using LmCorbieUI;
 
 namespace AddinArtama {
   internal partial class Api {
     internal class ItemGenerico {
-      public string Codigo { get; set; }
       public string Nome { get; set; }
-      public string Descricao { get; set; }
       public string UnidadeMedida { get; set; }
-      public string ClassificacaoFiscal { get; set; }
-      //public string CodItemPai { get; set; }
-      //public int? Tipo { get; set; }
-      //public int? Finalidade { get; set; }
-      public DadosEntrada DadosEntrada { get; set; }
-      public DadosSaida DadosSaida { get; set; }
-      //public DadosTecnicos DadosTecnicos { get; set; }
-      //public List<SaldoEstoque> SaldoEstoque { get; set; }
+      public double PesoBruto { get; set; }
+      public double PesoLiquido { get; set; }
+      public TipoDucumento Tipo { get; set; }
     }
 
-    internal class DadosEntrada {
-      public string Mascara { get; set; }
-      public string Descricao { get; set; }
-      public int TipoControleSaida { get; set; }
-      //public string UnidadeConsumo { get; set; }
-      //public string Altura { get; set; }
-      //public string Largura { get; set; }
-      //public string Comprimento { get; set; }
-      //public string CodigoFabricante { get; set; }
-    }
-
-    internal class DadosSaida {
-      public string Mascara { get; set; }
-      public string Descricao { get; set; }
-      //public string Marca { get; set; }
-      //public string PesoBruto { get; set; }
-      //public string PesoLiquido { get; set; }
-    }
-
-    internal class DadosTecnicos {
-      public string Composicao { get; set; }
-      public string Gramatura { get; set; }
-      public string Largura { get; set; }
-      public string Rendimento { get; set; }
-    }
-
-    internal class SaldoEstoque {
-      public string CodNatureza { get; set; }
-      public string QtdSaldo { get; set; }
-    }
-
-    internal class DadosCustomizados {
-      public string Campo { get; set; }
-      public string Valor { get; set; }
-    }
-
-    internal static async Task<bool> CadasterItemGenericoAsync(item_generico_duplicacao itemGenerico) {
-      JObject jsonObject = new JObject();
+    internal static async Task<bool> CadasterItemGenericoAsync(ItemGenerico itemGenerico) {
+      var configApi = configuracao_api.Selecionar();
 
       try {
-        var client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico/{itemGenerico.codigo}");
+        var tentativas = 1;
+
+        var complemento = string.Empty;
+        var sequencial = configApi.sequencial += 1;
+        if (itemGenerico.Tipo == TipoDucumento.Peca) {
+          complemento = configApi.complemento_peca;
+        } else {
+          complemento = configApi.complemento_montagem;
+        }
+
+        /* inicio variaveis */
+        var codigo = $"{configApi.grupo}{configApi.produto}{configApi.acionamento}{sequencial:0000}";
+        var mascara = $"{configApi.grupo}{configApi.produto}{configApi.modelo}{configApi.acionamento}{complemento}{sequencial:0000}";
+        var nome = itemGenerico.Nome;
+        var unidadeMedida = itemGenerico.UnidadeMedida;
+        var pesoBruto = itemGenerico.PesoBruto;
+        var pesoLiquido = itemGenerico.PesoLiquido;
+        var situacao = 1;
+
+        var classificacaoFiscal = configApi.classificacaoFiscal;
+        var finalidade = configApi.finalidade;
+        var origem = configApi.origem;
+        var tipo = configApi.tipo;
+        var procedencia = configApi.procedencia;
+        var perComissao = configApi.perComissao;
+        var perIPI = configApi.perIPI;
+        var situacaoICMS = configApi.situacaoICMS;
+        var codNatureza = configApi.codNatureza;
+        var codigoICMS = configApi.codigoICMS;
+        var codigoIPI = configApi.codigoIPI;
+        var codContaContabil = configApi.codContaContabil;
+        var tipoControleSaida = configApi.tipoControleSaida;
+        /* fim variaveis */
+
+        JObject jsonObject = new JObject();
+
+        var client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico/{codigo}");
         var request = Api.CreateRequest(Method.GET);
-        request.AddHeader("empresa", "1");
         var response = await client.ExecuteAsync(request);
+
+        if (response.IsSuccessful) {
+          do {
+            if (tentativas == 10) {
+              Toast.Error("Erro ao cadastrar item genérico, tente novamente mais tarde.");
+              return false;
+            }
+
+            sequencial = configApi.sequencial += 1;
+            codigo = $"{configApi.grupo}{configApi.produto}{configApi.acionamento}{sequencial:0000}";
+            mascara = $"{configApi.grupo}{configApi.produto}{configApi.modelo}{configApi.acionamento}{complemento}{sequencial:0000}";
+
+            client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico/{codigo}");
+            request = Api.CreateRequest(Method.GET);
+            response = await client.ExecuteAsync(request);
+
+            if (response.IsSuccessful) {
+              tentativas++;
+            } else break;
+          } while (tentativas <= 10);
+        }
+
+        client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico");
+        request = Api.CreateRequest(Method.PUT);
+
+        var bodyObject = "" +
+          "{" +
+             $"\"codigo\": {codigo}," +
+             $"\"nome\": \"{nome}\"," +
+             $"\"unidadeMedida\": \"{unidadeMedida}\"," +
+             $"\"classificacaoFiscal\": \"{classificacaoFiscal}\"," +
+             $"\"finalidade\": {finalidade}," +
+             $"\"origem\": {origem}," +
+             $"\"tipo\": {tipo}," +
+             $"\"procedencia\": {procedencia}," +
+
+             "\"dadosSaida\": {" +
+               $"\"mascara\": \"{mascara}\"," +
+               $"\"situacao\": {situacao}," +
+               $"\"descricao\": \"{nome}\"," +
+               $"\"perComissao\": {perComissao}," +
+               $"\"perIPI\": {perIPI}," +
+               $"\"pesoLiquido\": {pesoLiquido}," +
+               $"\"pesoBruto\": {pesoBruto}," +
+               $"\"situacaoICMS\": {situacaoICMS}," +
+               $"\"codNatureza\": {codNatureza}" +
+             "}," +
+
+             "\"dadosEntrada\": {" +
+               $"\"mascara\": \"{mascara}\"," +
+               $"\"situacao\": {situacao}," +
+               $"\"codNatureza\": {codNatureza}," +
+               $"\"descricao\": \"{nome}\"," +
+               $"\"codigoICMS\": {codigoICMS}," +
+               $"\"codigoIPI\": {codigoIPI}," +
+               $"\"codContaContabil\": \"{codContaContabil}\"," +
+               $"\"tipoControleSaida\": {tipoControleSaida}," +
+               $"\"codUnidMedida\": \"{unidadeMedida}\"" +
+             "}" +
+
+           "}";
+
+        request.AddJsonBody(bodyObject);
+
+        response = await client.ExecuteAsync(request);
 
         if (response.IsSuccessful) {
           var responseData = response.Content;
           jsonObject = JObject.Parse(responseData);
-
+          return true;
+        } else {
+          var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
+          var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro ao Duplicar Item";
+          throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
-        throw new Exception($"Erro ao Buscar Item: {ex.Message}");
+        throw new Exception($"Erro ao Duplicar Item: {ex.Message}");
       }
 
+    }
+    /*
+    internal static async Task<bool> CadasterItemGenericoAsync() {
+      //JObject jsonObject = new JObject();
+
+      //try {
+      //  var client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico/{itemGenerico.codigo}");
+      //  var request = Api.CreateRequest(Method.GET);
+      //  var response = await client.ExecuteAsync(request);
+
+      //  if (response.IsSuccessful) {
+      //    var responseData = response.Content;
+      //    jsonObject = JObject.Parse(responseData);
+
+      //  }
+      //} catch (Exception ex) {
+      //  throw new Exception($"Erro ao Buscar Item: {ex.Message}");
+      //}
+
+      var configApi = configuracao_api.Selecionar();
+
       try {
-        /* inicio variaveis */
-        var codigo = string.Empty;// jsonObject["codigo"]?.ToString();
-        var nome = itemGenerico.descricaoItem;
-        var unidadeMedida = jsonObject["unidadeMedida"]?.ToString();
-        var classificacaoFiscal = jsonObject["classificacaoFiscal"]?.ToString();
-        var finalidade = jsonObject["finalidade"].ToObject<int>();
-        var origem = jsonObject["origem"].ToObject<int>();
+        
+        var codigo = "0";// jsonObject["codigo"]?.ToString();
+        var nome = ItemGenerico.Nome;
+        var unidadeMedida = ItemGenerico.UnidadeMedida;
+        var classificacaoFiscal = ItemGenerico.UnidadeMedi;
+        var finalidade = ItemGenerico.UnidadeMedi;
+        var origem = ItemGenerico.UnidadeMedi;
         var tipo = jsonObject["tipo"].ToObject<int>();
         var procedencia = jsonObject["procedencia"].ToObject<int>();
         var codigoBarras = jsonObject["codigoBarras"]?.ToString();
@@ -117,7 +198,7 @@ namespace AddinArtama {
         var flagReplicado = true;
 
         // dadosSaida
-        var mascara_sai = "10.10.10.10.10";// jsonObject["dadosSaida"]["mascara"]?.ToString();
+        var mascara_sai = "3020101010000";// jsonObject["dadosSaida"]["mascara"]?.ToString();
         var situacao_sai = 1;
         var marca_sai = jsonObject["dadosSaida"]["marca"]?.ToString();
         var descricao_sai = itemGenerico.descricaoCompleta;
@@ -174,7 +255,7 @@ namespace AddinArtama {
         var diametroProduto_sai = jsonObject["dadosSaida"]["diametroProduto"].ToObject<double>();
 
         // dadosEntrada
-        var mascara_ent = "10 40 10 70 10";// jsonObject["dadosEntrada"]["mascara"]?.ToString();
+        var mascara_ent = "3020101010000";// jsonObject["dadosEntrada"]["mascara"]?.ToString();
         var situacao_ent = 1;
         var codNatureza_ent = jsonObject["dadosEntrada"]["codNatureza"].ToObject<int>();
         var descricao_ent = itemGenerico.descricaoCompleta;
@@ -228,11 +309,8 @@ namespace AddinArtama {
         var codServEfdReinf_ent = jsonObject["dadosEntrada"]["codServEfdReinf"].ToString();
         var motivo_ent = jsonObject["dadosEntrada"]["motivo"]?.ToString();
 
-        /* fim variaveis */
-
         var client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico");
         var request = Api.CreateRequest(Method.PUT);
-        request.AddHeader("empresa", "1");
 
         var bodyObject = "" +
           "{"+
@@ -326,10 +404,6 @@ namespace AddinArtama {
                $"\"diametroEmbalagem\": {diametroEmbalagem_sai}," +
                $"\"diametroProduto\": {diametroProduto_sai}," +
                "itensPorCliente\": [" +
-                 // "{" +
-                 //  $"\"codCliente\": 9999999,"+
-                 // $"\"codItemCliente\": "string""+
-                 // "}" +
                "]"+
              "},"+
              "\"dadosEntrada\": {" +
@@ -388,24 +462,6 @@ namespace AddinArtama {
                $"\"motivo\": \"{motivo_ent}\"" +
              "}," +
              "\"dadosQualidade\": [" +
-             //  {
-             //    "tipoControle": 0," +
-             //    "codComprador": 999," +
-             //    "fornecedoresHomologados": [" +
-             //      {" +
-             //        "codFornecedor": 99999," +
-             //        "statusPreferencial": true," +
-             //        "codQualForn": 99999," +
-             //        "situacaoHomologacao": 1" +
-             //      }" +
-             //    ]" +
-             //  }" +
-             //]," +
-             //"DadosCustomizados": [" +
-             //  {" +
-             //    "campo": "string"," +
-             //    "valor": "string"" +
-             //  }" +
              "]" +
            "}";
 
@@ -428,11 +484,10 @@ namespace AddinArtama {
 
     }
 
-    internal static async Task<bool> DuplicateItemGenericoAsync(item_generico_duplicacao itemGenerico) {
+    internal static async Task<bool> DuplicateItemGenericoAsync(configuracao_api itemGenerico) {
       try {
         var client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico/duplicar");
         var request = Api.CreateRequest(Method.PUT);
-        request.AddHeader("empresa", "1");
 
         var bodyObject = new {
           tipoModulo = "E",
@@ -475,95 +530,15 @@ namespace AddinArtama {
       }
 
     }
+    */
 
-    internal static async Task<bool> DuplicaItemImportacaoAsync(item_generico_duplicacao itemGenerico) {
-      JObject jsonObject = new JObject();
-      
-      try {
-        var client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico/{itemGenerico.codigo}");
-        var request = Api.CreateRequest(Method.GET);
-        request.AddHeader("empresa", "1");
-        var response = await client.ExecuteAsync(request);
-
-        if (response.IsSuccessful) {
-          var responseData = response.Content;
-          jsonObject = JObject.Parse(responseData);
-
-        }
-      } catch (Exception ex) {
-        throw new Exception($"Erro ao Buscar Item: {ex.Message}");
-      }
-
-      try {
-        /* inicio variaveis */
-        var codigo = string.Empty;
-        var nome = itemGenerico.descricaoItem;
-        var unidadeMedida = itemGenerico.unidadeMedida;
-        var classificacaoFiscal = itemGenerico.classificacaoFiscal;
-
-        var perIPI_sai = jsonObject["dadosSaida"]["perIPI"].ToObject<double>();
-        var pesoLiquido_sai = itemGenerico.pesoLiquido;
-        var pesoBruto_sai = itemGenerico.pesoBruto;
-
-        var descricao_ent = itemGenerico.descricaoCompleta;
-
-        var codContaContabil_ent = jsonObject["dadosEntrada"]["codContaContabil"]?.ToString();
-
-        /* fim variaveis */
-
-        var client = Api.GetClient(modulo: "ppcppadrao", endpoint: $"duplicarItemImportacao");
-        var request = Api.CreateRequest(Method.PUT);
-        request.AddHeader("empresa", "1");
-
-        var bodyObject = "" +
-          "{" +
-             $"\"tipoModulo\": \"E\"," +
-             $"\"codigoItem\": {codigo}," +
-             $"\"descricaoItem\": \"{nome}\"," +
-             $"\"descricaoCompleta\": \"{descricao_ent}\"," +
-             $"\"nivelMascaraEntrada\": \"10.40.10.70.10\"," +
-             $"\"nivelMascaraSaida\": \"10.40.10.70.10\"," +
-             $"\"pesoLiquido\": {pesoLiquido_sai}," +
-             $"\"pesoBruto\": {pesoBruto_sai}," +
-             $"\"unidadeMedida\": \"{unidadeMedida}\"," +
-             $"\"classificacaoOrigem\": 0," +
-             $"\"classificacaoFinalidade\": 0," +
-             $"\"tipoControleSaida\": 0," +
-             $"\"classificacaoFiscal\": \"{classificacaoFiscal}\"," +
-             $"\"localizacaoEntrada\": 0," +
-             $"\"localizacaoSaida\": 0," +
-             $"\"codContaContabil\": \"{codContaContabil_ent}\"," +
-             $"\"perIPI\": {perIPI_sai}," +
-             "\"dadosQualidade\": []" +
-             "\"DadosCustomizados\": []" +
-           "}";
-
-        request.AddJsonBody(bodyObject);
-
-        var response = await client.ExecuteAsync(request);
-
-        if (response.IsSuccessful) {
-          var responseData = response.Content;
-          jsonObject = JObject.Parse(responseData);
-          return true;
-        } else {
-          var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
-          var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro ao Duplicar Item";
-          throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
-        }
-      } catch (Exception ex) {
-        throw new Exception($"Erro ao Duplicar Item: {ex.Message}");
-      }
-
-    }
-
+    /*
     internal static async Task<ItemGenerico> GetItemGenericoAsync(string codigo) {
       ItemGenerico _return = null;
 
       try {
         var client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico/{codigo}");
         var request = Api.CreateRequest(Method.GET);
-        request.AddHeader("empresa", "1");
         var response = await client.ExecuteAsync(request);
 
         if (response.IsSuccessful) {
@@ -621,6 +596,6 @@ namespace AddinArtama {
 
       return _return;
     }
-
+    */
   }
 }

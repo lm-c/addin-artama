@@ -17,6 +17,7 @@ namespace AddinArtama {
 
       request.AddHeader("accept", "application/json");
       request.AddHeader("Authorization", token);
+      request.AddHeader("empresa", "1");
 
       return request;
     }

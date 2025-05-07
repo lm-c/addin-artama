@@ -7,6 +7,13 @@ public enum TipoMateriaPrima {
   Chapa = 1,
 }
 
+public enum TipoDucumento{
+  [Description("Peça")]
+  Peca = 0,
+  [Description("Montagem")]
+  Montagem = 1,
+}
+
 public enum TipoSequencia {
   [Description("Processamento")]
   Processamento = 0,

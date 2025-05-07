@@ -13,7 +13,7 @@ namespace AddinArtama {
     public DbSet<materiais> materiais { get; set; }
     public DbSet<materia_primas> materia_primas { get; set; }
     public DbSet<templates> templates { get; set; }
-    public DbSet<item_generico_duplicacao> item_generico_duplicacao { get; set; }
+    public DbSet<configuracao_api> configuracao_api { get; set; }
 
     protected override void OnModelCreating(DbModelBuilder modelBuilder) {
       modelBuilder.Conventions
