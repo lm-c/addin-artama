@@ -7,13 +7,7 @@ using LmCorbieUI.LmForms;
 using System.Linq;
 using System.Drawing;
 using LmCorbieUI.Metodos;
-using LmCorbieUI.Design;
 using System.IO;
-using System.Web.UI.WebControls.WebParts;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Data.Entity.Infrastructure;
-using System.Reflection;
-using static AddinArtama.Api;
 
 namespace AddinArtama {
   public partial class FrmProdutoImport : LmSingleForm {
@@ -31,7 +25,6 @@ namespace AddinArtama {
       tbcProduto.SelectedIndex = 0;
 
       dgv.MontarGrid<ProdutoErp>();
-
     }
 
     private void FrmProdutoImport_Loaded(object sender, EventArgs e) {

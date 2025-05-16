@@ -409,7 +409,10 @@ namespace AddinArtama {
       node.ImageIndex = iconIndex;
       node.SelectedImageIndex = iconIndex;
 
-      if(produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItensCorte.Count == 1) { // ignorar quando item biblioteca
+      if(produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItensCorte.Count == 1 && 
+        !produtoErp.CodComponente.StartsWith("10") && 
+        !produtoErp.CodComponente.StartsWith("20") && 
+        !produtoErp.CodComponente.StartsWith("40")) { 
         var itemCorte = produtoErp.ItensCorte.FirstOrDefault();
 
         var produtoFilho = new ProdutoErp {
@@ -417,14 +420,14 @@ namespace AddinArtama {
          Name = produtoErp.Name,
          Denominacao = itemCorte.Denominacao,
          Referencia = produtoErp.Referencia,
-         CodComponente = itemCorte.Denominacao,
+         CodComponente = itemCorte.Codigo.ToString(),
          CodProduto = itemCorte.CodProduto,
          TipoComponente = TipoComponente.ListaMaterial,
          Nivel = produtoErp.Nivel + ".1",
          Configuracao = produtoErp.Configuracao,
          Quantidade = itemCorte.Quantidade
         };
-        string nodeTextFilho = $"{produtoErp.CodComponente} - {produtoFilho.Denominacao}";
+        string nodeTextFilho = $"{produtoFilho.CodComponente} - {produtoFilho.Denominacao}";
         var nodeFilho = new TreeNode(nodeTextFilho);
         nodeFilho.Tag = produtoFilho;
         nodeFilho.ImageIndex = 2;
