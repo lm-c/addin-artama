@@ -3,17 +3,14 @@ using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AddinArtama {
   internal class ListaCorte {
     public int Codigo { get; set; }
+    public string CodProduto { get; set; } 
     public string NomeLista { get; set; }
     public string Denominacao { get; set; }
     public string Material { get; set; } 
@@ -27,9 +24,11 @@ namespace AddinArtama {
     public int Quantidade { get; set; }
     public TipoListaMaterial Tipo { get; set; }
 
-    public static List<ListaCorte> GetCutList(ModelDoc2 swModel, Componente componente) {
+    public static List<ListaCorte> GetCutList(ModelDoc2 swModel, string nomePeca, out bool changeCutListName) {
       List<ListaCorte> _return = new List<ListaCorte>();
       bool boolstatus;
+      changeCutListName = false;
+
       try {
         FeatureManager swFeatMgr = default(FeatureManager);
         Feature swFeat = default(Feature);
@@ -63,7 +62,25 @@ namespace AddinArtama {
               SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
               swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
 
-              CustomPropertyManager oCustPropMngr = swFeat.CustomPropertyManager;
+              var isExcluded = swFeat.ExcludeFromCutList;
+
+              if (!isExcluded) {
+                var nomeLista = $"Item da lista de corte{_return.Count + 1}";
+                var nomeLista2 = $"Item da lista de corte {_return.Count + 1}";
+                var nomeLista3 = $"Item da lista de corte  {_return.Count + 1}";
+
+                if (swFeat.Name != nomeLista) {
+                  changeCutListName = true;
+                  swFeat.Name = nomeLista;
+                  if (swFeat.Name != nomeLista) {
+                    swFeat.Name = nomeLista2;
+                    if (swFeat.Name != nomeLista2) {
+                      swFeat.Name = nomeLista3;
+                    }
+                  }
+                }
+
+                CustomPropertyManager oCustPropMngr = swFeat.CustomPropertyManager;
 
               object[] custPropNames = (object[])oCustPropMngr.GetNames();
 
@@ -95,6 +112,9 @@ namespace AddinArtama {
                 oCustPropMngr.Get2("Código", out sValue, out sResolvedvalue);
                 int.TryParse(sResolvedvalue, out int cod);
                 listaCorte.Codigo = cod;
+                
+                oCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
+                listaCorte.CodProduto = sResolvedvalue;
 
                 oCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
                 listaCorte.Denominacao = sResolvedvalue;
@@ -136,7 +156,6 @@ namespace AddinArtama {
                 listaCorte.Massa = Math.Round(Massa, 3);
 
                 if (listaCorte.Tipo == TipoListaMaterial.Chapa) {
-                  string nomePeca = Path.GetFileName(componente.LongName);
                   string descCustProp = $"\"SW-Largura da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\" X \"SW-Comprimento da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\"";
                   oCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText, descCustProp,
                       (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
@@ -148,6 +167,7 @@ namespace AddinArtama {
               _return.Add(listaCorte);
             }
           }
+        }
           swFeat = (Feature)swFeat.GetNextFeature();
         }
       } catch (Exception ex) {
@@ -172,6 +192,7 @@ namespace AddinArtama {
         string nomePeca = Path.GetFileName(swModel.GetPathName());
 
         oCustPropMngr.Add3("Código", (int)swCustomInfoType_e.swCustomInfoText, CutList.Codigo.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+        oCustPropMngr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, CutList.CodProduto.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
         oCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, CutList.Denominacao.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
         oCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText,
             $"\"SW-Largura da Caixa delimitadora@@@{CutList.NomeLista}@{nomePeca}\" X \"SW-Comprimento da Caixa delimitadora@@@{CutList.NomeLista}@{nomePeca}\"",

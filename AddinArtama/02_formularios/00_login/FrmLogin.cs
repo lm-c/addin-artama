@@ -122,10 +122,14 @@ namespace AddinArtama {
             UcPainelTarefas.Instancia.Carregarrodape(InfoAssembly.Version, usu.login);
 
             // Carregar Globais
+            var configAPI = configuracao_api.Selecionar();
+
+            Api.token = configAPI.token;
+            Api.url = configAPI.endereco;
+
             Processo.Carregar();
             templates.Carregar();
             InfoSetting.Carregar();
-
             this.Hide();
             UcPainelTarefas.Instancia.msMenu.Visible = UcPainelTarefas.Instancia.stpRodape.Visible = true;
           } else {

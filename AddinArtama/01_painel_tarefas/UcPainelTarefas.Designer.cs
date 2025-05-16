@@ -26,6 +26,7 @@
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UcPainelTarefas));
       this.msMenu = new LmCorbieUI.Controls.LmPanel();
+      this.msCSW = new LmCorbieUI.Controls.LmMenuItem();
       this.msConfig = new LmCorbieUI.Controls.LmMenuItem();
       this.msRelatorio = new LmCorbieUI.Controls.LmMenuItem();
       this.msCadastro = new LmCorbieUI.Controls.LmMenuItem();
@@ -59,10 +60,11 @@
       this.msMaterialCad = new System.Windows.Forms.ToolStripMenuItem();
       this.msMateriaPrimaCad = new System.Windows.Forms.ToolStripMenuItem();
       this.msRedefinirSenha = new System.Windows.Forms.ToolStripMenuItem();
-      this.msCSW = new LmCorbieUI.Controls.LmMenuItem();
       this.msMenuCSW = new LmCorbieUI.Controls.LmDropdownMenu(this.components);
       this.msCadastroProduto = new System.Windows.Forms.ToolStripMenuItem();
       this.msCadastroEngenhariaProduto = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+      this.msConfiguracaoIntegracao = new System.Windows.Forms.ToolStripMenuItem();
       this.msMenu.SuspendLayout();
       this.stpRodape.SuspendLayout();
       this.msMenuDesenho.SuspendLayout();
@@ -90,6 +92,22 @@
       this.msMenu.Name = "msMenu";
       this.msMenu.Size = new System.Drawing.Size(317, 30);
       this.msMenu.TabIndex = 0;
+      // 
+      // msCSW
+      // 
+      this.msCSW.Dock = System.Windows.Forms.DockStyle.Left;
+      this.msCSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.msCSW.Image = ((System.Drawing.Image)(resources.GetObject("msCSW.Image")));
+      this.msCSW.Location = new System.Drawing.Point(180, 0);
+      this.msCSW.Name = "msCSW";
+      this.msCSW.Size = new System.Drawing.Size(30, 30);
+      this.msCSW.TabIndex = 13;
+      this.msCSW.TabStop = false;
+      this.msCSW.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.cmxToolTip1.SetToolTip(this.msCSW, "Integração ERP");
+      this.msCSW.UseSelectable = true;
+      this.msCSW.UseVisualStyleBackColor = false;
+      this.msCSW.Click += new System.EventHandler(this.MsCSW_Click);
       // 
       // msConfig
       // 
@@ -445,35 +463,21 @@
       this.msRedefinirSenha.Text = "Redefinir Senha";
       this.msRedefinirSenha.Click += new System.EventHandler(this.MsRedefinirSenha_Click);
       // 
-      // msCSW
-      // 
-      this.msCSW.Dock = System.Windows.Forms.DockStyle.Left;
-      this.msCSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.msCSW.Image = ((System.Drawing.Image)(resources.GetObject("msCSW.Image")));
-      this.msCSW.Location = new System.Drawing.Point(180, 0);
-      this.msCSW.Name = "msCSW";
-      this.msCSW.Size = new System.Drawing.Size(30, 30);
-      this.msCSW.TabIndex = 13;
-      this.msCSW.TabStop = false;
-      this.msCSW.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.msCSW, "Relatórios");
-      this.msCSW.UseSelectable = true;
-      this.msCSW.UseVisualStyleBackColor = false;
-      this.msCSW.Click += new System.EventHandler(this.MsCSW_Click);
-      // 
       // msMenuCSW
       // 
       this.msMenuCSW.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.msMenuCSW.IsMainMenu = false;
       this.msMenuCSW.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.msCadastroProduto,
-            this.msCadastroEngenhariaProduto});
+            this.msCadastroEngenhariaProduto,
+            this.toolStripMenuItem2,
+            this.msConfiguracaoIntegracao});
       this.msMenuCSW.MenuItemHeight = 25;
       this.msMenuCSW.MenuItemTextColor = System.Drawing.Color.Empty;
       this.msMenuCSW.Name = "msMenuSistema";
       this.msMenuCSW.NaoInverterCorImagem = false;
       this.msMenuCSW.PrimaryColor = System.Drawing.Color.Empty;
-      this.msMenuCSW.Size = new System.Drawing.Size(266, 78);
+      this.msMenuCSW.Size = new System.Drawing.Size(266, 88);
       this.msMenuCSW.Z_Teste = 0;
       // 
       // msCadastroProduto
@@ -481,7 +485,7 @@
       this.msCadastroProduto.Image = ((System.Drawing.Image)(resources.GetObject("msCadastroProduto.Image")));
       this.msCadastroProduto.Name = "msCadastroProduto";
       this.msCadastroProduto.Size = new System.Drawing.Size(265, 26);
-      this.msCadastroProduto.Text = "Cadastro de Item Genérico";
+      this.msCadastroProduto.Text = "Cadastro de Produto";
       this.msCadastroProduto.Click += new System.EventHandler(this.MsCadastroProduto_Click);
       // 
       // msCadastroEngenhariaProduto
@@ -490,8 +494,20 @@
       this.msCadastroEngenhariaProduto.Name = "msCadastroEngenhariaProduto";
       this.msCadastroEngenhariaProduto.Size = new System.Drawing.Size(265, 26);
       this.msCadastroEngenhariaProduto.Text = "Cadastro de Engenharia de Produto";
-      this.msCadastroEngenhariaProduto.Visible = false;
       this.msCadastroEngenhariaProduto.Click += new System.EventHandler(this.MsCadastroEngenhariaProduto_Click);
+      // 
+      // toolStripMenuItem2
+      // 
+      this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+      this.toolStripMenuItem2.Size = new System.Drawing.Size(262, 6);
+      // 
+      // msConfiguracaoIntegracao
+      // 
+      this.msConfiguracaoIntegracao.Image = ((System.Drawing.Image)(resources.GetObject("msConfiguracaoIntegracao.Image")));
+      this.msConfiguracaoIntegracao.Name = "msConfiguracaoIntegracao";
+      this.msConfiguracaoIntegracao.Size = new System.Drawing.Size(265, 26);
+      this.msConfiguracaoIntegracao.Text = "Configuração de Integração";
+      this.msConfiguracaoIntegracao.Click += new System.EventHandler(this.MsConfiguracaoIntegracao_Click);
       // 
       // UcPainelTarefas
       // 
@@ -555,5 +571,7 @@
     private LmCorbieUI.Controls.LmDropdownMenu msMenuCSW;
     private System.Windows.Forms.ToolStripMenuItem msCadastroProduto;
     private System.Windows.Forms.ToolStripMenuItem msCadastroEngenhariaProduto;
+    private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+    private System.Windows.Forms.ToolStripMenuItem msConfiguracaoIntegracao;
   }
 }

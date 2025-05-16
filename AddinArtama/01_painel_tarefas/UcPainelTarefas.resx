@@ -118,6 +118,20 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="msCSW.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAETSURBVDhPxZO7DgFBFIa30SAK4hKlRjQajUJ0Ck+glLg9
+        AqUHUHkAT6HjEbQKnVsiqClIWP85c2LXZpdls/ElXzLzz5lfZNB8Q9f1FGzAnsmaHD+hzDJDd5JyrEBA
+        ZUdoZQ9DMkZzYXigAwuUGaXYtDm2ZwLL4pQCB1pSx4VdlXmiK3X/LxzDKlzwzuCnQnqkuNwZcGLwdeEd
+        VmQ+Dy8UmvhYeIY7tWRGMh7AeqaiF94WXmEJxuAcLmFEZvvQjreFJ5iVszQsyroA6cPs+PiV6defkxEi
+        iL31Zc24epQtzMjMkBNnXBUSK0hlN94547rQLS+FLZV5oil1XBiFG45/Yw2jUqdAkIB12PlSusN/Rx/Q
+        tAc6oX+UTx7HFgAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <metadata name="cmxToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <data name="msConfig.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -213,9 +227,6 @@
         oSdrvixDg37+lrrbsImexVh7aB5Gi0if5k5I5wU0FG03KJX+A2frvOr3ZnoAAAAAAElFTkSuQmCC
 </value>
   </data>
-  <metadata name="cmxToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <metadata name="stpRodape.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>138, 17</value>
   </metadata>
@@ -382,16 +393,6 @@
         BPprF2L2Bay6YG7a8P1iAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="msCSW.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAEJSURBVDhPxdM7TgJRGMXxaWiAWEBQYmlDbGhsKIidhSuwNPG1BCldABULYBV0sgRaCjoVEqPW
-        WGji438id/LNzc08DIST/BK4c+ZQDBNtMk1coGecwY/ObEf37CERjb3hx/OCClyqeIXf01li9Bp+ybnH
-        8cp4dRZyhTi3CJWK0EacrQ6OcIqZOZN/DeohNaD0Ya8VHvzGCZQ2PmCvZw6+49l8H0IpYQLbldTBT3RR
-        xxQP2IFyB9t1UgeXaEHZR+fvY3QE/ZjtOqmDon//IVzK8J+slTkoCxxAGSDUcXINyiM09mXOQnIP5pUY
-        1IsdKhVxiTg1zBEq5vEEbSSyi3PcFKR73Ou47kTRL+mE9eXXH8A8AAAAAElFTkSuQmCC
-</value>
-  </data>
   <metadata name="msMenuCSW.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>838, 17</value>
   </metadata>
@@ -415,6 +416,18 @@
         sI5fQ+6G1V0tU0nBdnhPlpKkt41z+oKsbeOCOH+xWGHbpBMLOpTd0NY9HKb8zb64sT1d+3AKSjKOWCRP
         RUfPNMMV823iwx5+++Sc2+do3JPn8DSdoGz8fB3Ac5r1+XJzz4R2VFWa8IHiQjUVNL6lp2MYz6BYcvcN
         a2WZ9mbIFmIAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="msConfiguracaoIntegracao.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAAXVJREFUOE+V
+        1MErBGEcxvEVSrlw4uBEToQoJSfFQYkUwsFBDs6Imzs3bi4cubmiKBdKknCgRP4CUSLJ+j5j3uln9met
+        pz7NzjvvPLsz+85k/kgZPpDFjAb+m+J4G9IClcm6BkzSc3PSiDtMR3vfmUUovEAFlDocYynac1KCe4ST
+        d3Fu9oN3bOHZjI3CzSTsyYU4QSncFGEf3omeTzTh1+gmP8CedIghdGABL7DHu5CTcujf1LKwkw+gX23T
+        BztnDyqtQRI7weqHlxt48+cRxTsoukwv9WhzVCPKHDZwBVu4iHRa0Z1HLZJUITxm8gb9ISFa+PYLPY/4
+        kW2kJ92iAZ1mLJ8kWlOv8CapLBSOozLWg+b48wp0PIpW+xlsiWULBzCBNTxB44qeax1PsgwNXELrshdH
+        8Vi6UC+HUwxD7wElp1AZg96BIbokr7Adg7jGCBS3MB2tLa9Qi14rYhUhBRUqU1BxKNyB7t9mvA3C667g
+        hMI8Mtkvpsu5TefLDoMAAAAASUVORK5CYII=
 </value>
   </data>
 </root>

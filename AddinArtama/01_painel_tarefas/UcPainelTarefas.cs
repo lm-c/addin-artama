@@ -189,7 +189,12 @@ namespace AddinArtama {
     }
 
     private void MsCadastroEngenhariaProduto_Click(object sender, EventArgs e) {
+      Toast.Warning("Em Desenvolvmento!");
+    }
 
+    private void MsConfiguracaoIntegracao_Click(object sender, EventArgs e) {
+      FrmConfigIntegrador frm = new FrmConfigIntegrador();
+      frm.ShowDialog();
     }
 
     private void MsConfig_Click(object sender, EventArgs e) {

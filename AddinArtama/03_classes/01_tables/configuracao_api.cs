@@ -31,38 +31,38 @@ namespace AddinArtama {
     /// </summary>
     [Browsable(false)]
     [StringLength(2)]
-    public string produto { get; set; }
+    public string subgrupo { get; set; }
 
     /// <summary>
-    /// 01 - Rotina importação addin - nivel 3 da máscara
+    /// 01 - Rotina importação addin - usado para peças - nivel 3 da máscara
     /// </summary>
     [Browsable(false)]
     [StringLength(2)]
-    public string modelo { get; set; }
+    public string tipo_peca { get; set; }
 
     /// <summary>
-    /// 01 - Rotina importação addin - nivel 4 da máscara (usar no código reduzido aumentar quando acabado sequencial)
+    /// 01 - Rotina importação addin - usado para montagem - nivel 3 da máscara
     /// </summary>
     [Browsable(false)]
     [StringLength(2)]
-    public string acionamento { get; set; }
+    public string tipo_montagem { get; set; }
 
     /// <summary>
-    /// 01 - Rotina importação addin - usado para peças - nivel 5 da máscara
+    /// 01 - Rotina importação addin - nivel 4 da máscara
     /// </summary>
     [Browsable(false)]
     [StringLength(2)]
-    public string complemento_peca { get; set; }
+    public string familia { get; set; }
+
+    /// <summary>
+    /// 01 - Rotina importação addin - usado para peças - nivel 5 da máscara (usar no código reduzido aumentar quando acabado sequencial)
+    /// </summary>
+    [Browsable(false)]
+    [StringLength(2)]
+    public string classificacao { get; set; }
     
     /// <summary>
-    /// 01 - Rotina importação addin - usado para montagem - nivel 5 da máscara
-    /// </summary>
-    [Browsable(false)]
-    [StringLength(2)]
-    public string complemento_montagem { get; set; }
-
-    /// <summary>
-    /// último sequencial usado para o código reduzido (Quando alterado nivel 4, deve ser zerado
+    /// último sequencial usado para o código reduzido (Quando alterado nivel 5, deve ser zerado
     /// </summary>
     [Browsable(false)]
     public int sequencial { get; set; }
@@ -107,6 +107,15 @@ namespace AddinArtama {
     [Browsable(false)]
     public int tipoControleSaida { get; set; }
 
+    // api config
+    [Browsable(false)]
+    [StringLength(250)]
+    public string endereco { get; set; }
+
+    [Browsable(false)]
+    [StringLength(500)]
+    public string token { get; set; }
+
     public static async Task<bool> SalvarAsync(configuracao_api configuracao) {
       try {
         using (ContextoDados db = new ContextoDados()) {
@@ -118,11 +127,11 @@ namespace AddinArtama {
           } else {
             var modelAlt = db.configuracao_api.FirstOrDefault(x => x.id == configuracao.id);
             modelAlt.grupo = configuracao.grupo;
-            modelAlt.produto = configuracao.produto;
-            modelAlt.modelo = configuracao.modelo;
-            modelAlt.acionamento = configuracao.acionamento;
-            modelAlt.complemento_peca = configuracao.complemento_peca;
-            modelAlt.complemento_montagem = configuracao.complemento_montagem;
+            modelAlt.subgrupo = configuracao.subgrupo;
+            modelAlt.tipo_peca = configuracao.tipo_peca;
+            modelAlt.tipo_montagem = configuracao.tipo_montagem;
+            modelAlt.familia = configuracao.familia;
+            modelAlt.classificacao = configuracao.classificacao;
             modelAlt.sequencial = configuracao.sequencial;
             modelAlt.classificacaoFiscal = configuracao.classificacaoFiscal;
             modelAlt.finalidade = configuracao.finalidade;

@@ -362,6 +362,12 @@
     <Compile Include="02_formularios\07_relatorios\FrmReportWorks.Designer.cs">
       <DependentUpon>FrmReportWorks.cs</DependentUpon>
     </Compile>
+    <Compile Include="02_formularios\08_integrador\FrmConfigIntegrador.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="02_formularios\08_integrador\FrmConfigIntegrador.Designer.cs">
+      <DependentUpon>FrmConfigIntegrador.cs</DependentUpon>
+    </Compile>
     <Compile Include="02_formularios\08_integrador\FrmProdutoImport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -409,6 +415,7 @@
       <DependentUpon>FrmLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="03_classes\00_context\ContextoDados.cs" />
+    <Compile Include="06_api\Engenharia.cs" />
     <Compile Include="06_api\ItemGenerico.cs" />
     <Compile Include="06_api\MascaraEntrada.cs" />
     <Compile Include="06_api\Operacao.cs" />
@@ -494,6 +501,9 @@
     <EmbeddedResource Include="02_formularios\07_relatorios\FrmReportWorks.resx">
       <DependentUpon>FrmReportWorks.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="02_formularios\08_integrador\FrmConfigIntegrador.resx">
+      <DependentUpon>FrmConfigIntegrador.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="02_formularios\08_integrador\FrmProdutoImport.resx">
       <DependentUpon>FrmProdutoImport.cs</DependentUpon>
     </EmbeddedResource>
@@ -538,6 +548,11 @@
     <None Include="Resources\trv_permissao.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\not_draw1.png" />
+    <None Include="Resources\assembly1.png" />
+    <None Include="Resources\part1.png" />
+    <None Include="Resources\draw1.png" />
+    <None Include="Resources\cutlist.png" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

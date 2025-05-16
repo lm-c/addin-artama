@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AddinArtama {
@@ -110,6 +108,81 @@ namespace AddinArtama {
         }
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao pegar dados da Lista Pack List\n\n{ex.Message}", "Addin LM Projetos",
+             MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+
+    public static void InserirAtualizarListaMaterias(ModelDoc2 swModel) {
+      try {
+        swModel.ClearSelection2(true);
+
+        if (swModel.GetType() == (int)swDocumentTypes_e.swDocDRAWING) {
+          var pathName = swModel.GetPathName();
+          swDocumentTypes_e tipo = File.Exists(pathName.ToLower().Replace("slddrw", "sldprt")) ? swDocumentTypes_e.swDocPART : swDocumentTypes_e.swDocASSEMBLY;
+
+          var swFeature = (Feature)swModel.FirstFeature();
+          while ((swFeature != null)) {
+            string nm = swFeature.GetTypeName2();
+
+            if ((nm == "WeldmentTableFeat" && tipo == swDocumentTypes_e.swDocPART) || (nm == "BomFeat" && tipo == swDocumentTypes_e.swDocASSEMBLY)) {
+              swFeature.Select(true);
+
+              swModel.EditDelete();
+            }
+
+            if (nm == "DrSheet") {
+              Feature subFeature = swFeature.GetFirstSubFeature();
+              while ((subFeature != null)) {
+                string nm2 = subFeature.GetTypeName2();
+                if (nm2 == "GeneralTableFeature") {
+                  subFeature.Select(true);
+
+                  swModel.EditDelete();
+                }
+
+                subFeature = (Feature)subFeature.GetNextSubFeature();
+              }
+            }
+
+            swFeature = (Feature)swFeature.GetNextFeature();
+          }
+
+          Desenho.InserirListasMateriais(tipo);
+        }
+      } catch (Exception ex) {
+        MsgBox.Show($"Erro ao inserir lista de soldagem\n\n{ex.Message}", "Addin LM Projetos",
+               MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+
+    public static void InserirListasMateriais(swDocumentTypes_e swDocumentTypes_E) {
+      try {
+        templates.Carregar();
+
+        DrawingDoc swDraw = default(DrawingDoc);
+        swDraw = (DrawingDoc)Sw.App.ActiveDoc;
+
+        BomTableAnnotation swBOMAnnotation = default(BomTableAnnotation);
+        WeldmentCutListAnnotation WMTable = default(WeldmentCutListAnnotation);
+
+        SolidWorks.Interop.sldworks.View swView = (SolidWorks.Interop.sldworks.View)swDraw.GetFirstView();
+        swView = (SolidWorks.Interop.sldworks.View)swView.GetNextView();
+        swDraw.ActivateView(swView.GetName2());
+
+        // Obtém a configuração ativa
+        ModelDoc2 swModel = (ModelDoc2)swView.ReferencedDocument;
+        string activeConfiguration = swModel.GetActiveConfiguration().Name;
+
+        int AnchorType = (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_BottomRight;
+        int BomType = (int)swBomType_e.swBomType_TopLevelOnly;
+
+        if (swDocumentTypes_E == swDocumentTypes_e.swDocPART) {
+          WMTable = swView.InsertWeldmentTable(true, 0, 0, AnchorType, "", templates.model.lista_soldagem);
+          int i = 1;
+          swBOMAnnotation = swView.InsertBomTable3(true, 0, 0, AnchorType, BomType, activeConfiguration, templates.model.lista_montagem, false);
+        }
+      } catch (Exception ex) {
+        MsgBox.Show($"Erro ao inserir Lista\n\n{ex.Message}", "Addin LM Projetos",
              MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
