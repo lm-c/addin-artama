@@ -174,9 +174,9 @@
       this.lmButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.lmButton1.Image = ((System.Drawing.Image)(resources.GetObject("lmButton1.Image")));
       this.lmButton1.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.lmButton1.Location = new System.Drawing.Point(163, 0);
+      this.lmButton1.Location = new System.Drawing.Point(106, 0);
       this.lmButton1.Name = "lmButton1";
-      this.lmButton1.Size = new System.Drawing.Size(87, 31);
+      this.lmButton1.Size = new System.Drawing.Size(144, 31);
       this.lmButton1.TabIndex = 4;
       this.lmButton1.Text = " Excluir tudo";
       this.lmButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;

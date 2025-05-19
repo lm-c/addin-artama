@@ -8,6 +8,8 @@ using System.Linq;
 using System.Drawing;
 using LmCorbieUI.Metodos;
 using System.IO;
+using static AddinArtama.Api;
+using System.Threading.Tasks;
 
 namespace AddinArtama {
   public partial class FrmProdutoImport : LmSingleForm {
@@ -43,6 +45,7 @@ namespace AddinArtama {
         var swModel = (ModelDoc2)Sw.App.ActiveDoc;
 
         if (swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING) {
+          Processo.Carregar();
 
           _dadosDraw = ProdutoErp.GetComponents(trvProduto);
           CarregarGrid();
@@ -121,10 +124,13 @@ namespace AddinArtama {
                 ? "PC"
                 : "CJ";
 
+                item.Denominacao = itemGenerico.Nome;
+
                 var codigoNovo = await Api.CadasterItemGenericoAsync(itemGenerico);
 
                 if (!string.IsNullOrEmpty(codigoNovo)) {
                   item.CodProduto = codigoNovo;
+
                   if (item.CadastrarAddin) {
                     CadastrarAddin(db, item, codigoNovo);
                   }
@@ -174,6 +180,10 @@ namespace AddinArtama {
 
             swModel.Save3(5, ref status, ref warnings);
 
+            MsgBox.ShowWaitMessage("Criando Engenharia de Produto...");
+
+            await PercorrerTreeViewSalvarEngAsync(trvProduto.Nodes);
+
             BtnCancel_Click(null, null);
 
             MsgBox.Show("Cadastro de produtos finalizado com sucesso", "Addin LM Projetos",
@@ -188,6 +198,89 @@ namespace AddinArtama {
         //CarregarGrid();
       }
     }
+
+    private async Task PercorrerTreeViewSalvarEngAsync(TreeNodeCollection nodes) {
+      try {
+        foreach (TreeNode node in nodes) {
+          var item = node.Tag as ProdutoErp;
+          if (item != null) {
+            if (item.TipoComponente != TipoComponente.ListaMaterial) {
+              var produto = _dadosDraw.ToList().FirstOrDefault(x => item.Name == x.Name && item.Referencia == x.Referencia && item.Configuracao == x.Configuracao);
+
+              if (produto != null) {
+                item.CodProduto = produto.CodProduto;
+                item.Denominacao = produto.Denominacao;
+              }
+            }
+            var engenharia = new Engenharia {
+              codEmpresa = 1,
+              codProduto = item.CodProduto,
+              narrativaLinha1 = string.Empty,
+              narrativaLinha2 = string.Empty,
+              narrativaLinha3 = string.Empty,
+              narrativaLinha4 = string.Empty,
+              tipoModulo = "E",
+              codClassificacao = item.TipoComponente == TipoComponente.Montagem ? 3 : 4,
+              nomeArquivoDesenhoEng = item.Name,
+              //engenhariaFantasma = item.fa
+              descEngenhariaFantasma = string.Empty,
+            };
+
+            if (node.Nodes.Count > 0) {
+              System.Collections.IList list = node.Nodes;
+              for (int i = 0; i < list.Count; i++) {
+                int index = i + 1;
+                TreeNode nodeFilho = (TreeNode)list[i];
+                var itemFilho = nodeFilho.Tag as ProdutoErp;
+                if (itemFilho != null) {                  
+                  var componente = new ComponenteEng {
+                    seqComponente = index,
+                    codInsumo = itemFilho.CodProduto,
+                    quantidade = itemFilho.Quantidade,
+                    itemKanban = 0,
+                    comprimento = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdCompr,
+                    largura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdLarg,
+                    espessura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdEspess,
+                    percQuebra = 0,
+                    codClassificacaoInsumo = 1, // 1 = produto
+                    seqOperacaoConsumo = 0,
+                  };
+                  engenharia.componentes.Add(componente);
+                }
+              }
+            }
+
+             await Api.CadastrarEngenhariaAsync(engenharia);
+
+            if (node.Nodes.Count > 0) {
+              await PercorrerTreeViewSalvarEngAsync(node.Nodes);
+            }
+          }
+        }
+      } catch (Exception ex) {
+        MsgBox.Show("Erro ao Salvar Engenharia: \r\n" + ex.Message, "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+
+    //private void PercorrerTreeViewAttProd(TreeNodeCollection nodes, ProdutoErp produtoErp) {
+    //  try {
+    //    foreach (TreeNode node in nodes) {
+    //      var item = node.Tag as ProdutoErp;
+    //      if (item != null) {
+    //        if () {
+    //          item.CodProduto = produtoErp.CodProduto;
+    //          item.Denominacao = produtoErp.Denominacao;
+    //          node.Text = $"{item.Name} - {item.Denominacao}";
+    //        }
+    //      }
+    //      if (node.Nodes.Count > 0) {
+    //        PercorrerTreeViewAttProd(node.Nodes, item);
+    //      }
+    //    }
+    //  } catch (Exception ex) {
+    //    throw new Exception("Erro ao Percorer Arvore. " + ex.Message);
+    //  }
+    //}
 
     private static void CadastrarAddin(ContextoDados db, ProdutoErp item, string codigoNovo) {
       try {
@@ -221,13 +314,13 @@ namespace AddinArtama {
     private void ExcluirTudo() {
       try {
         Invoke(new MethodInvoker(async () => {
-          long codReduz = 305011152;
+          long codReduz = 305011200;
 
           MsgBox.ShowWaitMessage("Excluindo Itens Genéricos...");
           while (codReduz < 305012000) {
 
-          lmButton1.Text = $"Excluindo {codReduz}";
-          lmButton1.Refresh();
+            lmButton1.Text = $"Excluindo {codReduz}";
+            lmButton1.Refresh();
             //await Api.GetOpsAsync();
             var excluido = await Api.ExcludeItemGenericoAsync(codReduz);
 

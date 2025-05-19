@@ -421,7 +421,7 @@ namespace AddinArtama {
          Denominacao = itemCorte.Denominacao,
          Referencia = produtoErp.Referencia,
          CodComponente = itemCorte.Codigo.ToString(),
-         CodProduto = itemCorte.CodProduto,
+         CodProduto = !string.IsNullOrEmpty (itemCorte.CodProduto) ? itemCorte.CodProduto : itemCorte.Codigo.ToString(),
          TipoComponente = TipoComponente.ListaMaterial,
          Nivel = produtoErp.Nivel + ".1",
          Configuracao = produtoErp.Configuracao,

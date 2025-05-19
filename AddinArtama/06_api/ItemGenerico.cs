@@ -98,6 +98,7 @@ namespace AddinArtama {
              $"\"origem\": {origem}," +
              $"\"tipo\": {tipo}," +
              $"\"procedencia\": {procedencia}," +
+             $"\"mascaraReferencia\": {mascara}," +
 
              "\"dadosSaida\": {" +
                $"\"mascara\": \"{mascara}\"," +
@@ -108,14 +109,7 @@ namespace AddinArtama {
                $"\"pesoLiquido\": {pesoLiquido}," +
                $"\"pesoBruto\": {pesoBruto}," +
                $"\"situacaoICMS\": {situacaoICMS}," +
-               $"\"codNatureza\": {codNatureza}," +
-               $"\"unidadeVenda\": \"{unidadeMedida}\"," +
-               $"\"tipoGrupo\": 1," +
-               $"\"codClasse\": 3," +
-               $"\"subClasse\": 5," +
-               $"\"classeItem\": 3," +
-               $"\"grupoItem\": 3," +
-               $"\"familiaItem\": 1" +
+               $"\"codNatureza\": {codNatureza}" +
              "}," +
 
              "\"dadosEntrada\": {" +
@@ -127,6 +121,7 @@ namespace AddinArtama {
                $"\"codigoIPI\": {codigoIPI}," +
                $"\"codContaContabil\": \"{codContaContabil}\"," +
                $"\"tipoControleSaida\": {tipoControleSaida}" +
+               $"\"codUnidMedida\": {unidadeMedida}" +
              "}" +
 
            "}";

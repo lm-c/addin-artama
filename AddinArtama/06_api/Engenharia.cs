@@ -90,7 +90,7 @@ namespace AddinArtama {
               $"\"espessura\": {componente.espessura}," +
               $"\"percQuebra\": {componente.percQuebra}," +
               $"\"codClassificacaoInsumo\": {componente.codClassificacaoInsumo}," +
-              $"\"codPEInsumo\": \"{componente.codPEInsumo}\"," +
+              //$"\"codPEInsumo\": \"{componente.codPEInsumo}\"," +
               $"\"seqOperacaoConsumo\": {componente.seqOperacaoConsumo}" +
               "},";
         }
@@ -126,10 +126,10 @@ namespace AddinArtama {
         } else {
           var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
           var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro ao Cadastrar Engenharia";
-          throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
+          throw new Exception($"{response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
-        throw new Exception($"Erro ao Cadastrar Engenharia: {ex.Message}");
+        throw new Exception($"{ex.Message}");
       }
 
     }
