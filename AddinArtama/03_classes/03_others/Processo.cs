@@ -12,21 +12,34 @@ using System.Linq;
 
 namespace AddinArtama {
   internal class Processo {
-    [DisplayName("Código")]
-    [LarguraColunaGrid(100)]
+    [DisplayName("Código Operação")]
+    [LarguraColunaGrid(120)]
     [DataObjectField(true, false)]
     [AlinhamentoColunaGrid(System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter)]
     public int codOperacao { get; set; }
 
     [DisplayName("Abreviatura")]
     [LarguraColunaGrid(120)]
-    [DataObjectField(false, true)]
     public string abreviatura { get; set; }
 
-    [DisplayName("Descrição")]
-    [LarguraColunaGrid(500)]
+    [DisplayName("Descrição Operação")]
+    [LarguraColunaGrid(200)]
     [DataObjectField(false, true)]
-    public string descricao { get; set; }
+    public string descrOperacao { get; set; }
+    
+    [DisplayName("Código Máquina")]
+    [LarguraColunaGrid(120)]
+    public int codMaquina { get; set; }
+
+    [DisplayName("Descrição Máquina")]
+    [LarguraColunaGrid(150)]
+    [DataObjectField(false, true)]
+    public string descrMaquina { get; set; }
+    
+    [DisplayName("Mascara Máquina")]
+    [LarguraColunaGrid(120)]
+    [DataObjectField(false, true)]
+    public string mascaraMaquina { get; set; }
 
     [DisplayName("Tipo")]
     [LarguraColunaGrid(100)]
@@ -56,17 +69,25 @@ namespace AddinArtama {
         //  Api.CadasterItemGenericoAsync(item);
         //}
 
+        var maquinas = await Api.GetMaquinasAsync();
         var operacoes = await Api.GetOpsAsync();
-        foreach (var operacao in operacoes) {
+        var procs = processos.SelecionarTodos();
+
+        foreach (var processo in procs) {
+          var operacao = operacoes.FirstOrDefault(x => x.CodOperacao == processo.codigo_operacao);
+          var maquina = maquinas.FirstOrDefault(x => x.codMaquina == processo.codigo_maquina);
           ListaProcessos.Add(new Processo {
             codOperacao = operacao.CodOperacao,
             abreviatura = operacao.Abreviatura,
-            descricao = operacao.Descricao.Replace("\\", "_").Replace("/", "_"),
+            descrOperacao = operacao.Descricao.Replace("\\", "_").Replace("/", "_"),
+            descrMaquina = maquina.descReduzida.Replace("\\", "_").Replace("/", "_"),
+            mascaraMaquina = maquina.mascara,
+            codMaquina = maquina.codMaquina,
             tipo = operacao.Tipo,
             faseProducao = operacao.FaseProducao ?? 0 // Default para 0 se for nulo
           });
         }
-        ListaProcessos = ListaProcessos.OrderByDescending(x => x.tipo).ThenBy(x => x.descricao).ToList();
+        ListaProcessos = ListaProcessos.OrderByDescending(x => x.tipo).ThenBy(x => x.descrOperacao).ToList();
       } catch (Exception ex) {
         Toast.Error("Erro ao Selecionar Processos");
       }

@@ -41,7 +41,7 @@ namespace AddinArtama {
             Margin = new Padding(6, 1, 6, 1),
             Name = $"ckb{proc.codOperacao}",
             Tag = $"{proc.codOperacao}",
-            Text = $"{proc.codOperacao} - {proc.descricao}",
+            Text = $"{proc.codOperacao} - {proc.descrOperacao} ({proc.codMaquina} - {proc.descrMaquina})",
             FontSize = LmCorbieUI.Design.LmCheckBoxSize.Small,
             UseCustomBackColor = true,
           };
@@ -365,6 +365,7 @@ namespace AddinArtama {
         _componente.CompCodInterno = _componente.ShortName;
         txtComponente.Text = _componente.ShortName;
         txtComponente.BackColor = Color.White;
+
 
         var swModelDocExt = swModel.Extension;
         var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");

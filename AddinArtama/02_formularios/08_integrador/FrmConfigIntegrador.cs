@@ -42,6 +42,7 @@ namespace AddinArtama {
 
       Api.token = model.token;
       Api.url = model.endereco;
+      Api.codigoEmpresa = model.codigoEmpresa;
 
       MsgBox.Show("Alterado com Sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }

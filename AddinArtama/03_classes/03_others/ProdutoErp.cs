@@ -425,7 +425,8 @@ namespace AddinArtama {
          TipoComponente = TipoComponente.ListaMaterial,
          Nivel = produtoErp.Nivel + ".1",
          Configuracao = produtoErp.Configuracao,
-         Quantidade = itemCorte.Quantidade
+         Quantidade = itemCorte.Quantidade,
+         ItensCorte = produtoErp.ItensCorte,
         };
         string nodeTextFilho = $"{produtoFilho.CodComponente} - {produtoFilho.Denominacao}";
         var nodeFilho = new TreeNode(nodeTextFilho);

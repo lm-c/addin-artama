@@ -4,6 +4,7 @@ namespace AddinArtama {
   internal partial class Api {
     public static string url = string.Empty;
     public static string token = string.Empty;
+    public static int codigoEmpresa = 1;
 
     internal static RestClient GetClient(string modulo, string endpoint) {
       var client = new RestClient($"{url}/{modulo}/v10/{endpoint}");
@@ -16,7 +17,7 @@ namespace AddinArtama {
 
       request.AddHeader("accept", "application/json");
       request.AddHeader("Authorization", token);
-      request.AddHeader("empresa", "1");
+      request.AddHeader("empresa", $"{codigoEmpresa}");
 
       return request;
     }

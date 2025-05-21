@@ -126,6 +126,7 @@ namespace AddinArtama {
 
             Api.token = configAPI.token;
             Api.url = configAPI.endereco;
+            Api.codigoEmpresa = configAPI.codigoEmpresa;
 
             Processo.Carregar();
             templates.Carregar();

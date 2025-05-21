@@ -5,12 +5,22 @@ using RestSharp;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Linq;
+using LmCorbieUI.Metodos.AtributosCustomizados;
+using System.ComponentModel;
 
 namespace AddinArtama {
   internal partial class Api {
     internal class Operacao {
       public string Abreviatura { get; set; }
+
+      [DisplayName("Código Operação")]
+      [LarguraColunaGrid(150)]
+      [DataObjectField(true, false)]
       public int CodOperacao { get; set; }
+
+      [DisplayName("Descrição Operação")]
+      [LarguraColunaGrid(150)]
+      [DataObjectField(false, true)]
       public string Descricao { get; set; }
       public int? FaseProducao { get; set; } // Permite valores nulos
       public string Situacao { get; set; }

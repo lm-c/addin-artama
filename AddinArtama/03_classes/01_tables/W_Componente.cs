@@ -37,8 +37,6 @@ namespace AddinArtama {
       var listaComponentes = new SortableBindingList<W_Componente>();
 
       try {
-        BomTableAnnotation swBOMAnnotation = default(BomTableAnnotation);
-
         swModel = (ModelDoc2)Sw.App.ActiveDoc;
         object[] AtiveConfiguration = null;
         string valOut;
@@ -84,14 +82,13 @@ namespace AddinArtama {
         listaComponentes.Add(componente);
 
         if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY) {
-          int BomType = (int)swBomType_e.swBomType_Indented;
+          string templateGeral = $"{Application.StartupPath}\\01 - Addin LM\\ListaCompleta.sldbomtbt";
+          int BomTypeGeral = (int)swBomType_e.swBomType_Indented;
           int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
+          bool DetailedCutList = false;
+          var swBOMAnnotationGeral = swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList);
 
-          string lista = $"{Application.StartupPath}\\01 - Addin LM\\ListaComponentes.sldbomtbt";
-
-          swBOMAnnotation = swModelDocExt.InsertBomTable3(lista, 0, 1, BomType, swConf.Name, false, NumberingType, true);
-
-          PegaDadosLista(swBOMAnnotation, listaComponentes);
+          PegaDadosLista(swBOMAnnotationGeral, listaComponentes);
           ListaCorte.ExcluirLista(swModel);
         } 
       } catch (Exception ex) {
@@ -128,7 +125,7 @@ namespace AddinArtama {
 
             if (int.TryParse(swTableAnnotation.get_Text(i, 1).Trim(), out int qtd)) {
               componente.Quantidade = qtd;
-              componente.Denominacao = swTableAnnotation.get_Text(i, 4).Trim();
+              componente.Denominacao = swTableAnnotation.get_Text(i, 6).Trim();
 
               //bool isSheetMetal = IsSheetMetal(Sw.App, componente.PathName, fecharPeca: true);
               if (!listaComponentes.Any(x => x.NomeComponente == componente.NomeComponente))

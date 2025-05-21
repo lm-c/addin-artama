@@ -60,7 +60,7 @@ namespace AddinArtama {
                 if (processo != null) {
                   listaProcessoFabricacao.Add(new ProcessoFabricacao {
                     IdProcesso = idProc,
-                    DescricaoProcesso = idProc + " - " + processo.descricao,
+                    DescricaoProcesso = idProc + " - " + processo.descrOperacao,
                     CodigoItem = processoFabricacao.CodigoItem,
                     DescricaoItem = processoFabricacao.DescricaoItem,
                     QtdItem = processoFabricacao.QtdItem,
@@ -129,7 +129,7 @@ namespace AddinArtama {
                     if (processo != null) {
                       listaProcessoFabricacao.Add(new ProcessoFabricacao {
                         IdProcesso = idProc,
-                        DescricaoProcesso = idProc + " - " + processo.descricao,
+                        DescricaoProcesso = idProc + " - " + processo.descrOperacao,
                         CodigoItem = processoFabricacao.CodigoItem,
                         DescricaoItem = processoFabricacao.DescricaoItem,
                         QtdItem = processoFabricacao.QtdItem,

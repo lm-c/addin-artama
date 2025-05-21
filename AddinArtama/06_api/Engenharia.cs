@@ -74,7 +74,7 @@ namespace AddinArtama {
              $"\"tipoModulo\": \"{engenharia.tipoModulo}\"," +
              $"\"codClassificacao\": {engenharia.codClassificacao}," +
              $"\"nomeArquivoDesenhoEng\": \"{engenharia.nomeArquivoDesenhoEng}\"," +
-             $"\"engenhariaFantasma\": {engenharia.engenhariaFantasma}," +
+             $"\"engenhariaFantasma\": {engenharia.engenhariaFantasma.ToString().ToLower()}," +
              $"\"descEngenhariaFantasma\": \"{engenharia.descEngenhariaFantasma}\"," +
 
              "\"componentes\": [";
@@ -106,7 +106,7 @@ namespace AddinArtama {
               $"\"numOperadores\": {operacao.numOperadores}," +
               $"\"codFaseOperacao\": {operacao.codFaseOperacao}," +
               $"\"codMascaraMaquina\": \"{operacao.codMascaraMaquina}\"," +
-              $"\"codLinhaProducao\": {operacao.codLinhaProducao}," +
+              //$"\"codLinhaProducao\": {operacao.codLinhaProducao}," +
               $"\"tempoPadraoOperacao\": {operacao.tempoPadraoOperacao}," +
               $"\"tempoPreparacaoOperacao\": {operacao.tempoPreparacaoOperacao}" +
               "},";

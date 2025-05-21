@@ -106,8 +106,11 @@ namespace AddinArtama {
 
     [Browsable(false)]
     public int tipoControleSaida { get; set; }
-
+    
     // api config
+    [Browsable(false)]
+    public int codigoEmpresa { get; set; }
+
     [Browsable(false)]
     [StringLength(250)]
     public string endereco { get; set; }
@@ -146,6 +149,9 @@ namespace AddinArtama {
             modelAlt.codigoIPI = configuracao.codigoIPI;
             modelAlt.codContaContabil = configuracao.codContaContabil;
             modelAlt.tipoControleSaida = configuracao.tipoControleSaida;
+            modelAlt.codigoEmpresa = configuracao.codigoEmpresa;
+            modelAlt.endereco = configuracao.endereco;
+            modelAlt.token = configuracao.token;
 
             db.SaveChanges();
             return true;

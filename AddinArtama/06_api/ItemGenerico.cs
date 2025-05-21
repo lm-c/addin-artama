@@ -120,7 +120,7 @@ namespace AddinArtama {
                $"\"codigoICMS\": {codigoICMS}," +
                $"\"codigoIPI\": {codigoIPI}," +
                $"\"codContaContabil\": \"{codContaContabil}\"," +
-               $"\"tipoControleSaida\": {tipoControleSaida}" +
+               $"\"tipoControleSaida\": {tipoControleSaida}," +
                $"\"codUnidMedida\": {unidadeMedida}" +
              "}" +
 

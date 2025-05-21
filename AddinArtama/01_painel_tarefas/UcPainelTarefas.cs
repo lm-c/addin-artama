@@ -145,6 +145,11 @@ namespace AddinArtama {
       AbrirFormFilho(frm);
     }
 
+    private void MsProcessoCad_Click(object sender, EventArgs e) {
+      FrmProcessoCad frm = new FrmProcessoCad();
+      AbrirFormFilho(frm);
+    }
+
     private void MsRedefinirSenha_Click(object sender, EventArgs e) {
       FrmAlterarSenha frm = new FrmAlterarSenha();
       AbrirFormFilho(frm);

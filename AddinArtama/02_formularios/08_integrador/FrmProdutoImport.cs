@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace AddinArtama {
   public partial class FrmProdutoImport : LmSingleForm {
-    SortableBindingList<ProdutoErp> _dadosDraw = new SortableBindingList<ProdutoErp>();
+    SortableBindingList<ProdutoErp> _produtos = new SortableBindingList<ProdutoErp>();
 
     Color corErro = Color.Red;
     Color corAlerta = Color.LightGoldenrodYellow;
@@ -22,7 +22,7 @@ namespace AddinArtama {
     public FrmProdutoImport() {
       InitializeComponent();
 
-      _dadosDraw = new SortableBindingList<ProdutoErp>();
+      _produtos = new SortableBindingList<ProdutoErp>();
 
       tbcProduto.SelectedIndex = 0;
 
@@ -47,7 +47,7 @@ namespace AddinArtama {
         if (swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING) {
           Processo.Carregar();
 
-          _dadosDraw = ProdutoErp.GetComponents(trvProduto);
+          _produtos = ProdutoErp.GetComponents(trvProduto);
           CarregarGrid();
 
           //TreeComponent.GetComponents(trvProduto);
@@ -65,7 +65,7 @@ namespace AddinArtama {
     }
 
     private void BtnImportar_Click(object sender, EventArgs e) {
-      if (_dadosDraw.Count == 0) {
+      if (_produtos.Count == 0) {
         Toast.Warning("Carregar Desenhos primeiro");
         return;
       }
@@ -85,18 +85,19 @@ namespace AddinArtama {
           using (ContextoDados db = new ContextoDados()) {
             ModelDoc2 swModel = default(ModelDoc2);
 
+            var configApi = configuracao_api.Selecionar();
+
             int status = 0;
             int warnings = 0;
 
-            for (int index = 0; index < _dadosDraw.Count; index++) {
+            for (int index = 0; index < _produtos.Count; index++) {
               if (btnCancel.Enabled == false) {
                 Toast.Info("Rotina Cancelada pelo usuário");
                 MsgBox.CloseWaitMessage();
                 return;
               }
 
-              ProdutoErp item = _dadosDraw[index];
-              var config = db.configuracao_api.FirstOrDefault();
+              ProdutoErp item = _produtos[index];
 
               dgv.Grid.Rows[index].Cells[1].Selected = true;
 
@@ -182,7 +183,7 @@ namespace AddinArtama {
 
             MsgBox.ShowWaitMessage("Criando Engenharia de Produto...");
 
-            await PercorrerTreeViewSalvarEngAsync(trvProduto.Nodes);
+            await PercorrerTreeViewSalvarEngAsync(trvProduto.Nodes, configApi);
 
             BtnCancel_Click(null, null);
 
@@ -199,13 +200,13 @@ namespace AddinArtama {
       }
     }
 
-    private async Task PercorrerTreeViewSalvarEngAsync(TreeNodeCollection nodes) {
+    private async Task PercorrerTreeViewSalvarEngAsync(TreeNodeCollection nodes, configuracao_api configApi) {
       try {
         foreach (TreeNode node in nodes) {
           var item = node.Tag as ProdutoErp;
           if (item != null) {
             if (item.TipoComponente != TipoComponente.ListaMaterial) {
-              var produto = _dadosDraw.ToList().FirstOrDefault(x => item.Name == x.Name && item.Referencia == x.Referencia && item.Configuracao == x.Configuracao);
+              var produto = _produtos.ToList().FirstOrDefault(x => item.Name == x.Name && item.Referencia == x.Referencia && item.Configuracao == x.Configuracao);
 
               if (produto != null) {
                 item.CodProduto = produto.CodProduto;
@@ -213,7 +214,7 @@ namespace AddinArtama {
               }
             }
             var engenharia = new Engenharia {
-              codEmpresa = 1,
+              codEmpresa = configApi.codigoEmpresa,
               codProduto = item.CodProduto,
               narrativaLinha1 = string.Empty,
               narrativaLinha2 = string.Empty,
@@ -253,7 +254,7 @@ namespace AddinArtama {
              await Api.CadastrarEngenhariaAsync(engenharia);
 
             if (node.Nodes.Count > 0) {
-              await PercorrerTreeViewSalvarEngAsync(node.Nodes);
+              await PercorrerTreeViewSalvarEngAsync(node.Nodes, configApi);
             }
           }
         }
@@ -314,7 +315,7 @@ namespace AddinArtama {
     private void ExcluirTudo() {
       try {
         Invoke(new MethodInvoker(async () => {
-          long codReduz = 305011200;
+          long codReduz = 305011301;
 
           MsgBox.ShowWaitMessage("Excluindo Itens Genéricos...");
           while (codReduz < 305012000) {
@@ -343,7 +344,7 @@ namespace AddinArtama {
     }
 
     private void CarregarGrid() {
-      dgv.CarregarGrid(_dadosDraw);
+      dgv.CarregarGrid(_produtos);
 
       try {
         MsgBox.ShowWaitMessage("Analisando Componentes...");

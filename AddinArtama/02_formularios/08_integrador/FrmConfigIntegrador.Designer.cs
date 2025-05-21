@@ -76,6 +76,8 @@
       this.lmLabel7 = new LmCorbieUI.Controls.LmLabel();
       this.txtGrupo = new LmCorbieUI.Controls.LmTextBox();
       this.lmGroupBox3 = new LmCorbieUI.Controls.LmGroupBox();
+      this.lmLabel25 = new LmCorbieUI.Controls.LmLabel();
+      this.txtCodEmpresa = new LmCorbieUI.Controls.LmTextBox();
       this.lmLabel23 = new LmCorbieUI.Controls.LmLabel();
       this.lmLabel24 = new LmCorbieUI.Controls.LmLabel();
       this.txtToken = new LmCorbieUI.Controls.LmTextBox();
@@ -674,9 +676,9 @@
       this.btnSalvar.BorderSize = 0;
       this.btnSalvar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnSalvar.Image = ((System.Drawing.Image)(resources.GetObject("btnSalvar.Image")));
-      this.btnSalvar.Location = new System.Drawing.Point(190, 672);
+      this.btnSalvar.Location = new System.Drawing.Point(212, 672);
       this.btnSalvar.Name = "btnSalvar";
-      this.btnSalvar.Size = new System.Drawing.Size(322, 30);
+      this.btnSalvar.Size = new System.Drawing.Size(347, 30);
       this.btnSalvar.TabIndex = 2;
       this.btnSalvar.Text = " Salvar";
       this.btnSalvar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1036,6 +1038,8 @@
       // 
       // lmGroupBox3
       // 
+      this.lmGroupBox3.Controls.Add(this.lmLabel25);
+      this.lmGroupBox3.Controls.Add(this.txtCodEmpresa);
       this.lmGroupBox3.Controls.Add(this.lmLabel23);
       this.lmGroupBox3.Controls.Add(this.lmLabel24);
       this.lmGroupBox3.Controls.Add(this.txtToken);
@@ -1048,6 +1052,48 @@
       this.lmGroupBox3.TabIndex = 3;
       this.lmGroupBox3.TabStop = false;
       this.lmGroupBox3.Text = "API";
+      // 
+      // lmLabel25
+      // 
+      this.lmLabel25.Location = new System.Drawing.Point(603, 23);
+      this.lmLabel25.Margin = new System.Windows.Forms.Padding(3);
+      this.lmLabel25.Name = "lmLabel25";
+      this.lmLabel25.Size = new System.Drawing.Size(113, 30);
+      this.lmLabel25.TabIndex = 37;
+      this.lmLabel25.Text = "Código Empresa";
+      this.lmLabel25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      // 
+      // txtCodEmpresa
+      // 
+      this.txtCodEmpresa.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
+      this.txtCodEmpresa.BorderRadius = 15;
+      this.txtCodEmpresa.BorderSize = 2;
+      this.txtCodEmpresa.F7ToolTipText = null;
+      this.txtCodEmpresa.F8ToolTipText = null;
+      this.txtCodEmpresa.F9ToolTipText = null;
+      this.txtCodEmpresa.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+      this.txtCodEmpresa.IconF7 = ((System.Drawing.Image)(resources.GetObject("txtCodEmpresa.IconF7")));
+      this.txtCodEmpresa.IconToolTipText = null;
+      this.txtCodEmpresa.Lines = new string[0];
+      this.txtCodEmpresa.Location = new System.Drawing.Point(722, 23);
+      this.txtCodEmpresa.MaxLength = 2;
+      this.txtCodEmpresa.Name = "txtCodEmpresa";
+      this.txtCodEmpresa.PasswordChar = '\0';
+      this.txtCodEmpresa.Propriedade = "codigoEmpresa";
+      this.txtCodEmpresa.ScrollBars = System.Windows.Forms.ScrollBars.None;
+      this.txtCodEmpresa.SelectedText = "";
+      this.txtCodEmpresa.SelectionLength = 0;
+      this.txtCodEmpresa.SelectionStart = 0;
+      this.txtCodEmpresa.ShortcutsEnabled = true;
+      this.txtCodEmpresa.Size = new System.Drawing.Size(87, 30);
+      this.txtCodEmpresa.TabIndex = 1;
+      this.txtCodEmpresa.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+      this.txtCodEmpresa.UnderlinedStyle = false;
+      this.txtCodEmpresa.UseSelectable = true;
+      this.txtCodEmpresa.Valor = LmCorbieUI.Design.LmValueType.Num_Inteiro;
+      this.txtCodEmpresa.Valor_Decimais = ((short)(0));
+      this.txtCodEmpresa.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
+      this.txtCodEmpresa.WaterMarkFont = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
       // 
       // lmLabel23
       // 
@@ -1094,7 +1140,7 @@
       this.txtToken.SelectionStart = 0;
       this.txtToken.ShortcutsEnabled = true;
       this.txtToken.Size = new System.Drawing.Size(599, 30);
-      this.txtToken.TabIndex = 1;
+      this.txtToken.TabIndex = 2;
       this.txtToken.UnderlinedStyle = false;
       this.txtToken.UseSelectable = true;
       this.txtToken.Valor_Decimais = ((short)(0));
@@ -1125,7 +1171,7 @@
       this.txtEndereco.SelectionLength = 0;
       this.txtEndereco.SelectionStart = 0;
       this.txtEndereco.ShortcutsEnabled = true;
-      this.txtEndereco.Size = new System.Drawing.Size(599, 30);
+      this.txtEndereco.Size = new System.Drawing.Size(387, 30);
       this.txtEndereco.TabIndex = 0;
       this.txtEndereco.UnderlinedStyle = false;
       this.txtEndereco.UseSelectable = true;
@@ -1144,10 +1190,12 @@
       this.Controls.Add(this.lmGroupBox3);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Location = new System.Drawing.Point(0, 0);
+      this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Movimentar = false;
       this.Name = "FrmConfigIntegrador";
       this.Padding = new System.Windows.Forms.Padding(2, 35, 2, 2);
+      this.Resizable = false;
       this.Text = "Configuração de Integração";
       this.Loaded += new LmCorbieUI.LmForms.LmSingleForm.FormLoad(this.FrmConfigIntegrador_Loaded);
       this.lmGroupBox2.ResumeLayout(false);
@@ -1210,5 +1258,7 @@
     private LmCorbieUI.Controls.LmLabel lmLabel24;
     private LmCorbieUI.Controls.LmTextBox txtToken;
     private LmCorbieUI.Controls.LmTextBox txtEndereco;
+    private LmCorbieUI.Controls.LmLabel lmLabel25;
+    private LmCorbieUI.Controls.LmTextBox txtCodEmpresa;
   }
 }

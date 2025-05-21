@@ -109,6 +109,7 @@ namespace AddinArtama {
                 boolstatus = swBodyFolder.UpdateCutList();
 
                 listaCorte.NomeLista = FeatType;
+
                 oCustPropMngr.Get2("Código", out sValue, out sResolvedvalue);
                 int.TryParse(sResolvedvalue, out int cod);
                 listaCorte.Codigo = cod;

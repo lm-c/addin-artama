@@ -314,6 +314,12 @@
     <Compile Include="02_formularios\05_cadastros\FrmPermissao.Designer.cs">
       <DependentUpon>FrmPermissao.cs</DependentUpon>
     </Compile>
+    <Compile Include="02_formularios\05_cadastros\FrmProcessoCad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="02_formularios\05_cadastros\FrmProcessoCad.Designer.cs">
+      <DependentUpon>FrmProcessoCad.cs</DependentUpon>
+    </Compile>
     <Compile Include="02_formularios\05_cadastros\FrmSelecionarPerfil.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -376,6 +382,7 @@
     </Compile>
     <Compile Include="03_classes\01_tables\configuracao_api.cs" />
     <Compile Include="03_classes\01_tables\materiais.cs" />
+    <Compile Include="03_classes\01_tables\processos.cs" />
     <Compile Include="03_classes\01_tables\materia_primas.cs" />
     <Compile Include="03_classes\01_tables\perfis.cs" />
     <Compile Include="03_classes\01_tables\produto_erp.cs" />
@@ -418,6 +425,7 @@
     <Compile Include="06_api\Engenharia.cs" />
     <Compile Include="06_api\ItemGenerico.cs" />
     <Compile Include="06_api\MascaraEntrada.cs" />
+    <Compile Include="06_api\Maquina.cs" />
     <Compile Include="06_api\Operacao.cs" />
     <Compile Include="07_helper\ConexaoMySql.cs" />
     <Compile Include="07_helper\InfoSetting.cs" />
@@ -476,6 +484,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="02_formularios\05_cadastros\FrmPermissao.resx">
       <DependentUpon>FrmPermissao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="02_formularios\05_cadastros\FrmProcessoCad.resx">
+      <DependentUpon>FrmProcessoCad.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="02_formularios\05_cadastros\FrmSelecionarPerfil.resx">
       <DependentUpon>FrmSelecionarPerfil.cs</DependentUpon>
