@@ -181,6 +181,7 @@
       this.lmButton1.Text = " Excluir tudo";
       this.lmButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.lmButton1.UseVisualStyleBackColor = false;
+      this.lmButton1.Visible = false;
       this.lmButton1.Click += new System.EventHandler(this.lmButton1_Click);
       // 
       // tbcProduto

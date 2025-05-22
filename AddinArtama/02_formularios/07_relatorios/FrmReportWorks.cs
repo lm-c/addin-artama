@@ -81,8 +81,7 @@ namespace AddinArtama {
 
       try {
         if (Sw.App.ActiveDoc == null) {
-          MsgBox.Show($"Sem Documentos Abertos", "Addin LM Projetos",
-              MessageBoxButtons.OK, MessageBoxIcon.Information);
+          Toast.Info($"Sem documentos abertos");
           return;
         }
 

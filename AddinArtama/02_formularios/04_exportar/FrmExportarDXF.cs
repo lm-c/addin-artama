@@ -55,7 +55,7 @@ namespace AddinArtama {
       MsgBox.ShowWaitMessage("Lendo componentes da montagem...");
       try {
         if (Sw.App.ActiveDoc == null) {
-          MsgBox.Show($"Sem documentos abertos", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          Toast.Info($"Sem documentos abertos");
           return;
         }
 

@@ -35,16 +35,10 @@
       this.lblCodMat = new LmCorbieUI.Controls.LmLabel();
       this.cmxLabel2 = new LmCorbieUI.Controls.LmLabel();
       this.pnlControl = new LmCorbieUI.Controls.LmPanel();
-      this.ckbInterno = new LmCorbieUI.Controls.LmCheckBox();
-      this.lblPercProcess = new LmCorbieUI.Controls.LmLabel();
-      this.lblttLista = new LmCorbieUI.Controls.LmLabel();
-      this.btnUpDes = new LmCorbieUI.Controls.LmButton();
-      this.btnDownDes = new LmCorbieUI.Controls.LmButton();
       this.btnProximo = new LmCorbieUI.Controls.LmButton();
       this.btnVoltar = new LmCorbieUI.Controls.LmButton();
       this.btnSalvar = new LmCorbieUI.Controls.LmButton();
       this.btnCarrProcess = new LmCorbieUI.Controls.LmButton();
-      this.lblListaCorte = new LmCorbieUI.Controls.LmLabel();
       this.lblPecasProc = new LmCorbieUI.Controls.LmLabel();
       this.cmxToolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.ckbAddDenom = new LmCorbieUI.Controls.LmCheckBox();
@@ -130,10 +124,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.lblCodMat.BackColor = System.Drawing.Color.Transparent;
       this.lblCodMat.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
-      this.lblCodMat.Location = new System.Drawing.Point(118, 45);
+      this.lblCodMat.ForeColor = System.Drawing.Color.Red;
+      this.lblCodMat.Location = new System.Drawing.Point(123, 45);
       this.lblCodMat.Margin = new System.Windows.Forms.Padding(3);
       this.lblCodMat.Name = "lblCodMat";
-      this.lblCodMat.Size = new System.Drawing.Size(212, 15);
+      this.lblCodMat.Size = new System.Drawing.Size(210, 15);
       this.lblCodMat.TabIndex = 18;
       this.lblCodMat.Text = "---";
       this.lblCodMat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -142,10 +137,10 @@
       // 
       this.cmxLabel2.BackColor = System.Drawing.Color.Transparent;
       this.cmxLabel2.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
-      this.cmxLabel2.Location = new System.Drawing.Point(12, 45);
+      this.cmxLabel2.Location = new System.Drawing.Point(2, 45);
       this.cmxLabel2.Margin = new System.Windows.Forms.Padding(3);
       this.cmxLabel2.Name = "cmxLabel2";
-      this.cmxLabel2.Size = new System.Drawing.Size(104, 15);
+      this.cmxLabel2.Size = new System.Drawing.Size(119, 15);
       this.cmxLabel2.TabIndex = 15;
       this.cmxLabel2.Text = "Código Material:";
       this.cmxLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -153,98 +148,17 @@
       // pnlControl
       // 
       this.pnlControl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
-      this.pnlControl.Controls.Add(this.ckbInterno);
-      this.pnlControl.Controls.Add(this.lblPercProcess);
-      this.pnlControl.Controls.Add(this.lblttLista);
-      this.pnlControl.Controls.Add(this.btnUpDes);
-      this.pnlControl.Controls.Add(this.btnDownDes);
       this.pnlControl.Controls.Add(this.btnProximo);
       this.pnlControl.Controls.Add(this.btnVoltar);
       this.pnlControl.Controls.Add(this.btnSalvar);
       this.pnlControl.Controls.Add(this.btnCarrProcess);
-      this.pnlControl.Controls.Add(this.lblListaCorte);
       this.pnlControl.Controls.Add(this.lblPecasProc);
       this.pnlControl.Dock = System.Windows.Forms.DockStyle.Top;
       this.pnlControl.IsPanelMenu = false;
       this.pnlControl.Location = new System.Drawing.Point(0, 308);
       this.pnlControl.Name = "pnlControl";
-      this.pnlControl.Size = new System.Drawing.Size(340, 85);
+      this.pnlControl.Size = new System.Drawing.Size(340, 43);
       this.pnlControl.TabIndex = 3;
-      // 
-      // ckbInterno
-      // 
-      this.ckbInterno.AutoSize = true;
-      this.ckbInterno.Location = new System.Drawing.Point(4, 40);
-      this.ckbInterno.Name = "ckbInterno";
-      this.ckbInterno.Propriedade = null;
-      this.ckbInterno.Size = new System.Drawing.Size(70, 19);
-      this.ckbInterno.TabIndex = 16;
-      this.ckbInterno.Text = "Interno";
-      this.ckbInterno.UseSelectable = true;
-      this.ckbInterno.CheckedChanged += new System.EventHandler(this.ckbInterno_CheckedChanged);
-      // 
-      // lblPercProcess
-      // 
-      this.lblPercProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblPercProcess.AutoSize = true;
-      this.lblPercProcess.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
-      this.lblPercProcess.Location = new System.Drawing.Point(310, 63);
-      this.lblPercProcess.Margin = new System.Windows.Forms.Padding(3);
-      this.lblPercProcess.Name = "lblPercProcess";
-      this.lblPercProcess.Size = new System.Drawing.Size(23, 15);
-      this.lblPercProcess.TabIndex = 15;
-      this.lblPercProcess.Text = "0%";
-      // 
-      // lblttLista
-      // 
-      this.lblttLista.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
-      this.lblttLista.Location = new System.Drawing.Point(4, 63);
-      this.lblttLista.Margin = new System.Windows.Forms.Padding(3);
-      this.lblttLista.Name = "lblttLista";
-      this.lblttLista.Size = new System.Drawing.Size(197, 15);
-      this.lblttLista.TabIndex = 14;
-      this.lblttLista.Text = "Item da lista de corte1 - 0 de 0";
-      this.lblttLista.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // btnUpDes
-      // 
-      this.btnUpDes.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnUpDes.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnUpDes.BorderRadius = 15;
-      this.btnUpDes.BorderSize = 0;
-      this.btnUpDes.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnUpDes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnUpDes.Image = ((System.Drawing.Image)(resources.GetObject("btnUpDes.Image")));
-      this.btnUpDes.Location = new System.Drawing.Point(174, 5);
-      this.btnUpDes.Margin = new System.Windows.Forms.Padding(1);
-      this.btnUpDes.Name = "btnUpDes";
-      this.btnUpDes.Size = new System.Drawing.Size(31, 31);
-      this.btnUpDes.TabIndex = 8;
-      this.btnUpDes.Tag = "Up";
-      this.btnUpDes.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnUpDes, "Lista de corte\r\nPróxima");
-      this.btnUpDes.UseVisualStyleBackColor = false;
-      this.btnUpDes.Click += new System.EventHandler(this.BtnUpDown_Click);
-      // 
-      // btnDownDes
-      // 
-      this.btnDownDes.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnDownDes.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnDownDes.BorderRadius = 15;
-      this.btnDownDes.BorderSize = 0;
-      this.btnDownDes.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnDownDes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnDownDes.Image = ((System.Drawing.Image)(resources.GetObject("btnDownDes.Image")));
-      this.btnDownDes.Location = new System.Drawing.Point(141, 5);
-      this.btnDownDes.Margin = new System.Windows.Forms.Padding(1);
-      this.btnDownDes.Name = "btnDownDes";
-      this.btnDownDes.Size = new System.Drawing.Size(31, 31);
-      this.btnDownDes.TabIndex = 7;
-      this.btnDownDes.Tag = "Down";
-      this.btnDownDes.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnDownDes, "Lista de corte\r\nAnterior");
-      this.btnDownDes.UseVisualStyleBackColor = false;
-      this.btnDownDes.Click += new System.EventHandler(this.BtnUpDown_Click);
       // 
       // btnProximo
       // 
@@ -323,27 +237,16 @@
       this.btnCarrProcess.UseVisualStyleBackColor = false;
       this.btnCarrProcess.Click += new System.EventHandler(this.BtnCarrProcess_Click);
       // 
-      // lblListaCorte
-      // 
-      this.lblListaCorte.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblListaCorte.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
-      this.lblListaCorte.Location = new System.Drawing.Point(145, 9);
-      this.lblListaCorte.Margin = new System.Windows.Forms.Padding(3);
-      this.lblListaCorte.Name = "lblListaCorte";
-      this.lblListaCorte.Size = new System.Drawing.Size(151, 15);
-      this.lblListaCorte.TabIndex = 13;
-      this.lblListaCorte.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-      // 
       // lblPecasProc
       // 
       this.lblPecasProc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.lblPecasProc.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
-      this.lblPecasProc.Location = new System.Drawing.Point(203, 63);
+      this.lblPecasProc.Location = new System.Drawing.Point(140, 13);
       this.lblPecasProc.Margin = new System.Windows.Forms.Padding(3);
       this.lblPecasProc.Name = "lblPecasProc";
-      this.lblPecasProc.Size = new System.Drawing.Size(101, 15);
+      this.lblPecasProc.Size = new System.Drawing.Size(194, 15);
       this.lblPecasProc.TabIndex = 12;
-      this.lblPecasProc.Text = "Peça 0 de 0";
+      this.lblPecasProc.Text = "Peça 0 de 0 - %";
       this.lblPecasProc.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
       // ckbAddDenom
@@ -397,12 +300,12 @@
       this.lmLabel1.BackColor = System.Drawing.Color.Transparent;
       this.lmLabel1.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lmLabel1.ForeColor = System.Drawing.Color.Red;
-      this.lmLabel1.Location = new System.Drawing.Point(3, 3);
+      this.lmLabel1.Location = new System.Drawing.Point(2, 3);
       this.lmLabel1.Margin = new System.Windows.Forms.Padding(3);
       this.lmLabel1.Name = "lmLabel1";
-      this.lmLabel1.Size = new System.Drawing.Size(113, 15);
+      this.lmLabel1.Size = new System.Drawing.Size(119, 15);
       this.lmLabel1.TabIndex = 65;
-      this.lmLabel1.Text = "Esp.xLarg.xComp.:";
+      this.lmLabel1.Text = "Dimensão:";
       this.lmLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
       // lblMaterial
@@ -412,10 +315,10 @@
       this.lblMaterial.BackColor = System.Drawing.Color.Transparent;
       this.lblMaterial.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lblMaterial.ForeColor = System.Drawing.Color.Red;
-      this.lblMaterial.Location = new System.Drawing.Point(118, 24);
+      this.lblMaterial.Location = new System.Drawing.Point(123, 24);
       this.lblMaterial.Margin = new System.Windows.Forms.Padding(3);
       this.lblMaterial.Name = "lblMaterial";
-      this.lblMaterial.Size = new System.Drawing.Size(212, 15);
+      this.lblMaterial.Size = new System.Drawing.Size(210, 15);
       this.lblMaterial.TabIndex = 74;
       this.lblMaterial.Text = "---";
       this.lblMaterial.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -437,10 +340,10 @@
       this.lmLabel4.BackColor = System.Drawing.Color.Transparent;
       this.lmLabel4.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lmLabel4.ForeColor = System.Drawing.Color.Red;
-      this.lmLabel4.Location = new System.Drawing.Point(3, 24);
+      this.lmLabel4.Location = new System.Drawing.Point(2, 24);
       this.lmLabel4.Margin = new System.Windows.Forms.Padding(3);
       this.lmLabel4.Name = "lmLabel4";
-      this.lmLabel4.Size = new System.Drawing.Size(113, 15);
+      this.lmLabel4.Size = new System.Drawing.Size(119, 15);
       this.lmLabel4.TabIndex = 73;
       this.lmLabel4.Text = "Material:";
       this.lmLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -485,10 +388,10 @@
       this.lblPeso.BackColor = System.Drawing.Color.Transparent;
       this.lblPeso.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lblPeso.ForeColor = System.Drawing.Color.Red;
-      this.lblPeso.Location = new System.Drawing.Point(118, 87);
+      this.lblPeso.Location = new System.Drawing.Point(123, 87);
       this.lblPeso.Margin = new System.Windows.Forms.Padding(3);
       this.lblPeso.Name = "lblPeso";
-      this.lblPeso.Size = new System.Drawing.Size(212, 15);
+      this.lblPeso.Size = new System.Drawing.Size(210, 15);
       this.lblPeso.TabIndex = 72;
       this.lblPeso.Text = "---";
       this.lblPeso.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -527,17 +430,16 @@
       this.txtMaterial.WaterMark = "Selecionar Material";
       this.txtMaterial.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
       this.txtMaterial.WaterMarkFont = new System.Drawing.Font("Segoe UI", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.txtMaterial.SelectedValueChanched += new LmCorbieUI.Controls.LmTextBox.ValChange(this.TxtMaterial_SelectedValueChanched);
       // 
       // lmLabel5
       // 
       this.lmLabel5.BackColor = System.Drawing.Color.Transparent;
       this.lmLabel5.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lmLabel5.ForeColor = System.Drawing.Color.Red;
-      this.lmLabel5.Location = new System.Drawing.Point(3, 87);
+      this.lmLabel5.Location = new System.Drawing.Point(2, 87);
       this.lmLabel5.Margin = new System.Windows.Forms.Padding(3);
       this.lmLabel5.Name = "lmLabel5";
-      this.lmLabel5.Size = new System.Drawing.Size(113, 15);
+      this.lmLabel5.Size = new System.Drawing.Size(119, 15);
       this.lmLabel5.TabIndex = 71;
       this.lmLabel5.Text = "Peso:";
       this.lmLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -546,10 +448,10 @@
       // 
       this.lmLabel6.BackColor = System.Drawing.Color.Transparent;
       this.lmLabel6.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
-      this.lmLabel6.Location = new System.Drawing.Point(3, 108);
+      this.lmLabel6.Location = new System.Drawing.Point(2, 108);
       this.lmLabel6.Margin = new System.Windows.Forms.Padding(3);
       this.lmLabel6.Name = "lmLabel6";
-      this.lmLabel6.Size = new System.Drawing.Size(113, 15);
+      this.lmLabel6.Size = new System.Drawing.Size(119, 15);
       this.lmLabel6.TabIndex = 26;
       this.lmLabel6.Text = "Processos:";
       this.lmLabel6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -561,10 +463,10 @@
       this.lblDescMat.BackColor = System.Drawing.Color.Transparent;
       this.lblDescMat.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lblDescMat.ForeColor = System.Drawing.Color.Red;
-      this.lblDescMat.Location = new System.Drawing.Point(118, 66);
+      this.lblDescMat.Location = new System.Drawing.Point(123, 66);
       this.lblDescMat.Margin = new System.Windows.Forms.Padding(3);
       this.lblDescMat.Name = "lblDescMat";
-      this.lblDescMat.Size = new System.Drawing.Size(212, 15);
+      this.lblDescMat.Size = new System.Drawing.Size(210, 15);
       this.lblDescMat.TabIndex = 70;
       this.lblDescMat.Text = "---";
       this.lblDescMat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -576,10 +478,10 @@
       this.lblProcess.BackColor = System.Drawing.Color.Transparent;
       this.lblProcess.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lblProcess.ForeColor = System.Drawing.Color.Red;
-      this.lblProcess.Location = new System.Drawing.Point(118, 108);
+      this.lblProcess.Location = new System.Drawing.Point(123, 108);
       this.lblProcess.Margin = new System.Windows.Forms.Padding(3);
       this.lblProcess.Name = "lblProcess";
-      this.lblProcess.Size = new System.Drawing.Size(212, 15);
+      this.lblProcess.Size = new System.Drawing.Size(210, 15);
       this.lblProcess.TabIndex = 27;
       this.lblProcess.Text = "---";
       this.lblProcess.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -591,10 +493,10 @@
       this.lblEspess.BackColor = System.Drawing.Color.Transparent;
       this.lblEspess.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lblEspess.ForeColor = System.Drawing.Color.Red;
-      this.lblEspess.Location = new System.Drawing.Point(118, 3);
+      this.lblEspess.Location = new System.Drawing.Point(123, 3);
       this.lblEspess.Margin = new System.Windows.Forms.Padding(3);
       this.lblEspess.Name = "lblEspess";
-      this.lblEspess.Size = new System.Drawing.Size(212, 15);
+      this.lblEspess.Size = new System.Drawing.Size(210, 15);
       this.lblEspess.TabIndex = 68;
       this.lblEspess.Text = "---";
       this.lblEspess.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -604,10 +506,10 @@
       this.lmLabel8.BackColor = System.Drawing.Color.Transparent;
       this.lmLabel8.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lmLabel8.ForeColor = System.Drawing.Color.Red;
-      this.lmLabel8.Location = new System.Drawing.Point(12, 66);
+      this.lmLabel8.Location = new System.Drawing.Point(2, 66);
       this.lmLabel8.Margin = new System.Windows.Forms.Padding(3);
       this.lmLabel8.Name = "lmLabel8";
-      this.lmLabel8.Size = new System.Drawing.Size(104, 15);
+      this.lmLabel8.Size = new System.Drawing.Size(119, 15);
       this.lmLabel8.TabIndex = 67;
       this.lmLabel8.Text = "Descrição Material:";
       this.lmLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -617,10 +519,10 @@
       this.tbcOperacoes.Controls.Add(this.tbpOperacoes);
       this.tbcOperacoes.Controls.Add(this.tbpLista);
       this.tbcOperacoes.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tbcOperacoes.Location = new System.Drawing.Point(0, 393);
+      this.tbcOperacoes.Location = new System.Drawing.Point(0, 351);
       this.tbcOperacoes.Name = "tbcOperacoes";
       this.tbcOperacoes.SelectedIndex = 0;
-      this.tbcOperacoes.Size = new System.Drawing.Size(340, 199);
+      this.tbcOperacoes.Size = new System.Drawing.Size(340, 241);
       this.tbcOperacoes.TabIndex = 100;
       this.tbcOperacoes.UseSelectable = true;
       // 
@@ -632,7 +534,7 @@
       this.tbpOperacoes.Location = new System.Drawing.Point(4, 38);
       this.tbpOperacoes.Name = "tbpOperacoes";
       this.tbpOperacoes.Padding = new System.Windows.Forms.Padding(3, 9, 3, 3);
-      this.tbpOperacoes.Size = new System.Drawing.Size(332, 157);
+      this.tbpOperacoes.Size = new System.Drawing.Size(332, 199);
       this.tbpOperacoes.TabIndex = 0;
       this.tbpOperacoes.Text = "Operações";
       // 
@@ -644,7 +546,7 @@
       this.flpOperacoes.Location = new System.Drawing.Point(3, 39);
       this.flpOperacoes.Name = "flpOperacoes";
       this.flpOperacoes.Padding = new System.Windows.Forms.Padding(0, 5, 0, 9);
-      this.flpOperacoes.Size = new System.Drawing.Size(324, 113);
+      this.flpOperacoes.Size = new System.Drawing.Size(324, 155);
       this.flpOperacoes.TabIndex = 6;
       this.flpOperacoes.SizeChanged += new System.EventHandler(this.FlpProcess_SizeChanged);
       // 
@@ -691,7 +593,7 @@
       this.tbpLista.Location = new System.Drawing.Point(4, 38);
       this.tbpLista.Name = "tbpLista";
       this.tbpLista.Padding = new System.Windows.Forms.Padding(3, 9, 3, 3);
-      this.tbpLista.Size = new System.Drawing.Size(332, 157);
+      this.tbpLista.Size = new System.Drawing.Size(332, 199);
       this.tbpLista.TabIndex = 1;
       this.tbpLista.Text = "Lista Componentes";
       // 
@@ -725,7 +627,7 @@
       this.dgv.PermiteQuebrarLinhaCabecalho = false;
       this.dgv.PermiteSelecaoMultipla = false;
       this.dgv.PosColunasGrid = "";
-      this.dgv.Size = new System.Drawing.Size(324, 143);
+      this.dgv.Size = new System.Drawing.Size(324, 185);
       this.dgv.TabIndex = 98;
       this.dgv.Texto = "";
       this.dgv.TituloRelatorio = "";
@@ -756,7 +658,6 @@
       this.Text = "Definir Processos";
       this.Loaded += new LmCorbieUI.LmForms.LmSingleForm.FormLoad(this.FrmProcesso_Loaded);
       this.pnlControl.ResumeLayout(false);
-      this.pnlControl.PerformLayout();
       this.pnlDados.ResumeLayout(false);
       this.pnlDados.PerformLayout();
       this.tbcOperacoes.ResumeLayout(false);
@@ -772,18 +673,12 @@
         private LmCorbieUI.Controls.LmLabel lblCodMat;
         private LmCorbieUI.Controls.LmLabel cmxLabel2;
         private LmCorbieUI.Controls.LmPanel pnlControl;
-        private LmCorbieUI.Controls.LmLabel lblPercProcess;
-        private LmCorbieUI.Controls.LmLabel lblttLista;
         private LmCorbieUI.Controls.LmLabel lblPecasProc;
-        private LmCorbieUI.Controls.LmButton btnUpDes;
-        private LmCorbieUI.Controls.LmButton btnDownDes;
         private LmCorbieUI.Controls.LmButton btnProximo;
         private LmCorbieUI.Controls.LmButton btnVoltar;
         private LmCorbieUI.Controls.LmButton btnSalvar;
         private LmCorbieUI.Controls.LmButton btnCarrProcess;
-        private LmCorbieUI.Controls.LmLabel lblListaCorte;
         private System.Windows.Forms.ToolTip cmxToolTip1;
-        private LmCorbieUI.Controls.LmCheckBox ckbInterno;
     private LmCorbieUI.Controls.LmPanel pnlDados;
     private LmCorbieUI.Controls.LmLabel lmLabel1;
     private LmCorbieUI.Controls.LmLabel lblMaterial;

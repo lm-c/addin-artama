@@ -34,7 +34,7 @@ namespace AddinArtama {
         var swModel = (ModelDoc2)Sw.App.ActiveDoc;
 
         if (Sw.App.ActiveDoc == null) {
-          MsgBox.Show($"Sem documentos abertos", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          Toast.Info($"Sem documentos abertos");
           return;
         }
 
@@ -254,7 +254,7 @@ namespace AddinArtama {
         var swModel = (ModelDoc2)Sw.App.ActiveDoc;
 
         if (Sw.App.ActiveDoc == null) {
-          MsgBox.Show($"Sem documentos abertos", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          Toast.Info($"Sem documentos abertos");
           return;
         }
 

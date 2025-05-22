@@ -134,25 +134,6 @@
         ccbZtDi0KIyz/7boyY0sCuOstx2P/IhBoVMIofMCIjRZLfIk3TEAAAAASUVORK5CYII=
 </value>
   </data>
-  <metadata name="cmxToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>97, 17</value>
-  </metadata>
-  <data name="btnUpDes.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAIZJREFUOE/t0M0KgkAUhuGBqDQoN950Xkju2tRKNyG5747y/fCcFtMI2lL64AHn
-        /IxiWH/25qdsUOOKrQpLouUL3kYXqTYr8fKiS3a4wZcexs93TP6T+M09TuZpNdFM8kvO8KEWB3hyNPB+
-        ha+UeKHDUYUoqqmnGc0mUyAbH5NRTzP/fBLCAKoVIhp/BGtdAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="btnDownDes.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAIhJREFUOE/t
-        0L0KwjAYheFA8adC6+JN64Xo5mInu4jUvXdU34M5SxIKXYsvPNAmX1Jo+Jd1xP73WEx7mil2wog3Gi0k
-        aU17mtFs1gVT9EQNd0AP75+RVeEKDw1oo09cE81ottgOHTz8ivz+wBaz6fYbfMhmv5yWXrLosNvgDl20
-        +LDTP5H1FsIXhVciGhifYpgAAAAASUVORK5CYII=
-</value>
-  </data>
   <data name="btnProximo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAALGPC/xhBQAAAI9JREFUOE+d
@@ -161,6 +142,9 @@
         yXRm8Rh+ugB/XzllXPIQ3pIhJRB7M5dzAAAAAElFTkSuQmCC
 </value>
   </data>
+  <metadata name="cmxToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>97, 17</value>
+  </metadata>
   <data name="btnVoltar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAALGPC/xhBQAAAIhJREFUOE+d
@@ -187,9 +171,6 @@
         1kYzgzZCQ/is/fXB/dkcMgfvwEb/UHXMY+yso5EORyVJvgHYMkniZa8eUAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <metadata name="cmxToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>97, 17</value>
-  </metadata>
   <data name="txtMaterial.IconF7" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAIhJREFUOE/t

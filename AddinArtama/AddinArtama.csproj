@@ -389,7 +389,6 @@
     <Compile Include="03_classes\01_tables\templates.cs" />
     <Compile Include="03_classes\01_tables\usuario_alocados.cs" />
     <Compile Include="03_classes\01_tables\usuarios.cs" />
-    <Compile Include="03_classes\01_tables\W_Componente.cs" />
     <Compile Include="03_classes\01_tables\W_Perfil.cs" />
     <Compile Include="03_classes\01_tables\W_Permissao.cs" />
     <Compile Include="03_classes\01_tables\W_UsuarioPerfil.cs" />
