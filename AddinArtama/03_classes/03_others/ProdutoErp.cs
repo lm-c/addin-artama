@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static AddinArtama.Api;
 
@@ -91,7 +92,7 @@ namespace AddinArtama {
 
     public List<ListaCorte> ItensCorte = new List<ListaCorte>();
 
-    public static SortableBindingList<ProdutoErp> GetComponents(TreeView treeView) {
+    public static async Task<SortableBindingList<ProdutoErp>> GetComponents(TreeView treeView) {
       var _listaProduto = new List<ProdutoErp>();
 
       try {
@@ -179,6 +180,8 @@ namespace AddinArtama {
         produtoErp.Quantidade = 1;
 
         produtoErp.Configuracao = swConf.Name;
+
+        await AnalisarProdutoAsync(db, produtoErp);
 
         _listaProduto.Add(produtoErp);
 
@@ -503,6 +506,79 @@ namespace AddinArtama {
         nodes[parentLevel].Nodes.Add(node);
       } else {
         rootNode.Nodes.Add(node);
+      }
+    }
+
+    private static async Task AnalisarProdutoAsync(ContextoDados db, ProdutoErp item) {
+      try {
+        if (string.IsNullOrEmpty(item.CodProduto)) {
+          var prod = db.produto_erp.FirstOrDefault(x => x.name == item.Name && x.referencia == item.Referencia && x.configuracao == item.Configuracao);
+          if (prod != null) {
+            item.CadastrarErp = item.CadastrarAddin = false;
+            item.CodProduto = prod.codigo_produto.ToString();
+            // atualizar props
+            int status = 0;
+            int warnings = 0;
+            int tipo = item.PathName.EndsWith("SLDASM")
+            ? (int)swDocumentTypes_e.swDocASSEMBLY
+            : (int)swDocumentTypes_e.swDocPART;
+            var swModel = Sw.App.OpenDoc6(item.PathName, tipo,
+              (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
+
+            var swModelDocExt = swModel.Extension;
+            var swCustPropMgr = swModelDocExt.get_CustomPropertyManager(item.Configuracao);
+
+            if (item.Referencia.StartsWith("Item da lista de corte")) {
+              item.ItensCorte[0].CodProduto = item.CodProduto;
+              bool boolstatus = swModel.Extension.SelectByID2(item.ItensCorte[0].NomeLista, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
+
+              SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+              Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
+              swCustPropMgr = swFeat.CustomPropertyManager;
+            }
+
+            swCustPropMgr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, item.CodProduto, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+            swModel.Save();
+
+            //if (i > 0)
+            Sw.App.CloseDoc(item.PathName);
+          } else {
+            item.CadastrarErp = !item.CodComponente.StartsWith("10") && !item.CodComponente.StartsWith("20") && !item.CodComponente.StartsWith("30") && !item.CodComponente.StartsWith("40");
+
+            if (item.CodComponente.StartsWith("10") || item.CodComponente.StartsWith("20") || item.CodComponente.StartsWith("30") || item.CodComponente.StartsWith("40")) {
+              item.CodProduto = item.CodComponente;
+            }
+
+            item.CadastrarAddin = true;
+          }
+        } else {
+          var cod = Convert.ToInt64(item.CodProduto);
+          if (db.produto_erp.Any(x => x.codigo_produto == cod && x.name == item.Name && x.referencia == item.Referencia && x.configuracao == item.Configuracao)) {
+            item.CadastrarErp = item.CadastrarAddin = false;
+          } else {
+            if (!item.CodComponente.StartsWith("10") && !item.CodComponente.StartsWith("20")) {
+              if (!item.Referencia.StartsWith("Item da lista de corte")) {
+                var itemERP = await Api.GetItemGenericoAsync(item.CodProduto);
+
+                item.CadastrarErp = itemERP == null || (item.Referencia != itemERP.refTecnica && !itemERP.nome.EndsWith(item.Referencia));
+
+                if (item.CodProduto.StartsWith("40") && item.CadastrarErp)
+                  throw new Exception($"Código Produto {item.CodProduto} inválido para esta montagem:\r\n{item.Name} - {item.Denominacao}");
+              }
+            } else {
+              item.CadastrarErp = false;
+            }
+
+            item.CadastrarAddin = true;
+          }
+        }
+
+        if (item.CadastrarErp)
+          item.CodProduto = string.Empty;
+
+      } catch (Exception ex) {
+        throw new Exception(ex.Message);
+        //LmException.ShowException(ex, "Erro ao analisar produto");
       }
     }
 
