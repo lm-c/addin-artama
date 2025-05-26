@@ -32,8 +32,11 @@ namespace AddinArtama {
       }));
     }
 
-    private void CarregarControlesProcessos() {
+    internal void CarregarControlesProcessos() {
       try {
+        flpOperacoes.Controls.Clear();
+        lblProcess.Text = string.Empty;
+
         foreach (var proc in Processo.ListaProcessos) {
           LmCheckBox ckb = new LmCheckBox {
             Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
@@ -42,7 +45,7 @@ namespace AddinArtama {
             Margin = new Padding(6, 1, 6, 1),
             Name = $"ckb{proc.codOperacao}",
             Tag = $"{proc.codOperacao}",
-            Text = $"{proc.codOperacao} - {proc.descrOperacao} ({proc.codMaquina} - {proc.descrMaquina})",
+            Text = $"{proc.codOperacao} - {proc.descrOperacao}",
             FontSize = LmCorbieUI.Design.LmCheckBoxSize.Small,
             UseCustomBackColor = true,
           };
@@ -103,6 +106,8 @@ namespace AddinArtama {
 
         var produtoERP = dgv.Grid.CurrentRow.DataBoundItem as ProdutoErp;
 
+        produtoERP.Operacao = lblProcess.Text;
+
         MsgBox.ShowWaitMessage("Salvando. Aguarde...");
 
         var swModel = (ModelDoc2)Sw.App.ActiveDoc;
@@ -132,6 +137,7 @@ namespace AddinArtama {
         swModel.Save();
 
         lblMaterial.UseCustomColor =
+        lblCodMat.UseCustomColor =
         lblDescMat.UseCustomColor =
         lblProcess.UseCustomColor = false;
         pnlDados.Refresh();

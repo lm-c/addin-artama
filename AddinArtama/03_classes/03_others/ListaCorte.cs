@@ -81,9 +81,9 @@ namespace AddinArtama {
                   }
                 }
 
-                CustomPropertyManager oCustPropMngr = swFeat.CustomPropertyManager;
+                CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
 
-                object[] custPropNames = (object[])oCustPropMngr.GetNames();
+                object[] custPropNames = (object[])swCustPropMngr.GetNames();
 
                 if (custPropNames != null) {
                   object[] vBodies = (object[])swBodyFolder.GetBodies();
@@ -100,8 +100,8 @@ namespace AddinArtama {
                     }
                   }
 
-                  oCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-                  oCustPropMngr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Material\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+                  swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+                  swCustPropMngr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Material\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
                   string sValue, sResolvedvalue;
 
@@ -111,52 +111,52 @@ namespace AddinArtama {
 
                   listaCorte.NomeLista = FeatType;
 
-                  oCustPropMngr.Get2("Código", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Código", out sValue, out sResolvedvalue);
                   int.TryParse(sResolvedvalue, out int cod);
                   listaCorte.Codigo = cod;
 
-                  oCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
                   listaCorte.CodProduto = sResolvedvalue;
 
-                  oCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
                   listaCorte.Denominacao = sResolvedvalue;
 
-                  oCustPropMngr.Get2("Material", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Material", out sValue, out sResolvedvalue);
                   listaCorte.Material = sResolvedvalue;
 
-                  oCustPropMngr.Get2("COMPRIMENTO", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("COMPRIMENTO", out sValue, out sResolvedvalue);
                   double.TryParse(sResolvedvalue.Replace(".", ","), out double compr);
 
-                  oCustPropMngr.Get2("QUANTITY", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("QUANTITY", out sValue, out sResolvedvalue);
                   listaCorte.Quantidade = !string.IsNullOrEmpty(sResolvedvalue) ? Convert.ToInt32(sResolvedvalue) : 0;
 
                   if (listaCorte.Quantidade == 0) {
-                    oCustPropMngr.Get2("Quantidade", out sValue, out sResolvedvalue);
+                    swCustPropMngr.Get2("Quantidade", out sValue, out sResolvedvalue);
                     listaCorte.Quantidade = !string.IsNullOrEmpty(sResolvedvalue) ? Convert.ToInt32(sResolvedvalue) : 0;
                   }
 
-                  oCustPropMngr.Get2("Operação", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Operação", out sValue, out sResolvedvalue);
                   listaCorte.Operacao = listaCorte.OperacaoOrigem = sResolvedvalue;
 
-                  oCustPropMngr.Get2("Espessura da Chapa metálica", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Espessura da Chapa metálica", out sValue, out sResolvedvalue);
                   double.TryParse(sResolvedvalue.Replace(".", ","), out double esp);
                   listaCorte.CxdEspess = Math.Round(esp, 3);
 
-                  oCustPropMngr.Get2("Largura da Caixa delimitadora", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Largura da Caixa delimitadora", out sValue, out sResolvedvalue);
                   double.TryParse(sResolvedvalue.Replace(".", ","), out double larg);
                   listaCorte.CxdLarg = Math.Round(larg, 3);
 
-                  oCustPropMngr.Get2("Comprimento da Caixa delimitadora", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Comprimento da Caixa delimitadora", out sValue, out sResolvedvalue);
                   double.TryParse(sResolvedvalue.Replace(".", ","), out double comp_cxd);
                   listaCorte.CxdCompr = comp_cxd > 0 ? Math.Round(comp_cxd, 3) : Math.Round(compr, 3);
 
-                  oCustPropMngr.Get2("Massa", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Massa", out sValue, out sResolvedvalue);
                   double.TryParse(sResolvedvalue.Replace(".", ","), out double Massa);
                   listaCorte.Massa = Math.Round(Massa, 3);
 
                   if (listaCorte.Tipo == TipoListaMaterial.Chapa) {
                     string descCustProp = $"\"SW-Largura da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\" X \"SW-Comprimento da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\"";
-                    oCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText, descCustProp,
+                    swCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText, descCustProp,
                         (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
                   }
                 }
@@ -183,14 +183,14 @@ namespace AddinArtama {
 
         SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
         Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
-        CustomPropertyManager oCustPropMngr = swFeat.CustomPropertyManager;
+        CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
         string FeatType = null;
         BodyFolder swBodyFolder = default(BodyFolder);
 
         if (swFeat != null) {
           var isExcluded = swFeat.ExcludeFromCutList;
           if (!isExcluded) {
-            object[] custPropNames = (object[])oCustPropMngr.GetNames();
+            object[] custPropNames = (object[])swCustPropMngr.GetNames();
             if (custPropNames != null) {
 
               swBodyFolder = (BodyFolder)swFeat.GetSpecificFeature2();
@@ -210,57 +210,57 @@ namespace AddinArtama {
                     listaCorte.Tipo = TipoListaMaterial.Soldagem;
 
 
-                  oCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-                  oCustPropMngr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Material\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+                  swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+                  swCustPropMngr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Material\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
                   string sValue, sResolvedvalue;
 
-                  oCustPropMngr.Get2("Código", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Código", out sValue, out sResolvedvalue);
                   int.TryParse(sResolvedvalue, out int cod);
                   listaCorte.Codigo = cod;
 
-                  oCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
                   listaCorte.CodProduto = sResolvedvalue;
 
-                  oCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
                   listaCorte.Denominacao = sResolvedvalue;
 
-                  oCustPropMngr.Get2("Material", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Material", out sValue, out sResolvedvalue);
                   listaCorte.Material = sResolvedvalue;
 
-                  oCustPropMngr.Get2("COMPRIMENTO", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("COMPRIMENTO", out sValue, out sResolvedvalue);
                   double.TryParse(sResolvedvalue.Replace(".", ","), out double compr);
 
-                  oCustPropMngr.Get2("QUANTITY", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("QUANTITY", out sValue, out sResolvedvalue);
                   listaCorte.Quantidade = !string.IsNullOrEmpty(sResolvedvalue) ? Convert.ToInt32(sResolvedvalue) : 0;
 
                   if (listaCorte.Quantidade == 0) {
-                    oCustPropMngr.Get2("Quantidade", out sValue, out sResolvedvalue);
+                    swCustPropMngr.Get2("Quantidade", out sValue, out sResolvedvalue);
                     listaCorte.Quantidade = !string.IsNullOrEmpty(sResolvedvalue) ? Convert.ToInt32(sResolvedvalue) : 0;
                   }
 
-                  oCustPropMngr.Get2("Operação", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Operação", out sValue, out sResolvedvalue);
                   listaCorte.Operacao = listaCorte.OperacaoOrigem = sResolvedvalue;
 
-                  oCustPropMngr.Get2("Espessura da Chapa metálica", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Espessura da Chapa metálica", out sValue, out sResolvedvalue);
                   double.TryParse(sResolvedvalue.Replace(".", ","), out double esp);
                   listaCorte.CxdEspess = Math.Round(esp, 3);
 
-                  oCustPropMngr.Get2("Largura da Caixa delimitadora", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Largura da Caixa delimitadora", out sValue, out sResolvedvalue);
                   double.TryParse(sResolvedvalue.Replace(".", ","), out double larg);
                   listaCorte.CxdLarg = Math.Round(larg, 3);
 
-                  oCustPropMngr.Get2("Comprimento da Caixa delimitadora", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Comprimento da Caixa delimitadora", out sValue, out sResolvedvalue);
                   double.TryParse(sResolvedvalue.Replace(".", ","), out double comp_cxd);
                   listaCorte.CxdCompr = comp_cxd > 0 ? Math.Round(comp_cxd, 3) : Math.Round(compr, 3);
 
-                  oCustPropMngr.Get2("Massa", out sValue, out sResolvedvalue);
+                  swCustPropMngr.Get2("Massa", out sValue, out sResolvedvalue);
                   double.TryParse(sResolvedvalue.Replace(".", ","), out double Massa);
                   listaCorte.Massa = Math.Round(Massa, 3);
 
                   if (listaCorte.Tipo == TipoListaMaterial.Chapa) {
                     string descCustProp = $"\"SW-Largura da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\" X \"SW-Comprimento da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\"";
-                    oCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText, descCustProp,
+                    swCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText, descCustProp,
                         (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
                   }
                 }
@@ -280,17 +280,17 @@ namespace AddinArtama {
 
       SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
       Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
-      CustomPropertyManager oCustPropMngr = swFeat.CustomPropertyManager;
+      CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
 
-      oCustPropMngr.Add3("Operação", (int)swCustomInfoType_e.swCustomInfoText, Convert.ToString(listaCorte.Operacao), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+      swCustPropMngr.Add3("Operação", (int)swCustomInfoType_e.swCustomInfoText, Convert.ToString(listaCorte.Operacao), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
       if (listaCorte.Tipo == TipoListaMaterial.Chapa) {
         string nomePeca = Path.GetFileName(swModel.GetPathName());
 
-        oCustPropMngr.Add3("Código", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.Codigo.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-        oCustPropMngr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.CodProduto.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-        oCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.Denominacao.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-        oCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText,
+        swCustPropMngr.Add3("Código", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.Codigo.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+        swCustPropMngr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.CodProduto.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+        swCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.Denominacao.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+        swCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText,
             $"\"SW-Largura da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\" X \"SW-Comprimento da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\"",
             (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
       }
@@ -302,9 +302,9 @@ namespace AddinArtama {
 
       SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
       Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
-      CustomPropertyManager oCustPropMngr = swFeat.CustomPropertyManager;
+      CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
 
-      oCustPropMngr.Delete2(nomePropriedade);
+      swCustPropMngr.Delete2(nomePropriedade);
     }
 
     public static void ExcluirLista(ModelDoc2 swModel) {

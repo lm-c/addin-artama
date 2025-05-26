@@ -235,9 +235,9 @@ namespace AddinArtama {
               SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
               swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
 
-              CustomPropertyManager oCustPropMngr = swFeat.CustomPropertyManager;
+              CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
 
-              object[] custPropNames = (object[])oCustPropMngr.GetNames();
+              object[] custPropNames = (object[])swCustPropMngr.GetNames();
 
               if (custPropNames != null) {
                 string sValue, sResolvedvalue;
@@ -246,24 +246,24 @@ namespace AddinArtama {
                 boolstatus = swBodyFolder.SetAutomaticCutList(true);
                 boolstatus = swBodyFolder.UpdateCutList();
 
-                oCustPropMngr.Get2("Espessura da Chapa metálica", out sValue, out sResolvedvalue);
+                swCustPropMngr.Get2("Espessura da Chapa metálica", out sValue, out sResolvedvalue);
                 if (!string.IsNullOrEmpty(sResolvedvalue)) {
                   var esp = Math.Round(Convert.ToDouble(sResolvedvalue.Replace(".", ",")), 2);
 
                   dxfExport.EspessuraMaterial = esp;
                 }
 
-                oCustPropMngr.Get2("Código", out sValue, out sResolvedvalue);
+                swCustPropMngr.Get2("Código", out sValue, out sResolvedvalue);
                 if (!string.IsNullOrEmpty(sResolvedvalue)) {
                   dxfExport.CodigoMaterial = sResolvedvalue;
                 }
 
-                oCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
+                swCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
                 if (!string.IsNullOrEmpty(sResolvedvalue)) {
                   dxfExport.DescricaoMaterial = sResolvedvalue;
                 }
 
-                oCustPropMngr.Get2("Operação", out sValue, out sResolvedvalue);
+                swCustPropMngr.Get2("Operação", out sValue, out sResolvedvalue);
                 if (!string.IsNullOrEmpty(sResolvedvalue)) {
                   var spl = sResolvedvalue.Split('/');
                   foreach (var p in spl) {

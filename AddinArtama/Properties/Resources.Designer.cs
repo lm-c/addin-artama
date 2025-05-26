@@ -93,6 +93,16 @@ namespace AddinArtama.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap fantasma {
+            get {
+                object obj = ResourceManager.GetObject("fantasma", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap not_draw {
             get {
                 object obj = ResourceManager.GetObject("not_draw", resourceCulture);

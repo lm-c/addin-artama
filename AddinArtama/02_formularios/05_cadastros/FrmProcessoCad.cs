@@ -2,7 +2,9 @@
 using LmCorbieUI.LmForms;
 using LmCorbieUI.Metodos;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AddinArtama {
   public partial class FrmProcessoCad : LmSingleForm {
@@ -27,7 +29,8 @@ namespace AddinArtama {
       txtID.ReadOnly = false;
       txtOperacao.Focus();
       txtID.Text = string.Empty;
-      txtMaquina.SelectedValue = null;
+      txtMascaraMaquina.Text = string.Empty;
+      txtCentroCusto.Text = string.Empty;
       txtOperacao.SelectedValue = null;
 
       txtID.ReadOnly = false;
@@ -40,13 +43,28 @@ namespace AddinArtama {
     private void BtnSalvar_Click(object sender, EventArgs e) {
       if (Controles.PossuiCamposInvalidos(this)) return;
 
+      Salvar();
+    }
+
+    private async Task Salvar() {
       try {
         model.ativo = ckbSituacao.Checked;
-        model.codigo_maquina = (int)txtMaquina.SelectedValue;
+        model.mascara_maquina = txtMascaraMaquina.Text;
+        model.centro_custo = txtCentroCusto.Text;
         model.codigo_operacao = (int)txtOperacao.SelectedValue;
 
         if (processos.Salvar(model)) {
-          BtnLimpar_Click(null, new EventArgs());
+          await Processo.Carregar();
+          //txtID.Text = model.id.ToString();
+          //txtID.ReadOnly = true;
+          //txtID.Refresh();
+          BtnLimpar_Click(null, null);
+
+          var frm = UcPainelTarefas.Instancia.pnlMain.Controls.OfType<FrmProcesso>().FirstOrDefault();
+
+          if (frm != null) {
+            frm.CarregarControlesProcessos();
+          }
         }
       } catch (Exception ex) {
         LmException.ShowException(ex, "Erro ao Cadastrar Operação");
@@ -55,7 +73,7 @@ namespace AddinArtama {
 
     private void TxtID_ButtonClickF7(object sender, EventArgs e) {
       FrmConsultaGeral frm = new FrmConsultaGeral(this,
-        processos.SelecionarTodos(), "Consulta de Processos");
+        processos.SelecionarTodosRel(), "Consulta de Processos");
       if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK /*&& Modo == Modo.Novo*/)
         if (int.TryParse(frm.valor[0], out int ID)) {
           txtID.Text = frm.valor[0];
@@ -73,7 +91,8 @@ namespace AddinArtama {
         if (model != null) {
           txtID.Text = model.id.ToString();
           ckbSituacao.Checked = model.ativo;
-          txtMaquina.SelectedValue = model.codigo_maquina;
+          txtMascaraMaquina.Text = model.mascara_maquina;
+          txtCentroCusto.Text = model.centro_custo;
           txtOperacao.SelectedValue = model.codigo_operacao;
 
           ckbSituacao.Checked = model.ativo;
@@ -83,20 +102,21 @@ namespace AddinArtama {
       }
     }
 
-    private async Task CarregarComboBox() {
-      try {
-        var maqs = await Api.GetMaquinasAsync();
-        var ops = await Api.GetOpsAsync();
+    private void CarregarComboBox() {
+      Invoke(new MethodInvoker(async delegate () {
+        try {
+          //var maqs = await Api.GetMaquinasAsync();
+          var ops = await Api.GetOpsAsync();
 
-        // Corrected the issue by using a proper lambda expression to transform the list
-        maqs.ForEach(x => x.descricao = $"{x.codMaquina} - {x.descricao}");
-        ops.ForEach(x => x.Descricao = $"{x.CodOperacao} - {x.Descricao}");
-
-        txtMaquina.CarregarComboBox(maqs);
-        txtOperacao.CarregarComboBox(ops);
-      } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao carregar lista Maquina");
-      }
+          // maqs.ForEach(x => { x.descricao = $"{x.codMaquina} - {x.descricao}"; });
+          ops.ForEach(x => { x.Descricao = $"{x.CodOperacao} - {x.Descricao}"; });
+          //txtMascaraMaquina.CarregarComboBox(maqs);
+          txtOperacao.CarregarComboBox(ops);
+        } catch (Exception ex) {
+          //Toast.Warning(ex.ToString());
+          // LmException.ShowException(ex, "Erro ao carregar lista Maquina");
+        }
+      }));
     }
 
     private void FrmProcessoCad_ClickHelp(object sender, EventArgs e) {

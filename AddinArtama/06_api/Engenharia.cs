@@ -20,6 +20,7 @@ namespace AddinArtama {
       public string narrativaLinha4 { get; set; } = "";
       public string tipoModulo { get; set; } = "E";
       public int codClassificacao { get; set; }
+      public int statusEngenharia { get; set; }
       public string nomeArquivoDesenhoEng { get; set; }
       public bool engenhariaFantasma { get; set; }
       public string descEngenhariaFantasma { get; set; }
@@ -49,7 +50,7 @@ namespace AddinArtama {
       public double numOperadores { get; set; }
       public int codFaseOperacao { get; set; }
       public string codMascaraMaquina { get; set; }
-      public int codLinhaProducao { get; set; }
+      public string centroCusto { get; set; }
       public double tempoPadraoOperacao { get; set; }
       public double tempoPreparacaoOperacao { get; set; }
     }
@@ -106,9 +107,9 @@ namespace AddinArtama {
               $"\"numOperadores\": {operacao.numOperadores}," +
               $"\"codFaseOperacao\": {operacao.codFaseOperacao}," +
               $"\"codMascaraMaquina\": \"{operacao.codMascaraMaquina}\"," +
-              //$"\"codLinhaProducao\": {operacao.codLinhaProducao}," +
-              $"\"tempoPadraoOperacao\": {operacao.tempoPadraoOperacao}," +
-              $"\"tempoPreparacaoOperacao\": {operacao.tempoPreparacaoOperacao}" +
+              $"\"centroCusto\": {operacao.centroCusto}," +
+              $"\"tempoPadraoOperacao\": {operacao.tempoPadraoOperacao.ToString().Replace(",",".")}," +
+              $"\"tempoPreparacaoOperacao\": {operacao.tempoPreparacaoOperacao.ToString().Replace(",", ".")}" +
               "},";
         }
         bodyObject = bodyObject.TrimEnd(',') + "]" +
@@ -132,6 +133,61 @@ namespace AddinArtama {
         throw new Exception($"{ex.Message}");
       }
 
+    }
+
+    internal static async Task<Engenharia> GetEngenhariaAsync(string codigo) {
+      Engenharia _return = null;
+
+      try {
+        var client = Api.GetClient(modulo: "ppcppadrao", endpoint: $"engenharia/{codigo}");
+        var request = Api.CreateRequest(Method.GET);
+
+        var response = await client.ExecuteAsync(request);
+
+        if (response.IsSuccessful) {
+          var responseData = response.Content;
+          var jsonObject = JObject.Parse(responseData);
+
+          _return = new Engenharia {
+            descricaoProduto = jsonObject["descricao"]?.ToString(),
+            narrativaLinha1 = jsonObject["narrativa"]?.ToString(),
+            codClassificacao = jsonObject["codClassificacao"]?.ToObject<int>() ?? 0,
+            statusEngenharia = jsonObject["statusEngenharia"]?.ToObject<int>() ?? 0,
+
+            componentes = jsonObject["componentes"]?.Select(c => new ComponenteEng {
+              seqComponente = c["seqComponente"]?.ToObject<int>() ?? 0,
+              codInsumo = c["codItem"]?.ToString(),
+              quantidade = c["quantidade"]?.ToObject<double>() ?? 0,
+              //itemKanban = c["kanban"]?.ToObject<int>() ?? 0,
+              //centroCusto = c["centroCusto"]?.ToString(),
+              comprimento = c["comprimento"]?.ToObject<double>() ?? 0,
+              largura = c["largura"]?.ToObject<double>() ?? 0,
+              espessura = c["espessura"]?.ToObject<double>() ?? 0,
+              percQuebra = c["percQuebra"]?.ToObject<double>() ?? 0,
+              codClassificacaoInsumo = c["codClassificacao"]?.ToObject<int>() ?? 0,
+              seqOperacaoConsumo = c["seqOperacional"]?.ToObject<int>() ?? 0,
+            }).ToList() ?? new List<ComponenteEng>(),
+
+            operacoes = jsonObject["operacoes"]?.Select(o => new OperacaoEng {
+              seqOperacao = o["seqOperacao"]?.ToObject<int>() ?? 0,
+              codOperacao = o["codOperacao"]?.ToObject<int>() ?? 0,
+              abreviaturaOperacao = o["abreviaturaOperacao"]?.ToString(),
+              numOperadores = o["numOpradores"]?.ToObject<double>() ?? 0,
+              codFaseOperacao = o["faseProducao"]?.ToObject<int>() ?? 0,
+              codMascaraMaquina = o["mascMaquina"]?.ToString(),
+              //codLinhaProducao = o["codLinha"]?.ToObject<int>() ?? 0,
+              tempoPadraoOperacao = o["tempoPadrao"]?.ToObject<double>() ?? 0,
+              tempoPreparacaoOperacao = o["tempoPreparacao"]?.ToObject<double>() ?? 0,
+              //centroCusto = o["centroCusto"]?.ToString(),
+            }).ToList() ?? new List<OperacaoEng>()
+          };
+
+        }
+      } catch (Exception ex) {
+        LmException.ShowException(ex, "Erro ao carregar item genérico");
+      }
+
+      return _return;
     }
   }
 }

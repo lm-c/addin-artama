@@ -16,6 +16,7 @@ namespace AddinArtama {
       public string UnidadeMedida { get; set; }
       public double PesoBruto { get; set; }
       public double PesoLiquido { get; set; }
+      public int Situacao { get; set; }
       public TipoDucumento Tipo { get; set; }
     }
 
@@ -40,7 +41,7 @@ namespace AddinArtama {
         var unidadeMedida = itemGenerico.UnidadeMedida;
         var pesoBruto = itemGenerico.PesoBruto;
         var pesoLiquido = itemGenerico.PesoLiquido;
-        var situacao = 1;
+        var situacao = itemGenerico.Situacao;
 
         var classificacaoFiscal = configApi.classificacaoFiscal;
         var finalidade = configApi.finalidade;

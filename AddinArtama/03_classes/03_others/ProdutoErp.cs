@@ -24,6 +24,11 @@ namespace AddinArtama {
     [DisplayName(" "), ToolTipGrid("Abrir 2D")]
     [AlinhamentoColunaGrid(System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter)]
     public Bitmap Img2D { get; set; } = new Bitmap(20, 20);
+    
+    [LarguraColunaGrid(25)]
+    [DisplayName(" "), ToolTipGrid("Item Fantasma")]
+    [AlinhamentoColunaGrid(System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter)]
+    public Bitmap ImgFantasma { get; set; } = new Bitmap(20, 20);
 
     [Browsable(false)]
     [DisplayName("Nível")]
@@ -55,7 +60,7 @@ namespace AddinArtama {
     [DisplayName("Configuração")]
     [LarguraColunaGrid(150)]
     public string Configuracao { get; set; }
-    
+
     //[Browsable(false)]
     [DisplayName("Processos")]
     [LarguraColunaGrid(100)]
@@ -68,6 +73,9 @@ namespace AddinArtama {
 
     [Browsable(false)]
     public double Massa { get; set; }
+
+    [Browsable(false)]
+    public bool Fantasma { get; set; }
 
     [Browsable(false)]
     public string PathName { get; set; }
@@ -116,9 +124,9 @@ namespace AddinArtama {
         //swRootComp = swConf.GetRootComponent3(true);
 
         var tipo = swModel.GetType();
-
+        var nivel = "1";
         ProdutoErp produtoErp = new ProdutoErp {
-          Nivel = "1",
+          Nivel = nivel,
           PathName = pathName,
           Name = name,
           Referencia = name,
@@ -141,6 +149,11 @@ namespace AddinArtama {
         produtoErp.Operacao = resolvedValOut;
         swCustPropMngr.Get2("Massa", out valOut, out resolvedValOut);
         produtoErp.Massa = !string.IsNullOrEmpty(resolvedValOut) ? Convert.ToDouble(resolvedValOut.Replace(".", ",")) : 0;
+        swCustPropMngr.Get2("Fantasma", out valOut, out resolvedValOut);
+        produtoErp.Fantasma = !string.IsNullOrEmpty(resolvedValOut) && resolvedValOut.ToLower() == "sim";
+
+        if(produtoErp.Fantasma)
+          produtoErp.ImgFantasma = Properties.Resources.fantasma ;
 
         swCustPropMngr = swModelDocExt.get_CustomPropertyManager(swConf.Name);
 
@@ -152,12 +165,6 @@ namespace AddinArtama {
         if (string.IsNullOrEmpty(produtoErp.Denominacao)) {
           swCustPropMngr.Get2("Denominação", out valOut, out resolvedValOut);
           produtoErp.Denominacao = resolvedValOut;
-        }
-
-        var fantasma = string.Empty;
-        if (string.IsNullOrEmpty(produtoErp.Denominacao)) {
-          swCustPropMngr.Get2("Fantasma", out valOut, out resolvedValOut);
-          fantasma = resolvedValOut;
         }
 
         swCustPropMngr.Get2("Código Produto", out valOut, out resolvedValOut);
@@ -188,9 +195,8 @@ namespace AddinArtama {
           var swBOMAnnotationGeral = swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList);
           PegaDadosListaGeral(swBOMAnnotationGeral, _listaProduto, rootNode);
           ListaCorte.ExcluirLista(swModel);
-
-          rootNode.ExpandAll();
         } else {
+
           int status = 0;
           int warnings = 0;
           int errors = 0;
@@ -256,12 +262,38 @@ namespace AddinArtama {
 
               _listaProduto.Add(item);
             }
+          } else {
+            if (produtoErp.ItensCorte.Count == 1 && !produtoErp.CodComponente.StartsWith("10") && !produtoErp.CodComponente.StartsWith("20") && !produtoErp.CodComponente.StartsWith("40")) {
+              var itemCorte = produtoErp.ItensCorte.FirstOrDefault();
+              var item = new ProdutoErp {
+                PathName = produtoErp.PathName,
+                Name = produtoErp.Name,
+                Denominacao = itemCorte.Denominacao,
+                Referencia = produtoErp.Referencia,
+                CodComponente = itemCorte.Codigo.ToString(),
+                CodProduto = itemCorte.Codigo.ToString(),
+                TipoComponente = TipoComponente.ListaMaterial,
+                Nivel = produtoErp.Nivel + ".1",
+                Configuracao = produtoErp.Configuracao,
+                Quantidade = itemCorte.Quantidade,
+                ItensCorte = produtoErp.ItensCorte,
+              };
+              string nodeTextFilho = $"{item.CodComponente} - {item.Denominacao}";
+              var nodeFilho = new TreeNode(nodeTextFilho);
+              nodeFilho.Tag = item;
+              nodeFilho.ImageIndex = 2;
+              nodeFilho.SelectedImageIndex = 2;
+              rootNode.Nodes.Add(nodeFilho);
+            }
           }
+
         }
+
+        rootNode.ExpandAll();
 
         List<ProdutoErp> listaExclusao = new List<ProdutoErp>();
         foreach (var item in _listaProduto.Where(x => x.CodComponente.StartsWith("10") && x.TipoComponente == TipoComponente.Montagem)) {
-          var nivel = item.Nivel + ".";
+          nivel = item.Nivel + ".";
 
           _listaProduto.Where(x => x.Nivel.StartsWith(nivel)).ToList().ForEach(x => {
             listaExclusao.Add(x);
@@ -308,6 +340,9 @@ namespace AddinArtama {
 
             produtoErp.PathName = ptNm;
             produtoErp.Name = Path.GetFileNameWithoutExtension(produtoErp.PathName);
+            if(produtoErp.Name.Contains("^"))
+              produtoErp.Name = produtoErp.Name.Substring(0, produtoErp.Name.IndexOf("^"));
+
             if (produtoErp.Name.Length > 50)
               produtoErp.Name = produtoErp.Name.Substring(0, 50);
 
@@ -328,6 +363,11 @@ namespace AddinArtama {
             produtoErp.Referencia = produtoErp.Name;
             var massa = swTableAnnotation.get_Text(i, 13);
             produtoErp.Massa = !string.IsNullOrEmpty(massa) ? Convert.ToDouble(massa.Replace(".", ",")) : 0;
+            var fantasma = swTableAnnotation.get_Text(i, 14);
+            produtoErp.Fantasma = !string.IsNullOrEmpty(fantasma) && fantasma.ToLower() == "sim";
+
+            if (produtoErp.Fantasma)
+              produtoErp.ImgFantasma = Properties.Resources.fantasma;
 
             int swTipo = produtoErp.TipoComponente == TipoComponente.Peca ? (int)swDocumentTypes_e.swDocPART : (int)swDocumentTypes_e.swDocASSEMBLY;
 
@@ -395,6 +435,8 @@ namespace AddinArtama {
                   Nivel = produtoErp.Nivel + "." + indiceNome,
                   Configuracao = produtoErp.Configuracao,
                   Quantidade = itemCorte.Quantidade,
+                  Massa = itemCorte.Massa,
+                  Operacao = itemCorte.Operacao,
                   ItensCorte = new List<ListaCorte> { itemCorte }
                 };
 
@@ -438,7 +480,7 @@ namespace AddinArtama {
           Denominacao = itemCorte.Denominacao,
           Referencia = produtoErp.Referencia,
           CodComponente = itemCorte.Codigo.ToString(),
-          CodProduto = !string.IsNullOrEmpty(itemCorte.CodProduto) ? itemCorte.CodProduto : itemCorte.Codigo.ToString(),
+          CodProduto = itemCorte.Codigo.ToString(),
           TipoComponente = TipoComponente.ListaMaterial,
           Nivel = produtoErp.Nivel + ".1",
           Configuracao = produtoErp.Configuracao,
@@ -510,6 +552,8 @@ namespace AddinArtama {
         produtoErp.Operacao = resolvedValOut;
         swCustPropMngr.Get2("Massa", out valOut, out resolvedValOut);
         produtoErp.Massa = !string.IsNullOrEmpty(resolvedValOut) ? Convert.ToDouble(resolvedValOut.Replace(".", ",")) : 0;
+        swCustPropMngr.Get2("Fantasma", out valOut, out resolvedValOut);
+        produtoErp.Fantasma = !string.IsNullOrEmpty(resolvedValOut) && resolvedValOut.ToLower() == "sim";
 
         swCustPropMngr = swModelDocExt.get_CustomPropertyManager(swConf.Name);
 
@@ -521,12 +565,6 @@ namespace AddinArtama {
         if (string.IsNullOrEmpty(produtoErp.Denominacao)) {
           swCustPropMngr.Get2("Denominação", out valOut, out resolvedValOut);
           produtoErp.Denominacao = resolvedValOut;
-        }
-
-        var fantasma = string.Empty;
-        if (string.IsNullOrEmpty(produtoErp.Denominacao)) {
-          swCustPropMngr.Get2("Fantasma", out valOut, out resolvedValOut);
-          fantasma = resolvedValOut;
         }
 
         swCustPropMngr.Get2("Código Produto", out valOut, out resolvedValOut);
@@ -689,6 +727,10 @@ namespace AddinArtama {
             produtoErp.Referencia = produtoErp.Name;
             var massa = swTableAnnotation.get_Text(i, 13);
             produtoErp.Massa = !string.IsNullOrEmpty(massa) ? Convert.ToDouble(massa.Replace(".", ",")) : 0;
+            produtoErp.Fantasma = !string.IsNullOrEmpty(swTableAnnotation.get_Text(i, 14)) && swTableAnnotation.get_Text(i, 14).ToLower() == "sim";
+
+            if (produtoErp.Fantasma)
+              produtoErp.ImgFantasma = Properties.Resources.fantasma;
 
             int swTipo = produtoErp.TipoComponente == TipoComponente.Peca ? (int)swDocumentTypes_e.swDocPART : (int)swDocumentTypes_e.swDocASSEMBLY;
 
@@ -708,8 +750,7 @@ namespace AddinArtama {
                 Desenho.InserirAtualizarListaMaterias(swModel);
                 swModel.Save();
                 Sw.App.CloseDoc(pathNameDesenho);
-              }
-              else if (produtoErp.ItensCorte.Count == 1) {
+              } else if (produtoErp.ItensCorte.Count == 1) {
                 if (!string.IsNullOrEmpty(produtoErp.ItensCorte[0].Operacao)) {
                   produtoErp.Operacao = produtoErp.ItensCorte[0].Operacao;
                   produtoErp.ItensCorte[0].Operacao = string.Empty;

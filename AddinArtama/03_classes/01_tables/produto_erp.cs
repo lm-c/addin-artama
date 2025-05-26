@@ -30,6 +30,8 @@ namespace AddinArtama {
     
     [StringLength(150)]
     public string configuracao { get; set; }  
+    
+    public bool fantasma { get; set; }   
 
   }
 }

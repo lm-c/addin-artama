@@ -151,9 +151,9 @@ namespace AddinArtama {
                   SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
                   swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
 
-                  CustomPropertyManager oCustPropMngr = swFeat.CustomPropertyManager;
+                  CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
 
-                  object[] custPropNames = (object[])oCustPropMngr.GetNames();
+                  object[] custPropNames = (object[])swCustPropMngr.GetNames();
 
                   if (custPropNames != null) {
                     object[] vBodies = (object[])swBodyFolder.GetBodies();
@@ -171,7 +171,7 @@ namespace AddinArtama {
                     }
 
                     if (tipo == TipoListaMaterial.Soldagem) {
-                      oCustPropMngr.Get2("COMPRIMENTO", out string sValue, out string sResolvedvalue);
+                      swCustPropMngr.Get2("COMPRIMENTO", out string sValue, out string sResolvedvalue);
 
                       if (double.TryParse(sResolvedvalue.Replace(".", ","), out double vlr) && double.TryParse(item.Comprimento, out double compr)) {
                         if (vlr > compr && vlr - compr < 10) {
@@ -316,18 +316,18 @@ namespace AddinArtama {
                 SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
                 swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
 
-                CustomPropertyManager oCustPropMngr = swFeat.CustomPropertyManager;
+                CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
 
-                object[] custPropNames = (object[])oCustPropMngr.GetNames();
+                object[] custPropNames = (object[])swCustPropMngr.GetNames();
 
                 if (custPropNames != null) {
-                  oCustPropMngr.Add3("Código", (int)swCustomInfoType_e.swCustomInfoText, reportWorks.Codigo,
+                  swCustPropMngr.Add3("Código", (int)swCustomInfoType_e.swCustomInfoText, reportWorks.Codigo,
                       (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-                  oCustPropMngr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, reportWorks.Material,
+                  swCustPropMngr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, reportWorks.Material,
                      (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-                  oCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, reportWorks.Denominacao,
+                  swCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, reportWorks.Denominacao,
                      (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-                  oCustPropMngr.Add3("Operação", (int)swCustomInfoType_e.swCustomInfoText, reportWorks.Operacao,
+                  swCustPropMngr.Add3("Operação", (int)swCustomInfoType_e.swCustomInfoText, reportWorks.Operacao,
                      (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
                   return true;

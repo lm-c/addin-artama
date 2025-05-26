@@ -126,6 +126,7 @@ namespace AddinArtama {
                 : "CJ";
 
                 item.Denominacao = itemGenerico.Nome;
+                itemGenerico.Situacao = item.Fantasma ? 0 : 1;
 
                 var codigoNovo = await Api.CadasterItemGenericoAsync(itemGenerico);
 
@@ -186,6 +187,7 @@ namespace AddinArtama {
             await PercorrerTreeViewSalvarEngAsync(trvProduto.Nodes, configApi);
 
             BtnCancel_Click(null, null);
+            MsgBox.CloseWaitMessage();
 
             MsgBox.Show("Cadastro de produtos finalizado com sucesso", "Addin LM Projetos",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -194,8 +196,8 @@ namespace AddinArtama {
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao atualizar tempalte\n\n{ex.Message}", "Addin LM Projetos",
              MessageBoxButtons.OK, MessageBoxIcon.Error);
-      } finally {
         MsgBox.CloseWaitMessage();
+      } finally {
         //CarregarGrid();
       }
     }
@@ -212,49 +214,81 @@ namespace AddinArtama {
                 item.CodProduto = produto.CodProduto;
                 item.Denominacao = produto.Denominacao;
               }
-            }
-            var engenharia = new Engenharia {
-              codEmpresa = configApi.codigoEmpresa,
-              codProduto = item.CodProduto,
-              narrativaLinha1 = string.Empty,
-              narrativaLinha2 = string.Empty,
-              narrativaLinha3 = string.Empty,
-              narrativaLinha4 = string.Empty,
-              tipoModulo = "E",
-              codClassificacao = item.TipoComponente == TipoComponente.Montagem ? 3 : 4,
-              nomeArquivoDesenhoEng = item.Name,
-              //engenhariaFantasma = item.fa
-              descEngenhariaFantasma = string.Empty,
-            };
+              var engenharia = new Engenharia {
+                codEmpresa = configApi.codigoEmpresa,
+                codProduto = item.CodProduto,
+                narrativaLinha1 = string.Empty,
+                narrativaLinha2 = string.Empty,
+                narrativaLinha3 = string.Empty,
+                narrativaLinha4 = string.Empty,
+                tipoModulo = "E",
+                codClassificacao = item.CodComponente.StartsWith("10") ? 5 : item.TipoComponente == TipoComponente.Montagem ? 3 : 4,
+                nomeArquivoDesenhoEng = item.Name,
+                engenhariaFantasma = item.Fantasma,
+                descEngenhariaFantasma = string.Empty,
+              };
+              if (node.Parent == null)
+                engenharia.codClassificacao = 2;
 
-            if (node.Nodes.Count > 0) {
-              System.Collections.IList list = node.Nodes;
-              for (int i = 0; i < list.Count; i++) {
-                int index = i + 1;
-                TreeNode nodeFilho = (TreeNode)list[i];
-                var itemFilho = nodeFilho.Tag as ProdutoErp;
-                if (itemFilho != null) {                  
-                  var componente = new ComponenteEng {
-                    seqComponente = index,
-                    codInsumo = itemFilho.CodProduto,
-                    quantidade = itemFilho.Quantidade,
-                    itemKanban = 0,
-                    comprimento = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdCompr,
-                    largura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdLarg,
-                    espessura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdEspess,
-                    percQuebra = 0,
-                    codClassificacaoInsumo = 1, // 1 = produto
-                    seqOperacaoConsumo = 0,
-                  };
-                  engenharia.componentes.Add(componente);
+              if (node.Nodes.Count > 0) {
+                System.Collections.IList list = node.Nodes;
+                for (int i = 0; i < list.Count; i++) {
+                  int index = i + 1;
+                  TreeNode nodeFilho = (TreeNode)list[i];
+                  var itemFilho = nodeFilho.Tag as ProdutoErp;
+                  if (itemFilho != null) {
+                    var classificacao = itemFilho.TipoComponente == TipoComponente.Montagem ? 3 : itemFilho.TipoComponente == TipoComponente.Peca ? 4 : 5;
+
+                    var componenteEng = new ComponenteEng {
+                      seqComponente = index,
+                      codInsumo = itemFilho.CodProduto,
+                      quantidade = itemFilho.Quantidade,
+                      itemKanban = 0,
+                      comprimento = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdCompr,
+                      largura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdLarg,
+                      espessura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdEspess,
+                      percQuebra = 0,
+                      codClassificacaoInsumo = classificacao, // 1 = produto, 3 = subconjunto, 4 = peças e 5 = insumo comprado
+                      seqOperacaoConsumo = 0,
+                    };
+                    engenharia.componentes.Add(componenteEng);
+                  }
                 }
               }
-            }
 
-             await Api.CadastrarEngenhariaAsync(engenharia);
+              var procs = produto.Operacao?.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+              if (procs != null && procs.Length > 0) {
+                for (int seqOperacao = 1; seqOperacao <= procs.Length; seqOperacao++) {
+                  string proc = procs[seqOperacao - 1];
 
-            if (node.Nodes.Count > 0) {
-              await PercorrerTreeViewSalvarEngAsync(node.Nodes, configApi);
+                  var idProc = Convert.ToInt32(proc);
+                  var processo = Processo.ListaProcessos.FirstOrDefault(x => x.codOperacao == idProc);
+                  var operacaoEng = new OperacaoEng {
+                    seqOperacao = seqOperacao,
+                    codOperacao = idProc,
+                    abreviaturaOperacao = processo.abreviatura,
+                    numOperadores = 1,    // definido pelo cliente
+                    codFaseOperacao = processo.faseProducao,
+                    codMascaraMaquina = processo.mascaraMaquina.Replace(".", ""),
+                    centroCusto = processo.CentroCusto,
+                    tempoPadraoOperacao = 1,  // definido pelo cliente
+                    tempoPreparacaoOperacao = 0,   // definido pelo cliente
+                  };
+                  engenharia.operacoes.Add(operacaoEng);
+                }
+              }
+
+              // analizar engenharia
+              //var comp = await Api.GetEngenhariaAsync(item.CodProduto);
+              //if (comp == null || comp.statusEngenharia == 1)
+              await Api.CadastrarEngenhariaAsync(engenharia);
+              //else {
+
+              //}
+
+              if (node.Nodes.Count > 0) {
+                await PercorrerTreeViewSalvarEngAsync(node.Nodes, configApi);
+              }
             }
           }
         }

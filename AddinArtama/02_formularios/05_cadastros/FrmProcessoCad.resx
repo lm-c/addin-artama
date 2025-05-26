@@ -161,7 +161,7 @@
         rkJggg==
 </value>
   </data>
-  <data name="txtMaquina.IconF7" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="txtMascaraMaquina.IconF7" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAIhJREFUOE/t
         0L0KwjAYheFA8adC6+JN64Xo5mInu4jUvXdU34M5SxIKXYsvPNAmX1Jo+Jd1xP73WEx7mil2wog3Gi0k
@@ -169,7 +169,7 @@
         +LDTP5H1FsIXhVciGhifYpgAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="txtMaquina.IconF8" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="txtMascaraMaquina.IconF8" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAALGPC/xhBQAAAGpJREFUOE+1
         kssJgDAQRNcSRO+C2IF9ePPXfyFxBndDlKCLmAcPhmTmEiIl2OB6Rj8NDCqzmxbakNmNe1jBDvbqCG3I
@@ -185,6 +185,21 @@
 </value>
   </data>
   <data name="txtOperacao.IconF8" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAALGPC/xhBQAAAGpJREFUOE+1
+        kssJgDAQRNcSRO+C2IF9ePPXfyFxBndDlKCLmAcPhmTmEiIl2OB6Rj8NDCqzmxbakNmNe1jBDvbqCG3I
+        bOfssBvZoRXfZDeywFwp5wwv1IkDtCJzevdI+Ve98/kDkEn9E5EDaUQpTczVpPsAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="txtCentroCusto.IconF7" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAIhJREFUOE/t
+        0L0KwjAYheFA8adC6+JN64Xo5mInu4jUvXdU34M5SxIKXYsvPNAmX1Jo+Jd1xP73WEx7mil2wog3Gi0k
+        aU17mtFs1gVT9EQNd0AP75+RVeEKDw1oo09cE81ottgOHTz8ivz+wBaz6fYbfMhmv5yWXrLosNvgDl20
+        +LDTP5H1FsIXhVciGhifYpgAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="txtCentroCusto.IconF8" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAALGPC/xhBQAAAGpJREFUOE+1
         kssJgDAQRNcSRO+C2IF9ePPXfyFxBndDlKCLmAcPhmTmEiIl2OB6Rj8NDCqzmxbakNmNe1jBDvbqCG3I

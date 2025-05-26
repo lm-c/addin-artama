@@ -406,6 +406,7 @@
     <Compile Include="03_classes\03_others\Processo.cs" />
     <Compile Include="03_classes\03_others\ProcessoFabricacao.cs" />
     <Compile Include="03_classes\03_others\ReportWorks.cs" />
+    <Compile Include="03_classes\03_others\W_Processo.cs" />
     <Compile Include="03_classes\03_others\Z_Chapa.cs" />
     <Compile Include="03_classes\04_atributos\Attribute.cs" />
     <Compile Include="03_classes\05_extensao\Default.cs" />
@@ -563,6 +564,8 @@
     <None Include="Resources\part1.png" />
     <None Include="Resources\draw1.png" />
     <None Include="Resources\cutlist.png" />
+    <None Include="Resources\ghost1.png" />
+    <None Include="Resources\fantasma.png" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
