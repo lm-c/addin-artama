@@ -314,10 +314,10 @@
     <Compile Include="02_formularios\05_cadastros\FrmPermissao.Designer.cs">
       <DependentUpon>FrmPermissao.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmProcessoCad.cs">
+    <Compile Include="02_formularios\07_integrador\FrmProcessoCad.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmProcessoCad.Designer.cs">
+    <Compile Include="02_formularios\07_integrador\FrmProcessoCad.Designer.cs">
       <DependentUpon>FrmProcessoCad.cs</DependentUpon>
     </Compile>
     <Compile Include="02_formularios\05_cadastros\FrmSelecionarPerfil.cs">
@@ -332,52 +332,58 @@
     <Compile Include="02_formularios\05_cadastros\FrmUsuarioCad.Designer.cs">
       <DependentUpon>FrmUsuarioCad.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\06_configuracoes\FrmConfigTemplate.cs">
+    <Compile Include="02_formularios\88_cards\CardOperacao.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="02_formularios\88_cards\CardOperacao.Designer.cs">
+      <DependentUpon>CardOperacao.cs</DependentUpon>
+    </Compile>
+    <Compile Include="02_formularios\99_configuracoes\FrmConfigTemplate.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="02_formularios\06_configuracoes\FrmConfigTemplate.Designer.cs">
+    <Compile Include="02_formularios\99_configuracoes\FrmConfigTemplate.Designer.cs">
       <DependentUpon>FrmConfigTemplate.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\07_relatorios\FrmManutProps.cs">
+    <Compile Include="02_formularios\06_relatorios\FrmManutProps.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="02_formularios\07_relatorios\FrmManutProps.Designer.cs">
+    <Compile Include="02_formularios\06_relatorios\FrmManutProps.Designer.cs">
       <DependentUpon>FrmManutProps.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\07_relatorios\FrmPackList.cs">
+    <Compile Include="02_formularios\06_relatorios\FrmPackList.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="02_formularios\07_relatorios\FrmPackList.Designer.cs">
+    <Compile Include="02_formularios\06_relatorios\FrmPackList.Designer.cs">
       <DependentUpon>FrmPackList.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\07_relatorios\FrmPlanoPintura.cs">
+    <Compile Include="02_formularios\06_relatorios\FrmPlanoPintura.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="02_formularios\07_relatorios\FrmPlanoPintura.Designer.cs">
+    <Compile Include="02_formularios\06_relatorios\FrmPlanoPintura.Designer.cs">
       <DependentUpon>FrmPlanoPintura.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\07_relatorios\FrmProcessoFabricacao.cs">
+    <Compile Include="02_formularios\06_relatorios\FrmProcessoFabricacao.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="02_formularios\07_relatorios\FrmProcessoFabricacao.Designer.cs">
+    <Compile Include="02_formularios\06_relatorios\FrmProcessoFabricacao.Designer.cs">
       <DependentUpon>FrmProcessoFabricacao.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\07_relatorios\FrmReportWorks.cs">
+    <Compile Include="02_formularios\06_relatorios\FrmReportWorks.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="02_formularios\07_relatorios\FrmReportWorks.Designer.cs">
+    <Compile Include="02_formularios\06_relatorios\FrmReportWorks.Designer.cs">
       <DependentUpon>FrmReportWorks.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\08_integrador\FrmConfigIntegrador.cs">
+    <Compile Include="02_formularios\07_integrador\FrmConfigIntegrador.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="02_formularios\08_integrador\FrmConfigIntegrador.Designer.cs">
+    <Compile Include="02_formularios\07_integrador\FrmConfigIntegrador.Designer.cs">
       <DependentUpon>FrmConfigIntegrador.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\08_integrador\FrmProdutoImport.cs">
+    <Compile Include="02_formularios\07_integrador\FrmProdutoImport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="02_formularios\08_integrador\FrmProdutoImport.Designer.cs">
+    <Compile Include="02_formularios\07_integrador\FrmProdutoImport.Designer.cs">
       <DependentUpon>FrmProdutoImport.cs</DependentUpon>
     </Compile>
     <Compile Include="03_classes\01_tables\configuracao_api.cs" />
@@ -406,7 +412,6 @@
     <Compile Include="03_classes\03_others\Processo.cs" />
     <Compile Include="03_classes\03_others\ProcessoFabricacao.cs" />
     <Compile Include="03_classes\03_others\ReportWorks.cs" />
-    <Compile Include="03_classes\03_others\W_Processo.cs" />
     <Compile Include="03_classes\03_others\Z_Chapa.cs" />
     <Compile Include="03_classes\04_atributos\Attribute.cs" />
     <Compile Include="03_classes\05_extensao\Default.cs" />
@@ -485,7 +490,7 @@
     <EmbeddedResource Include="02_formularios\05_cadastros\FrmPermissao.resx">
       <DependentUpon>FrmPermissao.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\05_cadastros\FrmProcessoCad.resx">
+    <EmbeddedResource Include="02_formularios\07_integrador\FrmProcessoCad.resx">
       <DependentUpon>FrmProcessoCad.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="02_formularios\05_cadastros\FrmSelecionarPerfil.resx">
@@ -494,28 +499,31 @@
     <EmbeddedResource Include="02_formularios\05_cadastros\FrmUsuarioCad.resx">
       <DependentUpon>FrmUsuarioCad.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\06_configuracoes\FrmConfigTemplate.resx">
+    <EmbeddedResource Include="02_formularios\88_cards\CardOperacao.resx">
+      <DependentUpon>CardOperacao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="02_formularios\99_configuracoes\FrmConfigTemplate.resx">
       <DependentUpon>FrmConfigTemplate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\07_relatorios\FrmManutProps.resx">
+    <EmbeddedResource Include="02_formularios\06_relatorios\FrmManutProps.resx">
       <DependentUpon>FrmManutProps.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\07_relatorios\FrmPackList.resx">
+    <EmbeddedResource Include="02_formularios\06_relatorios\FrmPackList.resx">
       <DependentUpon>FrmPackList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\07_relatorios\FrmPlanoPintura.resx">
+    <EmbeddedResource Include="02_formularios\06_relatorios\FrmPlanoPintura.resx">
       <DependentUpon>FrmPlanoPintura.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\07_relatorios\FrmProcessoFabricacao.resx">
+    <EmbeddedResource Include="02_formularios\06_relatorios\FrmProcessoFabricacao.resx">
       <DependentUpon>FrmProcessoFabricacao.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\07_relatorios\FrmReportWorks.resx">
+    <EmbeddedResource Include="02_formularios\06_relatorios\FrmReportWorks.resx">
       <DependentUpon>FrmReportWorks.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\08_integrador\FrmConfigIntegrador.resx">
+    <EmbeddedResource Include="02_formularios\07_integrador\FrmConfigIntegrador.resx">
       <DependentUpon>FrmConfigIntegrador.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\08_integrador\FrmProdutoImport.resx">
+    <EmbeddedResource Include="02_formularios\07_integrador\FrmProdutoImport.resx">
       <DependentUpon>FrmProdutoImport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -541,31 +549,26 @@
   <ItemGroup>
     <None Include="Properties\DataSources\PackList.datasource" />
     <None Include="Properties\DataSources\ProcessoFabricacao.datasource" />
-    <None Include="Resources\trv_assembly.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\trv_form.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\trv_material.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\trv_menu.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\trv_part.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\trv_permissao.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\not_draw1.png" />
-    <None Include="Resources\assembly1.png" />
-    <None Include="Resources\part1.png" />
-    <None Include="Resources\draw1.png" />
-    <None Include="Resources\cutlist.png" />
-    <None Include="Resources\ghost1.png" />
     <None Include="Resources\fantasma.png" />
+    <None Include="Resources\assembly1.png" />
+    <None Include="Resources\assembly_cost.png" />
+    <None Include="Resources\assembly_not.png" />
+    <None Include="Resources\cutlist.png" />
+    <None Include="Resources\draw1.png" />
+    <None Include="Resources\menu.png" />
+    <None Include="Resources\not_draw1.png" />
+    <None Include="Resources\part1.png" />
+    <None Include="Resources\part_cost.png" />
+    <None Include="Resources\part_not.png" />
+    <None Include="Resources\sheetmetal.png" />
+    <None Include="Resources\toolbox_item.png" />
+    <None Include="Resources\tools.png" />
+    <None Include="Resources\warning.png" />
+    <None Include="Resources\weldment.png" />
+    <None Include="Resources\weldmentcutlist.png" />
+    <None Include="Resources\windows.png" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

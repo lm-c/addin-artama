@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
@@ -243,20 +244,20 @@ namespace AddinArtama {
                   listaCorte.Operacao = listaCorte.OperacaoOrigem = sResolvedvalue;
 
                   swCustPropMngr.Get2("Espessura da Chapa metálica", out sValue, out sResolvedvalue);
-                  double.TryParse(sResolvedvalue.Replace(".", ","), out double esp);
+                  double.TryParse(sResolvedvalue, NumberStyles.Any, CultureInfo.InvariantCulture, out double esp);
                   listaCorte.CxdEspess = Math.Round(esp, 3);
 
                   swCustPropMngr.Get2("Largura da Caixa delimitadora", out sValue, out sResolvedvalue);
-                  double.TryParse(sResolvedvalue.Replace(".", ","), out double larg);
+                  double.TryParse(sResolvedvalue, NumberStyles.Any, CultureInfo.InvariantCulture, out double larg);
                   listaCorte.CxdLarg = Math.Round(larg, 3);
 
                   swCustPropMngr.Get2("Comprimento da Caixa delimitadora", out sValue, out sResolvedvalue);
-                  double.TryParse(sResolvedvalue.Replace(".", ","), out double comp_cxd);
-                  listaCorte.CxdCompr = comp_cxd > 0 ? Math.Round(comp_cxd, 3) : Math.Round(compr, 3);
+                  double.TryParse(sResolvedvalue, NumberStyles.Any, CultureInfo.InvariantCulture, out double comp);
+                  listaCorte.CxdCompr = comp > 0 ? Math.Round(comp, 3) : Math.Round(compr, 3);
 
                   swCustPropMngr.Get2("Massa", out sValue, out sResolvedvalue);
-                  double.TryParse(sResolvedvalue.Replace(".", ","), out double Massa);
-                  listaCorte.Massa = Math.Round(Massa, 3);
+                  double.TryParse(sResolvedvalue, NumberStyles.Any, CultureInfo.InvariantCulture, out double massa);
+                  listaCorte.Massa = Math.Round(massa, 3);
 
                   if (listaCorte.Tipo == TipoListaMaterial.Chapa) {
                     string descCustProp = $"\"SW-Largura da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\" X \"SW-Comprimento da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\"";

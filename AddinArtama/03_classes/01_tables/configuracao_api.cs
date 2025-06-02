@@ -19,6 +19,17 @@ namespace AddinArtama {
     [DisplayName("Código")]
     public int id { get; set; }
 
+    [Browsable(false)]
+    public int codigoEmpresa { get; set; }
+
+    [Browsable(false)]
+    [StringLength(250)]
+    public string endereco { get; set; }
+
+    [Browsable(false)]
+    [StringLength(500)]
+    public string token { get; set; }
+
     /// <summary>
     /// 3 - Materiais acabados - nivel 1 da máscara
     /// </summary>
@@ -61,65 +72,38 @@ namespace AddinArtama {
     [StringLength(2)]
     public string classificacao { get; set; }
     
-    /// <summary>
-    /// último sequencial usado para o código reduzido (Quando alterado nivel 5, deve ser zerado
-    /// </summary>
+    ///// <summary>
+    ///// último sequencial usado para o código reduzido (Quando alterado nivel 5, deve ser zerado
+    ///// </summary>
+    //[Browsable(false)]
+    //public int sequencial { get; set; }
+
     [Browsable(false)]
-    public int sequencial { get; set; }
+    public int classificacaoOrigem { get; set; }
+
+    [Browsable(false)]
+    public int classificacaoFinalidade { get; set; }
+
+    [Browsable(false)]
+    public int tipoControleSaida { get; set; }
 
     [Browsable(false)]
     public int classificacaoFiscal { get; set; }
 
     [Browsable(false)]
-    public int finalidade { get; set; }
-
-    [Browsable(false)]
-    public int origem { get; set; }
-
-    [Browsable(false)]
-    public int tipo { get; set; }
+    public int localizacaoEntrada { get; set; }
     
     [Browsable(false)]
-    public int procedencia { get; set; }
-
-    [Browsable(false)]
-    public double perComissao { get; set; }
-
-    [Browsable(false)]
-    public double perIPI { get; set; }
-
-    [Browsable(false)]
-    public int situacaoICMS { get; set; }
+    public int localizacaoSaida { get; set; }
     
-    [Browsable(false)]
-    public int codNatureza { get; set; }
-    
-    [Browsable(false)]
-    public int codigoICMS { get; set; }
-    
-    [Browsable(false)]
-    public int codigoIPI { get; set; }
-
     [Browsable(false)]
     [StringLength(10)]
     public string codContaContabil { get; set; }
 
     [Browsable(false)]
-    public int tipoControleSaida { get; set; }
-    
-    // api config
-    [Browsable(false)]
-    public int codigoEmpresa { get; set; }
+    public double perIPI { get; set; }
 
-    [Browsable(false)]
-    [StringLength(250)]
-    public string endereco { get; set; }
-
-    [Browsable(false)]
-    [StringLength(500)]
-    public string token { get; set; }
-
-    public static async Task<bool> SalvarAsync(configuracao_api configuracao) {
+    public static bool Salvar(configuracao_api configuracao) {
       try {
         using (ContextoDados db = new ContextoDados()) {
           if (configuracao.id == 0) {
@@ -129,29 +113,25 @@ namespace AddinArtama {
             return true;
           } else {
             var modelAlt = db.configuracao_api.FirstOrDefault(x => x.id == configuracao.id);
+            modelAlt.codigoEmpresa = configuracao.codigoEmpresa;
+            modelAlt.endereco = configuracao.endereco;
+            modelAlt.token = configuracao.token;
+
             modelAlt.grupo = configuracao.grupo;
             modelAlt.subgrupo = configuracao.subgrupo;
             modelAlt.tipo_peca = configuracao.tipo_peca;
             modelAlt.tipo_montagem = configuracao.tipo_montagem;
             modelAlt.familia = configuracao.familia;
             modelAlt.classificacao = configuracao.classificacao;
-            modelAlt.sequencial = configuracao.sequencial;
-            modelAlt.classificacaoFiscal = configuracao.classificacaoFiscal;
-            modelAlt.finalidade = configuracao.finalidade;
-            modelAlt.origem = configuracao.origem;
-            modelAlt.tipo = configuracao.tipo;
-            modelAlt.procedencia = configuracao.procedencia;
-            modelAlt.perComissao = configuracao.perComissao;
-            modelAlt.perIPI = configuracao.perIPI;
-            modelAlt.situacaoICMS = configuracao.situacaoICMS;
-            modelAlt.codNatureza = configuracao.codNatureza;
-            modelAlt.codigoICMS = configuracao.codigoICMS;
-            modelAlt.codigoIPI = configuracao.codigoIPI;
-            modelAlt.codContaContabil = configuracao.codContaContabil;
+            
+            modelAlt.classificacaoOrigem = configuracao.classificacaoOrigem;
+            modelAlt.classificacaoFinalidade = configuracao.classificacaoFinalidade;
             modelAlt.tipoControleSaida = configuracao.tipoControleSaida;
-            modelAlt.codigoEmpresa = configuracao.codigoEmpresa;
-            modelAlt.endereco = configuracao.endereco;
-            modelAlt.token = configuracao.token;
+            modelAlt.classificacaoFiscal = configuracao.classificacaoFiscal;
+            modelAlt.localizacaoEntrada = configuracao.localizacaoEntrada;
+            modelAlt.localizacaoSaida = configuracao.localizacaoSaida;
+            modelAlt.codContaContabil = configuracao.codContaContabil;
+            modelAlt.perIPI = configuracao.perIPI;
 
             db.SaveChanges();
             return true;

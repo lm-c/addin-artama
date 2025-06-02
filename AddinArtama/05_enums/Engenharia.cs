@@ -7,7 +7,7 @@ public enum TipoMateriaPrima {
   Chapa = 1,
 }
 
-public enum TipoDucumento{
+public enum TipoDocumento{
   [Description("Peça")]
   Peca = 0,
   [Description("Montagem")]
@@ -19,4 +19,22 @@ public enum TipoSequencia {
   Processamento = 0,
   [Description("Destino")]
   Destino = 1,
+}
+
+public enum TipoLogEngenharia {
+  [Description("Duplicação de Produto")]
+  DuplicacaoProduto = 0,
+  [Description("Pendência de Engenharia")]
+  PendenciEngenharia = 1,
+}
+
+public enum PendenciasEngenharia {
+  [Description("Nescessário revisar operações")]
+  OperacaoRevisar = 0,
+  [Description("Não possui operações")]
+  OperacaoNaoPossui = 1,
+  [Description("Aberto como somente leitura")]
+  SomenteLeitura = 2,
+  [Description("Material não cadastrado no ERP")]
+  MateriaPrimaIncorreta = 3,
 }

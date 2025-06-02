@@ -1,6 +1,4 @@
-﻿using AddinArtama;
-using AddinArtama;
-using LmCorbieUI;
+﻿using LmCorbieUI;
 using LmCorbieUI.Controls;
 using LmCorbieUI.Design;
 using LmCorbieUI.LmForms;
@@ -190,6 +188,11 @@ namespace AddinArtama {
 
     private void MsCadastroProduto_Click(object sender, EventArgs e) {
       var frm = new FrmProdutoImport();
+      AbrirFormFilho(frm);
+    }
+
+    private void MsConfiguracaoProcesso_Click(object sender, EventArgs e) {
+      var frm = new FrmProcessoCad();
       AbrirFormFilho(frm);
     }
 

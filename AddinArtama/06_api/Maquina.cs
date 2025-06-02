@@ -26,7 +26,6 @@ namespace AddinArtama {
       [DataObjectField(false, true)]
       public string descricao { get; set; }
       public string mascara { get; set; }
-      public string situacaoMaquina { get; set; }
     }
 
     private class ResponseMaq {

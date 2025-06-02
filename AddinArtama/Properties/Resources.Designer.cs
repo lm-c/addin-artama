@@ -73,6 +73,26 @@ namespace AddinArtama.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap assembly_cost {
+            get {
+                object obj = ResourceManager.GetObject("assembly_cost", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap assembly_not {
+            get {
+                object obj = ResourceManager.GetObject("assembly_not", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cutlist {
             get {
                 object obj = ResourceManager.GetObject("cutlist", resourceCulture);
@@ -103,6 +123,16 @@ namespace AddinArtama.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap menu {
+            get {
+                object obj = ResourceManager.GetObject("menu", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap not_draw {
             get {
                 object obj = ResourceManager.GetObject("not_draw", resourceCulture);
@@ -123,9 +153,9 @@ namespace AddinArtama.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap trv_assembly {
+        internal static System.Drawing.Bitmap part_cost {
             get {
-                object obj = ResourceManager.GetObject("trv_assembly", resourceCulture);
+                object obj = ResourceManager.GetObject("part_cost", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +163,9 @@ namespace AddinArtama.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap trv_form {
+        internal static System.Drawing.Bitmap part_not {
             get {
-                object obj = ResourceManager.GetObject("trv_form", resourceCulture);
+                object obj = ResourceManager.GetObject("part_not", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,9 +173,9 @@ namespace AddinArtama.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap trv_material {
+        internal static System.Drawing.Bitmap sheetmetal {
             get {
-                object obj = ResourceManager.GetObject("trv_material", resourceCulture);
+                object obj = ResourceManager.GetObject("sheetmetal", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,9 +183,9 @@ namespace AddinArtama.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap trv_menu {
+        internal static System.Drawing.Bitmap toolbox_item {
             get {
-                object obj = ResourceManager.GetObject("trv_menu", resourceCulture);
+                object obj = ResourceManager.GetObject("toolbox_item", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,9 +193,9 @@ namespace AddinArtama.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap trv_part {
+        internal static System.Drawing.Bitmap tools {
             get {
-                object obj = ResourceManager.GetObject("trv_part", resourceCulture);
+                object obj = ResourceManager.GetObject("tools", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -173,9 +203,39 @@ namespace AddinArtama.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap trv_permissao {
+        internal static System.Drawing.Bitmap warning {
             get {
-                object obj = ResourceManager.GetObject("trv_permissao", resourceCulture);
+                object obj = ResourceManager.GetObject("warning", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap weldment {
+            get {
+                object obj = ResourceManager.GetObject("weldment", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap weldmentcutlist {
+            get {
+                object obj = ResourceManager.GetObject("weldmentcutlist", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap windows {
+            get {
+                object obj = ResourceManager.GetObject("windows", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

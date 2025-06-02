@@ -23,6 +23,8 @@ namespace AddinArtama {
     Peca = 1,
     [Description("Lista de material")]
     ListaMaterial = 2,
+    [Description("Item de Biblioteca")]
+    ItemBiblioteca = 3,
   }
 
   public enum SeriadoFiltro {

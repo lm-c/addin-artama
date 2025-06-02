@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using LmCorbieUI.Metodos.AtributosCustomizados;
+using System;
 
 namespace AddinArtama {
   internal class produto_erp {
@@ -16,7 +18,7 @@ namespace AddinArtama {
     [DataObjectField(false, true)]
     public long codigo_componente { get; set; }
 
-    [StringLength(60)]
+    [StringLength(70)]
     public string descricao { get; set; }
 
     [StringLength(50)]
@@ -31,7 +33,28 @@ namespace AddinArtama {
     [StringLength(150)]
     public string configuracao { get; set; }  
     
-    public bool fantasma { get; set; }   
+    public bool fantasma { get; set; }
+
+    public double sobremetal_largura { get; set; } = 0;
+    public double sobremetal_comprimento { get; set; } = 0;
+
+    public double espessura { get; set; } = 0;
+    public double largura { get; set; } = 0;
+    public double comprimento { get; set; } = 0;
+    public double peso_bruto { get; set; } = 0;
+    public double peso_liquido { get; set; }
+    public DateTime adicionado_em { get; set; }
+    public DateTime alterado_em { get; set; }
+
+    public int adicionado_por_id { get; set; }
+    [ForeignKey("adicionado_por_id"), Browsable(false), NaoVerificarAlteracao]
+    public usuarios adicionado_por { get; set; }
+    
+    public int alterado_por_id { get; set; }
+    [ForeignKey("alterado_por_id"), Browsable(false), NaoVerificarAlteracao]
+    public usuarios alterado_por { get; set; }
+
+
 
   }
 }

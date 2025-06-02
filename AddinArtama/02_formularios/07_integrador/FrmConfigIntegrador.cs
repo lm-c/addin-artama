@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.IO;
-using System.Linq;
-using SolidWorks.Interop.sldworks;
 using LmCorbieUI;
 using LmCorbieUI.LmForms;
 using LmCorbieUI.Metodos;
@@ -38,7 +35,7 @@ namespace AddinArtama {
     private void BtnSalvar_Click(object sender, EventArgs e) {
       if (!ValidarDados()) return;
 
-      configuracao_api.SalvarAsync(model).Wait();
+      configuracao_api.Salvar(model);
 
       Api.token = model.token;
       Api.url = model.endereco;

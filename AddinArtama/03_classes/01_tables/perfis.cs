@@ -243,13 +243,13 @@ namespace AddinArtama {
 
             switch (tipo) {
               case TipoPermissao.Menu:
-              bmp = Properties.Resources.trv_menu;
+              bmp = Properties.Resources.menu;
               break;
               case TipoPermissao.Formulario:
-              bmp = Properties.Resources.trv_form;
+              bmp = Properties.Resources.windows;
               break;
               case TipoPermissao.Configuracao:
-              bmp = Properties.Resources.trv_permissao;
+              bmp = Properties.Resources.tools;
               break;
               default:
               break;
@@ -279,13 +279,13 @@ namespace AddinArtama {
 
                 switch (tipo) {
                   case TipoPermissao.Menu:
-                  bmp = Properties.Resources.trv_menu;
+                  bmp = Properties.Resources.menu;
                   break;
                   case TipoPermissao.Formulario:
-                  bmp = Properties.Resources.trv_form;
+                  bmp = Properties.Resources.windows;
                   break;
                   case TipoPermissao.Configuracao:
-                  bmp = Properties.Resources.trv_permissao;
+                  bmp = Properties.Resources.tools;
                   break;
                   default:
                   break;

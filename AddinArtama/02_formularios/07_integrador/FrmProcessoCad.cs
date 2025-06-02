@@ -29,10 +29,9 @@ namespace AddinArtama {
       txtID.ReadOnly = false;
       txtOperacao.Focus();
       txtID.Text = string.Empty;
-      txtMascaraMaquina.Text = string.Empty;
-      txtCentroCusto.Text = string.Empty;
+      txtMaquina.SelectedValue = null;
       txtOperacao.SelectedValue = null;
-
+      btnExcluir.Enabled = false;
       txtID.ReadOnly = false;
       txtID.Refresh();
 
@@ -43,37 +42,45 @@ namespace AddinArtama {
     private void BtnSalvar_Click(object sender, EventArgs e) {
       if (Controles.PossuiCamposInvalidos(this)) return;
 
-      Salvar();
+      SalvarAsync();
     }
 
-    private async Task Salvar() {
+    private async Task SalvarAsync() {
       try {
         model.ativo = ckbSituacao.Checked;
-        model.mascara_maquina = txtMascaraMaquina.Text;
-        model.centro_custo = txtCentroCusto.Text;
+        model.codigo_maquina = (int)txtMaquina.SelectedValue;
         model.codigo_operacao = (int)txtOperacao.SelectedValue;
 
         if (processos.Salvar(model)) {
-          await Processo.Carregar();
           //txtID.Text = model.id.ToString();
           //txtID.ReadOnly = true;
           //txtID.Refresh();
           BtnLimpar_Click(null, null);
-
-          var frm = UcPainelTarefas.Instancia.pnlMain.Controls.OfType<FrmProcesso>().FirstOrDefault();
-
-          if (frm != null) {
-            frm.CarregarControlesProcessos();
-          }
         }
+
+        await Processo.Carregar();
       } catch (Exception ex) {
         LmException.ShowException(ex, "Erro ao Cadastrar Operação");
       }
     }
 
+    private void BtnExcluir_Click(object sender, EventArgs e) {
+      try {
+        if (MsgBox.Show("Deseja realmente excluir este registro?",
+          "Excluir Registro", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+          processos.Excluir(model.id);
+          Toast.Info("Excluido com Sucesso!");
+          BtnLimpar_Click(sender, new EventArgs());
+          Processo.Carregar();
+        }
+      } catch (Exception ex) {
+        LmException.ShowException(ex, "Erro ao Cadastrar Matéria Prima");
+      }
+    }
+
     private void TxtID_ButtonClickF7(object sender, EventArgs e) {
       FrmConsultaGeral frm = new FrmConsultaGeral(this,
-        processos.SelecionarTodosRel(), "Consulta de Processos");
+       Processo.ListaProcessos, "Consulta de Processos");
       if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK /*&& Modo == Modo.Novo*/)
         if (int.TryParse(frm.valor[0], out int ID)) {
           txtID.Text = frm.valor[0];
@@ -91,11 +98,12 @@ namespace AddinArtama {
         if (model != null) {
           txtID.Text = model.id.ToString();
           ckbSituacao.Checked = model.ativo;
-          txtMascaraMaquina.Text = model.mascara_maquina;
-          txtCentroCusto.Text = model.centro_custo;
+          txtMaquina.SelectedValue = model.codigo_maquina;
           txtOperacao.SelectedValue = model.codigo_operacao;
 
           ckbSituacao.Checked = model.ativo;
+
+          btnExcluir.Enabled = true;
 
           txtID.ReadOnly = true;
         } else model = new processos();
@@ -105,12 +113,12 @@ namespace AddinArtama {
     private void CarregarComboBox() {
       Invoke(new MethodInvoker(async delegate () {
         try {
-          //var maqs = await Api.GetMaquinasAsync();
+          var maqs = await Api.GetMaquinasAsync();
           var ops = await Api.GetOpsAsync();
 
-          // maqs.ForEach(x => { x.descricao = $"{x.codMaquina} - {x.descricao}"; });
-          ops.ForEach(x => { x.Descricao = $"{x.CodOperacao} - {x.Descricao}"; });
-          //txtMascaraMaquina.CarregarComboBox(maqs);
+          maqs.ForEach(x => { x.descricao = $"{x.codMaquina} - {x.descricao} [{x.mascara}]"; });
+          ops.ForEach(x => { x.descricao = $"{x.codOperacao} - {x.descricao} [{x.abreviatura}]"; });
+          txtMaquina.CarregarComboBox(maqs);
           txtOperacao.CarregarComboBox(ops);
         } catch (Exception ex) {
           //Toast.Warning(ex.ToString());

@@ -12,12 +12,17 @@ using System.Linq;
 
 namespace AddinArtama {
   internal class Processo {
+    [DisplayName("Código Interno")]
+    [LarguraColunaGrid(120)]
+    public int codAxion { get; set; }
+
     [DisplayName("Código Operação")]
     [LarguraColunaGrid(120)]
     [DataObjectField(true, false)]
     [AlinhamentoColunaGrid(System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter)]
     public int codOperacao { get; set; }
 
+    [Browsable(false)]
     [DisplayName("Abreviatura")]
     [LarguraColunaGrid(120)]
     public string abreviatura { get; set; }
@@ -26,56 +31,60 @@ namespace AddinArtama {
     [LarguraColunaGrid(200)]
     [DataObjectField(false, true)]
     public string descrOperacao { get; set; }
-    
-    //[DisplayName("Código Máquina")]
-    //[LarguraColunaGrid(120)]
-    //public int codMaquina { get; set; }
 
-    //[DisplayName("Descrição Máquina")]
-    //[LarguraColunaGrid(150)]
-    //[DataObjectField(false, true)]
-    //public string descrMaquina { get; set; }
-    
-    [DisplayName("Mascara Máquina")]
+    [DisplayName("Código Máquina")]
     [LarguraColunaGrid(120)]
-    [DataObjectField(false, true)]
+    public int codMaquina { get; set; }
+
+    [DisplayName("Descrição Máquina")]
+    [LarguraColunaGrid(150)]
+    public string descrMaquina { get; set; }
+
+    [DisplayName("Máscara Máquina")]
+    [LarguraColunaGrid(120)]
     public string mascaraMaquina { get; set; }
-
-    [DisplayName("Linha Máquina")]
-    [LarguraColunaGrid(120)]
-    public string CentroCusto { get; set; }
 
     [DisplayName("Tipo")]
     [LarguraColunaGrid(100)]
     public string tipo { get; set; }
 
+    [DisplayName("Cenytro de Custo")]
+    [LarguraColunaGrid(100)]
+    public string centroCusto { get; set; }
+
+    [Browsable(false)]
     [DisplayName("Fase produção")]
     [LarguraColunaGrid(120)]
     public int faseProducao { get; set; }
 
     public static List<Processo> ListaProcessos { get; set; } = new List<Processo>();
+    public static List<Api.Operacao> ListaOperacoesERP { get; set; } = new List<Api.Operacao>();
+    public static List<Api.Maquina> ListaMaquinasERP { get; set; } = new List<Api.Maquina>();
 
     public static async Task Carregar() {
       try {
         ListaProcessos = new List<Processo>();
 
-        //var maquinas = await Api.GetMaquinasAsync();
-        var operacoes = await Api.GetOpsAsync();
+        ListaOperacoesERP = await Api.GetOpsAsync();
+        ListaMaquinasERP = await Api.GetMaquinasAsync();
+
         var procs = processos.SelecionarTodos();
 
         foreach (var processo in procs) {
-          var operacao = operacoes.FirstOrDefault(x => x.CodOperacao == processo.codigo_operacao);
-          //var maquina = maquinas.FirstOrDefault(x => x.codMaquina == processo.codigo_maquina);
+          var operacao = ListaOperacoesERP.FirstOrDefault(x => x.codOperacao == processo.codigo_operacao);
+          var maquina = ListaMaquinasERP.FirstOrDefault(x => x.codMaquina == processo.codigo_maquina);
+
           ListaProcessos.Add(new Processo {
-            codOperacao = operacao.CodOperacao,
-            abreviatura = operacao.Abreviatura,
-            descrOperacao = operacao.Descricao.Replace("\\", "_").Replace("/", "_"),
-            //descrMaquina = maquina.descReduzida.Replace("\\", "_").Replace("/", "_"),
-            mascaraMaquina = processo.mascara_maquina,
-            CentroCusto = processo.centro_custo,
-            //codMaquina = maquina.codMaquina,
-            tipo = operacao.Tipo,
-            faseProducao = operacao.FaseProducao ?? 0 // Default para 0 se for nulo
+            codAxion = processo.id,
+            codOperacao = operacao.codOperacao,
+            abreviatura = operacao.abreviatura,
+            descrOperacao = operacao.descricao.Replace("\\", "_").Replace("/", "_"),
+            descrMaquina = maquina.descricao.Replace("\\", "_").Replace("/", "_"),
+            mascaraMaquina = maquina.mascara,
+            codMaquina = maquina.codMaquina,
+            tipo = operacao.tipo,
+            centroCusto = maquina.centroCusto,
+            faseProducao = operacao.faseProducao ?? 0 // Default para 0 se for nulo
           });
         }
         ListaProcessos = ListaProcessos.OrderByDescending(x => x.tipo).ThenBy(x => x.codOperacao).ToList();

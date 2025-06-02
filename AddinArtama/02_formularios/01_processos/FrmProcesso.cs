@@ -72,12 +72,13 @@ namespace AddinArtama {
         var swModel = (ModelDoc2)Sw.App.ActiveDoc;
 
         if (swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING) {
-          _produtos = new SortableBindingList<ProdutoErp>();
+          //_produtos = new SortableBindingList<ProdutoErp>();
 
-          _montagemPrincipal = Path.GetFileNameWithoutExtension(swModel.GetPathName()).ToLower();
+          //_montagemPrincipal = Path.GetFileNameWithoutExtension(swModel.GetPathName()).ToLower();
 
-          _produtos = ProdutoErp.GetComponents();
-          dgv.CarregarGrid(_produtos);
+          //TreeView trv = new TreeView();
+          //_produtos = ProdutoErp.GetComponentsAsync(trv);
+          //dgv.CarregarGrid(_produtos);
         } else {
           Toast.Warning("Comando apenas para Peças e Montagens");
         }
@@ -267,7 +268,7 @@ namespace AddinArtama {
 
     private void AtualizarInformacoes(ProdutoErp produtoErp) {
       txtDescricao.Text = produtoErp.Denominacao;
-      lblPeso.Text = produtoErp.Massa + " kg";
+      lblPeso.Text = produtoErp.PesoLiquido + " kg";
       if (produtoErp.ItensCorte?.Count == 1 || produtoErp.Referencia.StartsWith("Item da lista de corte")) {
         var espess = produtoErp.ItensCorte[0].CxdEspess;
         var largur = produtoErp.ItensCorte[0].CxdLarg;

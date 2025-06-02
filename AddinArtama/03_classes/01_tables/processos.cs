@@ -23,14 +23,8 @@ namespace AddinArtama {
     public int codigo_operacao { get; set; }
 
     [LarguraColunaGrid(120)]
-    [DisplayName("Mascara da Máquina")]
-    [StringLength(20)]
-    public string mascara_maquina { get; set; }
-
-    [LarguraColunaGrid(120)]
-    [DisplayName("Centro de Custo")]
-    [StringLength(20)]
-    public string centro_custo { get; set; }
+    [DisplayName("Código Máquina")]
+    public int codigo_maquina { get; set; }
 
     [LarguraColunaGrid(80)]
     public bool ativo { get; set; }
@@ -56,8 +50,7 @@ namespace AddinArtama {
 
             var modelAlt = db.processos.FirstOrDefault(x => x.id == processo.id);
             modelAlt.codigo_operacao = processo.codigo_operacao;
-            modelAlt.mascara_maquina = processo.mascara_maquina;
-            modelAlt.centro_custo = processo.centro_custo;
+            modelAlt.codigo_maquina = processo.codigo_maquina;
             modelAlt.ativo = processo.ativo;
 
             db.SaveChanges();
@@ -65,12 +58,22 @@ namespace AddinArtama {
             Toast.Success("Processo Alterado com Sucesso!");
           }
 
-          Processo.Carregar();
           return true;
         }
       } catch (Exception ex) {
         MsgBox.Show("Erro ao Salvar Processo.", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return false;
+      }
+    }
+
+    public static void Excluir(int processo_id) {
+      try {
+        using (ContextoDados db = new ContextoDados()) {
+          db.processos.Remove(db.processos.FirstOrDefault(x => x.id == processo_id));
+          db.SaveChanges();
+        }
+      } catch (Exception ex) {
+        MsgBox.Show("Erro ao Excluir Usuario.", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -81,40 +84,6 @@ namespace AddinArtama {
         using (ContextoDados db = new ContextoDados()) {
           _return = Enumerable.ToList(
            db.processos);
-        }
-      } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Retornar Processos");
-      }
-
-      return _return;
-    }
-
-    public static List<W_Processo> SelecionarTodosRel() {
-      var _return = new List<W_Processo>();
-
-      try {
-        using (ContextoDados db = new ContextoDados()) {
-          Enumerable.ToList(
-            from x in
-           db.processos
-            select new {
-              x.id,
-              x.codigo_operacao,
-              x.mascara_maquina,
-              x.centro_custo,
-              x.ativo,
-            })
-            .ForEach(x => {
-              var proc = Processo.ListaProcessos.FirstOrDefault(op => op.codOperacao == x.codigo_operacao);
-              _return.Add(new W_Processo {
-                Codigo = x.id,
-                CodOperacao = x.codigo_operacao,
-                DescrOperacao = proc.descrOperacao,
-                MascaraMaquina = x.mascara_maquina,
-                CentroCusto = x.centro_custo,
-                Ativo = x.ativo,
-              });
-            });
         }
       } catch (Exception ex) {
         LmException.ShowException(ex, "Erro ao Retornar Processos");

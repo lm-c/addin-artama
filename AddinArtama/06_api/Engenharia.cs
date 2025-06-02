@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using RestSharp;
 using Newtonsoft.Json.Linq;
 using LmCorbieUI;
-using System.Windows.Forms;
 
 namespace AddinArtama {
   internal partial class Api {
@@ -14,13 +13,8 @@ namespace AddinArtama {
       public int codEmpresa { get; set; }
       public string codProduto { get; set; }
       public string descricaoProduto { get; set; } = "";
-      public string narrativaLinha1 { get; set; } = "";
-      public string narrativaLinha2 { get; set; } = "";
-      public string narrativaLinha3 { get; set; } = "";
-      public string narrativaLinha4 { get; set; } = "";
       public string tipoModulo { get; set; } = "E";
       public int codClassificacao { get; set; }
-      public int statusEngenharia { get; set; }
       public string nomeArquivoDesenhoEng { get; set; }
       public bool engenhariaFantasma { get; set; }
       public string descEngenhariaFantasma { get; set; }
@@ -40,7 +34,7 @@ namespace AddinArtama {
       public double percQuebra { get; set; }
       public int codClassificacaoInsumo { get; set; }
       public string codPEInsumo { get; set; }
-      public int seqOperacaoConsumo { get; set; }
+      public string centroCusto { get; set; }
     }
 
     internal class OperacaoEng {
@@ -50,14 +44,13 @@ namespace AddinArtama {
       public double numOperadores { get; set; }
       public int codFaseOperacao { get; set; }
       public string codMascaraMaquina { get; set; }
-      public string centroCusto { get; set; }
+      public int codLinhaProducao { get; set; }
       public double tempoPadraoOperacao { get; set; }
       public double tempoPreparacaoOperacao { get; set; }
+      public string centroCusto { get; set; }
     }
 
-    internal static async Task<bool> CadastrarEngenhariaAsync(Engenharia engenharia) {
-      var configApi = configuracao_api.Selecionar();
-
+    internal static async Task<bool> CadastrarEngenhariaAsync(ContextoDados db, Engenharia engenharia) {
       try {
         JObject jsonObject = new JObject();
 
@@ -67,14 +60,10 @@ namespace AddinArtama {
         var bodyObject = "" +
           "{" +
              $"\"codEmpresa\": {engenharia.codEmpresa}," +
-             $"\"codProduto\": \"{engenharia.codProduto}\"," +
-             $"\"narrativaLinha1\": \"{engenharia.narrativaLinha1}\"," +
-             $"\"narrativaLinha2\": \"{engenharia.narrativaLinha2}\"," +
-             $"\"narrativaLinha3\": \"{engenharia.narrativaLinha3}\"," +
-             $"\"narrativaLinha4\": \"{engenharia.narrativaLinha4}\"," +
              $"\"tipoModulo\": \"{engenharia.tipoModulo}\"," +
              $"\"codClassificacao\": {engenharia.codClassificacao}," +
              $"\"nomeArquivoDesenhoEng\": \"{engenharia.nomeArquivoDesenhoEng}\"," +
+             $"\"codProduto\": \"{engenharia.codProduto}\"," +
              $"\"engenhariaFantasma\": {engenharia.engenhariaFantasma.ToString().ToLower()}," +
              $"\"descEngenhariaFantasma\": \"{engenharia.descEngenhariaFantasma}\"," +
 
@@ -84,15 +73,13 @@ namespace AddinArtama {
           bodyObject += "{" +
               $"\"seqComponente\": {componente.seqComponente}," +
               $"\"codInsumo\": \"{componente.codInsumo}\"," +
-              $"\"quantidade\": {componente.quantidade}," +
-              $"\"itemKanban\": {componente.itemKanban}," +
-              $"\"comprimento\": {componente.comprimento}," +
-              $"\"largura\": {componente.largura}," +
-              $"\"espessura\": {componente.espessura}," +
-              $"\"percQuebra\": {componente.percQuebra}," +
+              $"\"quantidade\": {componente.quantidade.ToString().Replace(",", ".")}," +
+              $"\"comprimento\": {componente.comprimento.ToString().Replace(",", ".")}," +
+              $"\"largura\": {componente.largura.ToString().Replace(",", ".")}," +
+              $"\"espessura\": {componente.espessura.ToString().Replace(",", ".")}," +
+              $"\"percQuebra\": {componente.percQuebra.ToString().Replace(",", ".")}," +
               $"\"codClassificacaoInsumo\": {componente.codClassificacaoInsumo}," +
-              //$"\"codPEInsumo\": \"{componente.codPEInsumo}\"," +
-              $"\"seqOperacaoConsumo\": {componente.seqOperacaoConsumo}" +
+              $"\"itemKanban\": {componente.itemKanban}" +
               "},";
         }
 
@@ -103,12 +90,10 @@ namespace AddinArtama {
           bodyObject += "{" +
               $"\"seqOperacao\": {operacao.seqOperacao}," +
               $"\"codOperacao\": {operacao.codOperacao}," +
-              $"\"abreviaturaOperacao\": \"{operacao.abreviaturaOperacao}\"," +
               $"\"numOperadores\": {operacao.numOperadores}," +
               $"\"codFaseOperacao\": {operacao.codFaseOperacao}," +
               $"\"codMascaraMaquina\": \"{operacao.codMascaraMaquina}\"," +
-              $"\"centroCusto\": {operacao.centroCusto}," +
-              $"\"tempoPadraoOperacao\": {operacao.tempoPadraoOperacao.ToString().Replace(",",".")}," +
+              $"\"tempoPadraoOperacao\": {operacao.tempoPadraoOperacao.ToString().Replace(",", ".")}," +
               $"\"tempoPreparacaoOperacao\": {operacao.tempoPreparacaoOperacao.ToString().Replace(",", ".")}" +
               "},";
         }
@@ -122,7 +107,7 @@ namespace AddinArtama {
         if (response.IsSuccessful) {
           var responseData = response.Content;
           jsonObject = JObject.Parse(responseData);
-          configuracao_api.SalvarAsync(configApi).Wait();
+         
           return true;
         } else {
           var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
@@ -150,22 +135,18 @@ namespace AddinArtama {
 
           _return = new Engenharia {
             descricaoProduto = jsonObject["descricao"]?.ToString(),
-            narrativaLinha1 = jsonObject["narrativa"]?.ToString(),
             codClassificacao = jsonObject["codClassificacao"]?.ToObject<int>() ?? 0,
-            statusEngenharia = jsonObject["statusEngenharia"]?.ToObject<int>() ?? 0,
 
             componentes = jsonObject["componentes"]?.Select(c => new ComponenteEng {
               seqComponente = c["seqComponente"]?.ToObject<int>() ?? 0,
               codInsumo = c["codItem"]?.ToString(),
               quantidade = c["quantidade"]?.ToObject<double>() ?? 0,
-              //itemKanban = c["kanban"]?.ToObject<int>() ?? 0,
-              //centroCusto = c["centroCusto"]?.ToString(),
+              centroCusto = c["centroCusto"]?.ToString(),
               comprimento = c["comprimento"]?.ToObject<double>() ?? 0,
               largura = c["largura"]?.ToObject<double>() ?? 0,
               espessura = c["espessura"]?.ToObject<double>() ?? 0,
               percQuebra = c["percQuebra"]?.ToObject<double>() ?? 0,
               codClassificacaoInsumo = c["codClassificacao"]?.ToObject<int>() ?? 0,
-              seqOperacaoConsumo = c["seqOperacional"]?.ToObject<int>() ?? 0,
             }).ToList() ?? new List<ComponenteEng>(),
 
             operacoes = jsonObject["operacoes"]?.Select(o => new OperacaoEng {
@@ -175,10 +156,9 @@ namespace AddinArtama {
               numOperadores = o["numOpradores"]?.ToObject<double>() ?? 0,
               codFaseOperacao = o["faseProducao"]?.ToObject<int>() ?? 0,
               codMascaraMaquina = o["mascMaquina"]?.ToString(),
-              //codLinhaProducao = o["codLinha"]?.ToObject<int>() ?? 0,
               tempoPadraoOperacao = o["tempoPadrao"]?.ToObject<double>() ?? 0,
               tempoPreparacaoOperacao = o["tempoPreparacao"]?.ToObject<double>() ?? 0,
-              //centroCusto = o["centroCusto"]?.ToString(),
+              centroCusto = o["centroCusto"]?.ToString(),
             }).ToList() ?? new List<OperacaoEng>()
           };
 
@@ -189,5 +169,70 @@ namespace AddinArtama {
 
       return _return;
     }
+
+    internal static async Task<string> DuplicarItemGenericoAsync(ContextoDados db, ItemGenerico itemGenerico) {
+      var configApi = configuracao_api.Selecionar();
+
+      try {
+        var tipoMascara = string.Empty;
+        if (itemGenerico.tipoDocumento == TipoDocumento.Peca) {
+          tipoMascara = configApi.tipo_peca;
+        } else {
+          tipoMascara = configApi.tipo_montagem;
+        }
+
+        var mascara = $"{configApi.grupo}.{configApi.subgrupo}.{tipoMascara}.{configApi.familia}.{configApi.classificacao}";
+
+        /* inicio variaveis */
+        var codigo = string.Empty;
+        var mascara_ent = mascara;
+        var mascara_sai = mascara;
+        var descricao = itemGenerico.nome;
+        var pesoBruto = itemGenerico.pesoBruto;
+        var pesoLiquido = itemGenerico.pesoLiquido;
+        var unidadeMedida = itemGenerico.unidadeMedida;
+        /* fim variaveis */
+
+        JObject jsonObject = new JObject();
+
+        var client = Api.GetClient(modulo: "ppcppadrao", endpoint: $"duplicarItemImportacao");
+        var request = Api.CreateRequest(Method.PUT);
+        var response = await client.ExecuteAsync(request);
+
+        var bodyObject = "" +
+          "{" +
+             $"\"tipoModulo\": \"E\"," +
+             $"\"codigoItem\": null," +
+             $"\"descricaoItem\": \"{descricao}\"," +
+             $"\"descricaoCompleta\": \"{descricao}\"," +
+             $"\"nivelMascaraEntrada\": \"{mascara_ent}\"," +
+             $"\"nivelMascaraSaida\": \"{mascara_sai}\"," +
+             $"\"pesoLiquido\": {pesoLiquido.ToString().Replace(",", ".")}," +
+             $"\"pesoBruto\": {pesoBruto.ToString().Replace(",", ".")}," +
+             $"\"unidadeMedida\": \"{unidadeMedida}\"" +
+           "}";
+
+        request.AddJsonBody(bodyObject);
+
+        response = await client.ExecuteAsync(request);
+
+        if (response.IsSuccessful) {
+          var responseData = response.Content;
+          jsonObject = JObject.Parse(responseData);
+          codigo = (string)jsonObject["codigo"];
+         
+          return codigo;
+        } else {
+          var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
+          var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro ao Duplicar Produto";
+          throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
+        }
+      } catch (Exception ex) {
+        Toast.Error($"Erro ao Duplicar Produto: {ex.Message}");
+        return string.Empty;
+      }
+
+    }
+
   }
 }

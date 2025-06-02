@@ -11,20 +11,20 @@ using System.ComponentModel;
 namespace AddinArtama {
   internal partial class Api {
     internal class Operacao {
-      public string Abreviatura { get; set; }
+      public string abreviatura { get; set; }
 
       [DisplayName("Código Operação")]
       [LarguraColunaGrid(150)]
       [DataObjectField(true, false)]
-      public int CodOperacao { get; set; }
+      public int codOperacao { get; set; }
 
       [DisplayName("Descrição Operação")]
       [LarguraColunaGrid(150)]
       [DataObjectField(false, true)]
-      public string Descricao { get; set; }
-      public int? FaseProducao { get; set; } // Permite valores nulos
-      public string Situacao { get; set; }
-      public string Tipo { get; set; }
+      public string descricao { get; set; }
+      public int? faseProducao { get; set; } // Permite valores nulos
+      public string situacao { get; set; }
+      public string tipo { get; set; }
     }
 
     private class Response {

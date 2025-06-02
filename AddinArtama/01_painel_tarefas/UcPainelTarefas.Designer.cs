@@ -59,10 +59,10 @@
       this.msPerfilCad = new System.Windows.Forms.ToolStripMenuItem();
       this.msMaterialCad = new System.Windows.Forms.ToolStripMenuItem();
       this.msMateriaPrimaCad = new System.Windows.Forms.ToolStripMenuItem();
-      this.msProcessoCad = new System.Windows.Forms.ToolStripMenuItem();
       this.msRedefinirSenha = new System.Windows.Forms.ToolStripMenuItem();
       this.msMenuCSW = new LmCorbieUI.Controls.LmDropdownMenu(this.components);
       this.msCadastroProduto = new System.Windows.Forms.ToolStripMenuItem();
+      this.msConfiguracaoProcesso = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
       this.msConfiguracaoIntegracao = new System.Windows.Forms.ToolStripMenuItem();
       this.msMenu.SuspendLayout();
@@ -414,14 +414,13 @@
             this.msPerfilCad,
             this.msMaterialCad,
             this.msMateriaPrimaCad,
-            this.msProcessoCad,
             this.msRedefinirSenha});
       this.msMenuCadastro.MenuItemHeight = 25;
       this.msMenuCadastro.MenuItemTextColor = System.Drawing.Color.Empty;
       this.msMenuCadastro.Name = "msMenuSistema";
       this.msMenuCadastro.NaoInverterCorImagem = false;
       this.msMenuCadastro.PrimaryColor = System.Drawing.Color.Empty;
-      this.msMenuCadastro.Size = new System.Drawing.Size(232, 182);
+      this.msMenuCadastro.Size = new System.Drawing.Size(232, 156);
       this.msMenuCadastro.Z_Teste = 0;
       // 
       // msUsuarioCad
@@ -456,14 +455,6 @@
       this.msMateriaPrimaCad.Text = "Cadastro de Matéria Prima";
       this.msMateriaPrimaCad.Click += new System.EventHandler(this.MsMateriaPrimaCad_Click);
       // 
-      // msProcessoCad
-      // 
-      this.msProcessoCad.Image = ((System.Drawing.Image)(resources.GetObject("msProcessoCad.Image")));
-      this.msProcessoCad.Name = "msProcessoCad";
-      this.msProcessoCad.Size = new System.Drawing.Size(231, 26);
-      this.msProcessoCad.Text = "Cadastro de Processo";
-      this.msProcessoCad.Click += new System.EventHandler(this.MsProcessoCad_Click);
-      // 
       // msRedefinirSenha
       // 
       this.msRedefinirSenha.Image = ((System.Drawing.Image)(resources.GetObject("msRedefinirSenha.Image")));
@@ -478,6 +469,7 @@
       this.msMenuCSW.IsMainMenu = false;
       this.msMenuCSW.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.msCadastroProduto,
+            this.msConfiguracaoProcesso,
             this.toolStripMenuItem2,
             this.msConfiguracaoIntegracao});
       this.msMenuCSW.MenuItemHeight = 25;
@@ -485,7 +477,7 @@
       this.msMenuCSW.Name = "msMenuSistema";
       this.msMenuCSW.NaoInverterCorImagem = false;
       this.msMenuCSW.PrimaryColor = System.Drawing.Color.Empty;
-      this.msMenuCSW.Size = new System.Drawing.Size(226, 62);
+      this.msMenuCSW.Size = new System.Drawing.Size(226, 88);
       this.msMenuCSW.Z_Teste = 0;
       // 
       // msCadastroProduto
@@ -495,6 +487,14 @@
       this.msCadastroProduto.Size = new System.Drawing.Size(225, 26);
       this.msCadastroProduto.Text = "Cadastro de Produto";
       this.msCadastroProduto.Click += new System.EventHandler(this.MsCadastroProduto_Click);
+      // 
+      // msConfiguracaoProcesso
+      // 
+      this.msConfiguracaoProcesso.Image = ((System.Drawing.Image)(resources.GetObject("msConfiguracaoProcesso.Image")));
+      this.msConfiguracaoProcesso.Name = "msConfiguracaoProcesso";
+      this.msConfiguracaoProcesso.Size = new System.Drawing.Size(225, 26);
+      this.msConfiguracaoProcesso.Text = "Configuração de Processo";
+      this.msConfiguracaoProcesso.Click += new System.EventHandler(this.MsConfiguracaoProcesso_Click);
       // 
       // toolStripMenuItem2
       // 
@@ -572,6 +572,6 @@
     private System.Windows.Forms.ToolStripMenuItem msCadastroProduto;
     private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
     private System.Windows.Forms.ToolStripMenuItem msConfiguracaoIntegracao;
-    private System.Windows.Forms.ToolStripMenuItem msProcessoCad;
+    private System.Windows.Forms.ToolStripMenuItem msConfiguracaoProcesso;
   }
 }

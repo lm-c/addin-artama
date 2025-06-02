@@ -27,9 +27,9 @@ namespace AddinArtama {
       }
 
       ImageList il = new ImageList();
-      il.Images.Add(((int)TipoPermissao.Menu).ToString(), Properties.Resources.trv_menu);                                 // 0
-      il.Images.Add(((int)TipoPermissao.Formulario).ToString(), Properties.Resources.trv_form);                           // 1
-      il.Images.Add(((int)TipoPermissao.Configuracao).ToString(), Properties.Resources.trv_permissao);                    // 2
+      il.Images.Add(((int)TipoPermissao.Menu).ToString(), Properties.Resources.menu);                             // 0
+      il.Images.Add(((int)TipoPermissao.Formulario).ToString(), Properties.Resources.windows);                    // 1
+      il.Images.Add(((int)TipoPermissao.Configuracao).ToString(), Properties.Resources.tools);                    // 2
 
       trvSolution.ImageList = il;
       _tnSolucao = trvSolution.Nodes.Add(PermissoesSistema.Solucao.ToString(), PermissoesSistema.Solucao.ObterDescricaoEnum());
