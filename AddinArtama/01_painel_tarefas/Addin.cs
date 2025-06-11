@@ -10,8 +10,8 @@ namespace AddinArtama {
       string keyPath = string.Format(@"SOFTWARE\SolidWorks\AddIns\{0:b}", t.GUID);
       using (Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(keyPath)) {
         rk.SetValue(null, 1);
-        rk.SetValue("Title", "Addin Corbie Artama 4.0");
-        rk.SetValue("Description", "Gerenciador de Projetos Corbie Artama 4.0");
+        rk.SetValue("Title", "Addin Axion Artama");
+        rk.SetValue("Description", "Gerenciador de Projetos Artama");
       }
     }
 
@@ -44,7 +44,7 @@ namespace AddinArtama {
 
     private void UISetup() {
       string icon = @"C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\01 - Addin LM\IconTaskpanel.png";
-      mTaskpaneView = mSWApplication.CreateTaskpaneView2(icon, "Addin Corbie Artama 4.0");
+      mTaskpaneView = mSWApplication.CreateTaskpaneView2(icon, "Addin Artama Axion");
       mPainelTarefas = (UcPainelTarefas)mTaskpaneView.AddControl(UcPainelTarefas.SWTASKPANE_PROGID, "");
     }
 

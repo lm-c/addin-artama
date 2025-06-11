@@ -324,7 +324,7 @@ namespace AddinArtama {
 
             if (!string.IsNullOrEmpty(((ReportWorks)dgv.Grid.CurrentRow.DataBoundItem).Operacao))
               swCustPropMgr.Add3("Operação", (int)swCustomInfoType_e.swCustomInfoText,
-               ((ReportWorks)dgv.Grid.CurrentRow.DataBoundItem).Operacao, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+               ((ReportWorks)dgv.Grid.CurrentRow.DataBoundItem).Operacao.Replace("/","^"), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
           }
         }
       } catch (Exception ex) {

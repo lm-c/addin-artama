@@ -38,7 +38,10 @@
       this.btnCarrProcess = new LmCorbieUI.Controls.LmButton();
       this.cmxToolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.btnAtualizarProcesso = new LmCorbieUI.Controls.LmButton();
+      this.lblCodigoProduto = new LmCorbieUI.Controls.LmLabel();
+      this.ptbMaterialError = new System.Windows.Forms.PictureBox();
       this.pnlDados = new LmCorbieUI.Controls.LmPanel();
+      this.lmLabel10 = new LmCorbieUI.Controls.LmLabel();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.lmPanel1 = new LmCorbieUI.Controls.LmPanel();
       this.txtDescricao = new LmCorbieUI.Controls.LmTextBox();
@@ -62,12 +65,12 @@
       this.lmPanelOP = new LmCorbieUI.Controls.LmPanel();
       this.lmLabel3 = new LmCorbieUI.Controls.LmLabel();
       this.btnInserir = new LmCorbieUI.Controls.LmButton();
-      this.lmLabel4 = new LmCorbieUI.Controls.LmLabel();
-      this.txtMaquina = new LmCorbieUI.Controls.LmTextBox();
       this.txtOperacao = new LmCorbieUI.Controls.LmTextBox();
       this.flpOperacoes = new LmCorbieUI.Controls.LmPanelFlow();
       this.tbpEngenharia = new LmCorbieUI.Controls.LmTabPage();
       this.trvProduto = new System.Windows.Forms.TreeView();
+      this.tmr = new System.Windows.Forms.Timer(this.components);
+      ((System.ComponentModel.ISupportInitialize)(this.ptbMaterialError)).BeginInit();
       this.pnlDados.SuspendLayout();
       this.tableLayoutPanel1.SuspendLayout();
       this.lmPanel1.SuspendLayout();
@@ -117,7 +120,7 @@
       this.btnProximo.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnProximo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnProximo.Image = ((System.Drawing.Image)(resources.GetObject("btnProximo.Image")));
-      this.btnProximo.Location = new System.Drawing.Point(237, 126);
+      this.btnProximo.Location = new System.Drawing.Point(237, 62);
       this.btnProximo.Margin = new System.Windows.Forms.Padding(1);
       this.btnProximo.Name = "btnProximo";
       this.btnProximo.Size = new System.Drawing.Size(26, 26);
@@ -138,7 +141,7 @@
       this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnVoltar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
-      this.btnVoltar.Location = new System.Drawing.Point(209, 126);
+      this.btnVoltar.Location = new System.Drawing.Point(209, 62);
       this.btnVoltar.Margin = new System.Windows.Forms.Padding(1);
       this.btnVoltar.Name = "btnVoltar";
       this.btnVoltar.Size = new System.Drawing.Size(26, 26);
@@ -175,9 +178,7 @@
       // 
       // btnCarrProcess
       // 
-      this.btnCarrProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCarrProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCarrProcess.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
       this.btnCarrProcess.BorderColor = System.Drawing.Color.PaleVioletRed;
       this.btnCarrProcess.BorderRadius = 13;
@@ -207,7 +208,7 @@
       this.btnAtualizarProcesso.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnAtualizarProcesso.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnAtualizarProcesso.Image = ((System.Drawing.Image)(resources.GetObject("btnAtualizarProcesso.Image")));
-      this.btnAtualizarProcesso.Location = new System.Drawing.Point(265, 126);
+      this.btnAtualizarProcesso.Location = new System.Drawing.Point(265, 62);
       this.btnAtualizarProcesso.Margin = new System.Windows.Forms.Padding(1);
       this.btnAtualizarProcesso.Name = "btnAtualizarProcesso";
       this.btnAtualizarProcesso.Size = new System.Drawing.Size(26, 26);
@@ -218,10 +219,45 @@
       this.btnAtualizarProcesso.UseVisualStyleBackColor = false;
       this.btnAtualizarProcesso.Click += new System.EventHandler(this.BtnAtualizarProcesso_Click);
       // 
+      // lblCodigoProduto
+      // 
+      this.lblCodigoProduto.AutoSize = true;
+      this.lblCodigoProduto.BackColor = System.Drawing.Color.Transparent;
+      this.lblCodigoProduto.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.lblCodigoProduto.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
+      this.lblCodigoProduto.ForeColor = System.Drawing.Color.Red;
+      this.lblCodigoProduto.Location = new System.Drawing.Point(118, 66);
+      this.lblCodigoProduto.Margin = new System.Windows.Forms.Padding(3);
+      this.lblCodigoProduto.Name = "lblCodigoProduto";
+      this.lblCodigoProduto.Size = new System.Drawing.Size(22, 15);
+      this.lblCodigoProduto.TabIndex = 77;
+      this.lblCodigoProduto.Text = "---";
+      this.lblCodigoProduto.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+      this.cmxToolTip1.SetToolTip(this.lblCodigoProduto, "Clique para Copiar");
+      this.lblCodigoProduto.Click += new System.EventHandler(this.LblCodigoProduto_Click);
+      // 
+      // ptbMaterialError
+      // 
+      this.ptbMaterialError.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.ptbMaterialError.Image = global::AddinArtama.Properties.Resources.error;
+      this.ptbMaterialError.Location = new System.Drawing.Point(201, 21);
+      this.ptbMaterialError.Name = "ptbMaterialError";
+      this.ptbMaterialError.Size = new System.Drawing.Size(20, 20);
+      this.ptbMaterialError.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this.ptbMaterialError.TabIndex = 78;
+      this.ptbMaterialError.TabStop = false;
+      this.cmxToolTip1.SetToolTip(this.ptbMaterialError, "Alterar Material");
+      this.ptbMaterialError.Visible = false;
+      this.ptbMaterialError.VisibleChanged += new System.EventHandler(this.PtbMaterialError_VisibleChanged);
+      this.ptbMaterialError.Click += new System.EventHandler(this.PtbMaterialError_Click);
+      // 
       // pnlDados
       // 
       this.pnlDados.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
       this.pnlDados.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.pnlDados.Controls.Add(this.ptbMaterialError);
+      this.pnlDados.Controls.Add(this.lblCodigoProduto);
+      this.pnlDados.Controls.Add(this.lmLabel10);
       this.pnlDados.Controls.Add(this.tableLayoutPanel1);
       this.pnlDados.Controls.Add(this.lmLabel1);
       this.pnlDados.Controls.Add(this.lblPeso);
@@ -235,8 +271,21 @@
       this.pnlDados.IsPanelMenu = false;
       this.pnlDados.Location = new System.Drawing.Point(0, 30);
       this.pnlDados.Name = "pnlDados";
-      this.pnlDados.Size = new System.Drawing.Size(305, 231);
+      this.pnlDados.Size = new System.Drawing.Size(305, 267);
       this.pnlDados.TabIndex = 0;
+      // 
+      // lmLabel10
+      // 
+      this.lmLabel10.BackColor = System.Drawing.Color.Transparent;
+      this.lmLabel10.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
+      this.lmLabel10.ForeColor = System.Drawing.Color.Red;
+      this.lmLabel10.Location = new System.Drawing.Point(3, 66);
+      this.lmLabel10.Margin = new System.Windows.Forms.Padding(3);
+      this.lmLabel10.Name = "lmLabel10";
+      this.lmLabel10.Size = new System.Drawing.Size(113, 15);
+      this.lmLabel10.TabIndex = 76;
+      this.lmLabel10.Text = "Código Produto:";
+      this.lmLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
       // tableLayoutPanel1
       // 
@@ -250,12 +299,12 @@
       this.tableLayoutPanel1.Controls.Add(this.btnCarrProcess, 0, 2);
       this.tableLayoutPanel1.Controls.Add(this.lmPanel3, 1, 1);
       this.tableLayoutPanel1.Controls.Add(this.lmPanel2, 0, 1);
-      this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 87);
+      this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 108);
       this.tableLayoutPanel1.Name = "tableLayoutPanel1";
       this.tableLayoutPanel1.RowCount = 3;
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
       this.tableLayoutPanel1.Size = new System.Drawing.Size(303, 140);
       this.tableLayoutPanel1.TabIndex = 0;
       // 
@@ -463,7 +512,7 @@
       this.lblPeso.BackColor = System.Drawing.Color.Transparent;
       this.lblPeso.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lblPeso.ForeColor = System.Drawing.Color.Red;
-      this.lblPeso.Location = new System.Drawing.Point(118, 66);
+      this.lblPeso.Location = new System.Drawing.Point(118, 87);
       this.lblPeso.Margin = new System.Windows.Forms.Padding(3);
       this.lblPeso.Name = "lblPeso";
       this.lblPeso.Size = new System.Drawing.Size(177, 15);
@@ -476,7 +525,7 @@
       this.lmLabel5.BackColor = System.Drawing.Color.Transparent;
       this.lmLabel5.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
       this.lmLabel5.ForeColor = System.Drawing.Color.Red;
-      this.lmLabel5.Location = new System.Drawing.Point(3, 66);
+      this.lmLabel5.Location = new System.Drawing.Point(3, 87);
       this.lmLabel5.Margin = new System.Windows.Forms.Padding(3);
       this.lmLabel5.Name = "lmLabel5";
       this.lmLabel5.Size = new System.Drawing.Size(113, 15);
@@ -533,10 +582,10 @@
       this.tbcOperacoes.Controls.Add(this.tbpOperacoes);
       this.tbcOperacoes.Controls.Add(this.tbpEngenharia);
       this.tbcOperacoes.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tbcOperacoes.Location = new System.Drawing.Point(0, 261);
+      this.tbcOperacoes.Location = new System.Drawing.Point(0, 297);
       this.tbcOperacoes.Name = "tbcOperacoes";
-      this.tbcOperacoes.SelectedIndex = 1;
-      this.tbcOperacoes.Size = new System.Drawing.Size(305, 331);
+      this.tbcOperacoes.SelectedIndex = 0;
+      this.tbcOperacoes.Size = new System.Drawing.Size(305, 295);
       this.tbcOperacoes.TabIndex = 1;
       this.tbcOperacoes.UseSelectable = true;
       // 
@@ -547,7 +596,7 @@
       this.tbpLista.Location = new System.Drawing.Point(4, 38);
       this.tbpLista.Name = "tbpLista";
       this.tbpLista.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
-      this.tbpLista.Size = new System.Drawing.Size(297, 289);
+      this.tbpLista.Size = new System.Drawing.Size(297, 253);
       this.tbpLista.TabIndex = 1;
       this.tbpLista.Text = "Componentes";
       // 
@@ -581,7 +630,7 @@
       this.dgv.PermiteQuebrarLinhaCabecalho = false;
       this.dgv.PermiteSelecaoMultipla = false;
       this.dgv.PosColunasGrid = "";
-      this.dgv.Size = new System.Drawing.Size(295, 278);
+      this.dgv.Size = new System.Drawing.Size(295, 242);
       this.dgv.TabIndex = 98;
       this.dgv.Texto = "";
       this.dgv.TituloRelatorio = "";
@@ -595,8 +644,8 @@
       this.tbpOperacoes.Controls.Add(this.flpOperacoes);
       this.tbpOperacoes.Location = new System.Drawing.Point(4, 38);
       this.tbpOperacoes.Name = "tbpOperacoes";
-      this.tbpOperacoes.Padding = new System.Windows.Forms.Padding(3, 162, 3, 3);
-      this.tbpOperacoes.Size = new System.Drawing.Size(297, 289);
+      this.tbpOperacoes.Padding = new System.Windows.Forms.Padding(3, 96, 3, 3);
+      this.tbpOperacoes.Size = new System.Drawing.Size(297, 253);
       this.tbpOperacoes.TabIndex = 0;
       this.tbpOperacoes.Text = "Operações";
       // 
@@ -611,13 +660,11 @@
       this.lmPanelOP.Controls.Add(this.btnVoltar);
       this.lmPanelOP.Controls.Add(this.lmLabel3);
       this.lmPanelOP.Controls.Add(this.btnInserir);
-      this.lmPanelOP.Controls.Add(this.lmLabel4);
-      this.lmPanelOP.Controls.Add(this.txtMaquina);
       this.lmPanelOP.Controls.Add(this.txtOperacao);
       this.lmPanelOP.IsPanelMenu = false;
       this.lmPanelOP.Location = new System.Drawing.Point(-1, -1);
       this.lmPanelOP.Name = "lmPanelOP";
-      this.lmPanelOP.Size = new System.Drawing.Size(297, 157);
+      this.lmPanelOP.Size = new System.Drawing.Size(297, 96);
       this.lmPanelOP.TabIndex = 362;
       // 
       // lmLabel3
@@ -643,7 +690,7 @@
       this.btnInserir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnInserir.Image = ((System.Drawing.Image)(resources.GetObject("btnInserir.Image")));
       this.btnInserir.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.btnInserir.Location = new System.Drawing.Point(3, 126);
+      this.btnInserir.Location = new System.Drawing.Point(3, 62);
       this.btnInserir.Name = "btnInserir";
       this.btnInserir.Size = new System.Drawing.Size(202, 26);
       this.btnInserir.TabIndex = 2;
@@ -651,54 +698,6 @@
       this.btnInserir.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.btnInserir.UseVisualStyleBackColor = false;
       this.btnInserir.Click += new System.EventHandler(this.BtnInserir_Click);
-      // 
-      // lmLabel4
-      // 
-      this.lmLabel4.AutoSize = true;
-      this.lmLabel4.BackColor = System.Drawing.Color.Transparent;
-      this.lmLabel4.Location = new System.Drawing.Point(3, 62);
-      this.lmLabel4.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
-      this.lmLabel4.Name = "lmLabel4";
-      this.lmLabel4.Size = new System.Drawing.Size(73, 19);
-      this.lmLabel4.TabIndex = 359;
-      this.lmLabel4.Text = "Máquina *";
-      this.lmLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-      // 
-      // txtMaquina
-      // 
-      this.txtMaquina.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.txtMaquina.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
-      this.txtMaquina.BorderRadius = 15;
-      this.txtMaquina.BorderSize = 2;
-      this.txtMaquina.F7ToolTipText = null;
-      this.txtMaquina.F8ToolTipText = null;
-      this.txtMaquina.F9ToolTipText = null;
-      this.txtMaquina.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-      this.txtMaquina.IconF7 = ((System.Drawing.Image)(resources.GetObject("txtMaquina.IconF7")));
-      this.txtMaquina.IconF8 = ((System.Drawing.Image)(resources.GetObject("txtMaquina.IconF8")));
-      this.txtMaquina.IconToolTipText = null;
-      this.txtMaquina.Lines = new string[0];
-      this.txtMaquina.Location = new System.Drawing.Point(3, 85);
-      this.txtMaquina.MaxLength = 250;
-      this.txtMaquina.Name = "txtMaquina";
-      this.txtMaquina.PasswordChar = '\0';
-      this.txtMaquina.Propriedade = null;
-      this.txtMaquina.ScrollBars = System.Windows.Forms.ScrollBars.None;
-      this.txtMaquina.SelectedText = "";
-      this.txtMaquina.SelectionLength = 0;
-      this.txtMaquina.SelectionStart = 0;
-      this.txtMaquina.ShortcutsEnabled = true;
-      this.txtMaquina.ShowButtonF7 = true;
-      this.txtMaquina.ShowClearButton = true;
-      this.txtMaquina.Size = new System.Drawing.Size(290, 30);
-      this.txtMaquina.TabIndex = 1;
-      this.txtMaquina.UnderlinedStyle = false;
-      this.txtMaquina.UseSelectable = true;
-      this.txtMaquina.Valor = LmCorbieUI.Design.LmValueType.ComboBox;
-      this.txtMaquina.Valor_Decimais = ((short)(4));
-      this.txtMaquina.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
-      this.txtMaquina.WaterMarkFont = new System.Drawing.Font("Segoe UI", 8.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Pixel);
       // 
       // txtOperacao
       // 
@@ -735,7 +734,6 @@
       this.txtOperacao.Valor_Decimais = ((short)(4));
       this.txtOperacao.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
       this.txtOperacao.WaterMarkFont = new System.Drawing.Font("Segoe UI", 8.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Pixel);
-      this.txtOperacao.SelectedValueChanched += new LmCorbieUI.Controls.LmTextBox.ValChange(this.TxtOperacao_SelectedValueChanched);
       // 
       // flpOperacoes
       // 
@@ -743,10 +741,10 @@
       this.flpOperacoes.AutoScroll = true;
       this.flpOperacoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
       this.flpOperacoes.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.flpOperacoes.Location = new System.Drawing.Point(3, 162);
+      this.flpOperacoes.Location = new System.Drawing.Point(3, 96);
       this.flpOperacoes.Name = "flpOperacoes";
       this.flpOperacoes.Padding = new System.Windows.Forms.Padding(0, 5, 0, 9);
-      this.flpOperacoes.Size = new System.Drawing.Size(289, 122);
+      this.flpOperacoes.Size = new System.Drawing.Size(289, 152);
       this.flpOperacoes.TabIndex = 6;
       this.flpOperacoes.SizeChanged += new System.EventHandler(this.FlpProcess_SizeChanged);
       this.flpOperacoes.DragDrop += new System.Windows.Forms.DragEventHandler(this.FlpOperacoes_DragDrop);
@@ -759,7 +757,7 @@
       this.tbpEngenharia.Location = new System.Drawing.Point(4, 38);
       this.tbpEngenharia.Name = "tbpEngenharia";
       this.tbpEngenharia.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
-      this.tbpEngenharia.Size = new System.Drawing.Size(297, 289);
+      this.tbpEngenharia.Size = new System.Drawing.Size(297, 253);
       this.tbpEngenharia.TabIndex = 2;
       this.tbpEngenharia.Text = "Engenharia";
       // 
@@ -769,8 +767,13 @@
       this.trvProduto.Dock = System.Windows.Forms.DockStyle.Fill;
       this.trvProduto.Location = new System.Drawing.Point(0, 9);
       this.trvProduto.Name = "trvProduto";
-      this.trvProduto.Size = new System.Drawing.Size(295, 278);
+      this.trvProduto.Size = new System.Drawing.Size(295, 242);
       this.trvProduto.TabIndex = 7;
+      // 
+      // tmr
+      // 
+      this.tmr.Interval = 1000;
+      this.tmr.Tick += new System.EventHandler(this.Tmr_Tick);
       // 
       // FrmProdutoImport
       // 
@@ -791,7 +794,9 @@
       this.Text = "Cadastro de Produto/Engenharia";
       this.Loaded += new LmCorbieUI.LmForms.LmSingleForm.FormLoad(this.FrmProcessoAplicacao_Loaded);
       this.Load += new System.EventHandler(this.FrmProcessoAplicacao_Load);
+      ((System.ComponentModel.ISupportInitialize)(this.ptbMaterialError)).EndInit();
       this.pnlDados.ResumeLayout(false);
+      this.pnlDados.PerformLayout();
       this.tableLayoutPanel1.ResumeLayout(false);
       this.lmPanel1.ResumeLayout(false);
       this.lmPanel3.ResumeLayout(false);
@@ -828,10 +833,8 @@
     private LmCorbieUI.Controls.LmPanelFlow flpOperacoes;
     private LmCorbieUI.Controls.LmTabPage tbpLista;
     private LmCorbieUI.Controls.LmDataGridView dgv;
-    private LmCorbieUI.Controls.LmTextBox txtMaquina;
     private LmCorbieUI.Controls.LmLabel lmLabel3;
     private LmCorbieUI.Controls.LmTextBox txtOperacao;
-    private LmCorbieUI.Controls.LmLabel lmLabel4;
     private LmCorbieUI.Controls.LmButton btnInserir;
     private LmCorbieUI.Controls.LmPanel lmPanelOP;
     private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
@@ -845,5 +848,9 @@
     private LmCorbieUI.Controls.LmTabPage tbpEngenharia;
     private System.Windows.Forms.TreeView trvProduto;
     private LmCorbieUI.Controls.LmButton btnAtualizarProcesso;
+    private System.Windows.Forms.Timer tmr;
+    private System.Windows.Forms.PictureBox ptbMaterialError;
+    private LmCorbieUI.Controls.LmLabel lblCodigoProduto;
+    private LmCorbieUI.Controls.LmLabel lmLabel10;
   }
 }

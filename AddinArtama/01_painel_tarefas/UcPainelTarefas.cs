@@ -29,9 +29,8 @@ namespace AddinArtama {
 
     public UcPainelTarefas() {
       InitializeComponent();
-
-      msMenu.Visible = stpRodape.Visible = false;
-
+      
+      OcultarControles();
 
       if (ConexaoMySql.Database.StartsWith("teste"))
         LmCor.CorPrimaria = Color.Red;
@@ -82,7 +81,7 @@ namespace AddinArtama {
     }
 
     private void MsProcess_Click(object sender, EventArgs e) {
-      FrmProcesso frm = new FrmProcesso();
+      FrmMateriaPrimaApl frm = new FrmMateriaPrimaApl();
       AbrirFormFilho(frm);
     }
 
@@ -217,7 +216,7 @@ namespace AddinArtama {
         var frmLogin = pnlMain.Controls.OfType<FrmLogin>().FirstOrDefault();
         frmLogin.Visible = true;
 
-        msMenu.Visible = stpRodape.Visible = false;
+        OcultarControles();
 
         foreach (var frm in pnlMain.Controls.OfType<LmSingleForm>().ToList()) {
           if (frm.Name != "FrmLogin") {
@@ -238,25 +237,37 @@ namespace AddinArtama {
 
         //Menu Controle
         msProcess.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.AplicacaoProcesso);
+
         msProperties.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.PropsPersonalizadas);
+
         msDesenho.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Desenho);
         msCriarDesenho.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.CriarAlterarDesenhos);
         msAtualizarDesenho.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.AtualizarTemplatesDesenhos);
-        msExportarPDF.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Exportar);
+
+        msImprimir.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Exportar);
         msExportarPDF.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.ExportarPDF);
         msExportarDXF.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.ExportarDXF);
+
         msCadastro.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Cadastros);
         msUsuarioCad.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.UsuarioCad);
         msPerfilCad.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.PerfilUsuarioCad);
+        msMaterialCad.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.MaterialCad);
+        msMateriaPrimaCad.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.MateriaPrimaCad);
         msRedefinirSenha.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.SenhaRedefinir);
+
         msRelatorio.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Relatorios);
         msProcessoFabricacao.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.ProcessoFabricacao);
         msPackList.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.PackList);
         msPlanoPintura.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.PlanoPintura);
         msManutPacklistPlanoDePintura.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.ManutencaoPinturaPackList);
         msReportWorks.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.ReportWorks);
-        msConfig.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Configuracao);
 
+        msCSW.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.menuIntegracao);
+        msCadastroProduto.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.produtoCad);
+        msConfiguracaoProcesso.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.processoConfig);
+        msConfiguracaoIntegracao.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.IntegracaoConfig);
+
+        msConfig.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Configuracao);
       } catch (Exception ex) {
         MsgBox.Show("Erro Crítico!!!\nSuas Permissões do sistema precisa ser redefinida.",
             "Erro Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -265,6 +276,17 @@ namespace AddinArtama {
     }
 
     internal void AttControls(Control control) {
+      AtualizarRecursivo(control);
+
+      ptbPaint.BackColor = LmCor.CorPrimaria;
+      PtbPaint_MouseLeave(ptbPaint, EventArgs.Empty);
+      ptbPaint.Refresh();
+
+      UcPainelTarefas.Instancia.Refresh();
+      UcPainelTarefas.Instancia.Invalidate();
+    }
+
+    private void AtualizarRecursivo(Control control) {
       foreach (var item in control.Controls) {
         if (item is LmMenuItem menuItem) {
           menuItem.AplicarStilo();
@@ -277,21 +299,52 @@ namespace AddinArtama {
         }
 
         if (control.Controls.Count > 0)
-          AttControls((Control)item);
-
-        //this.tslVersao.ForeColor =
-        //this.tslSecao.ForeColor =
-        //this.tslConsumoMemoria.ForeColor =
-        //this.tslFormAberto.ForeColor = this.menuSandwich.ForeColor;
+          AtualizarRecursivo((Control)item);
       }
-
-      UcPainelTarefas.Instancia.Refresh();
-      UcPainelTarefas.Instancia.Invalidate();
     }
 
     internal void Carregarrodape(string version, string user) {
       lblVersao.Text = version;
       lblUsuario.Text = user;
+    }
+
+    internal void MostrarControles() {
+      msMenu.Visible = stpRodape.Visible = /*ptbPaint.Visible =*/ true;
+    }
+
+    private void OcultarControles() {
+      msMenu.Visible = stpRodape.Visible = ptbPaint.Visible = false;
+    }
+
+    private void PtbPaint_MouseEnter(object sender, EventArgs e) {
+      ptbPaint.Image = LmCor.CorPrimaria.IsDarkColor() 
+        ? ptbPaint.Image.ApplyColor(Color.White.Escurecer(66) )
+        : ptbPaint.Image.ApplyColor(Color.Black.Clarear(66));
+    }
+
+    private void PtbPaint_MouseLeave(object sender, EventArgs e) {
+      ptbPaint.Image = LmCor.CorPrimaria.IsDarkColor() 
+        ? ptbPaint.Image.ApplyColor(Color.White)
+        : ptbPaint.Image.ApplyColor(Color.Black);
+    }
+
+    private void PtbPaint_Click(object sender, EventArgs e) {
+      ColorDialog cld = new ColorDialog {
+        FullOpen = true,
+        Color = LmCor.CorPrimaria,
+      };
+
+      if (cld.ShowDialog() == DialogResult.OK) {
+
+        MsgBox.ShowWaitMessage("Aplicando Tema, Aguarde...");
+        LmCor.CorPrimaria = cld.Color;
+        // ValorPredefinido.model.CorPrimaria = cld.Color.ColorToString();
+
+        AttControls(this);
+
+        Toast.Success("Tema novo aplicado!");
+        MsgBox.CloseWaitMessage();
+      }
     }
   }
 }

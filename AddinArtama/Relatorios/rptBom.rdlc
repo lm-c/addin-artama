@@ -331,7 +331,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>MASSA (Kg)</Value>
+                                  <Value>Massa</Value>
                                   <Style>
                                     <FontSize>7pt</FontSize>
                                     <FontWeight>Bold</FontWeight>

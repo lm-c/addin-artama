@@ -116,23 +116,23 @@
       <HintPath>..\packages\RestSharp.106.12.0\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="SolidWorks.Interop.sldworks">
-      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2022\SolidWorks.Interop.sldworks.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.sldworks.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swcommands">
-      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2022\SolidWorks.Interop.swcommands.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.swcommands.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swconst">
-      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2022\SolidWorks.Interop.swconst.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.swconst.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swdocumentmgr">
-      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2022\SolidWorks.Interop.swdocumentmgr.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.swdocumentmgr.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swpublished">
-      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2022\SolidWorks.Interop.swpublished.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.swpublished.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
@@ -248,11 +248,11 @@
     <Compile Include="01_painel_tarefas\UcPainelTarefas.Designer.cs">
       <DependentUpon>UcPainelTarefas.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\01_processos\FrmProcesso.cs">
+    <Compile Include="02_formularios\01_aplicacao_materia_prima\FrmMateriaPrimaApl.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="02_formularios\01_processos\FrmProcesso.Designer.cs">
-      <DependentUpon>FrmProcesso.cs</DependentUpon>
+    <Compile Include="02_formularios\01_aplicacao_materia_prima\FrmMateriaPrimaApl.Designer.cs">
+      <DependentUpon>FrmMateriaPrimaApl.cs</DependentUpon>
     </Compile>
     <Compile Include="02_formularios\02_propriedades\FrmFileProperties.cs">
       <SubType>Form</SubType>
@@ -392,13 +392,14 @@
     <Compile Include="03_classes\01_tables\materia_primas.cs" />
     <Compile Include="03_classes\01_tables\perfis.cs" />
     <Compile Include="03_classes\01_tables\produto_erp.cs" />
+    <Compile Include="03_classes\01_tables\produto_erp_operacao.cs" />
     <Compile Include="03_classes\01_tables\templates.cs" />
     <Compile Include="03_classes\01_tables\usuario_alocados.cs" />
     <Compile Include="03_classes\01_tables\usuarios.cs" />
-    <Compile Include="03_classes\01_tables\W_Perfil.cs" />
-    <Compile Include="03_classes\01_tables\W_Permissao.cs" />
-    <Compile Include="03_classes\01_tables\W_UsuarioPerfil.cs" />
-    <Compile Include="03_classes\01_tables\Z_Padrao.cs" />
+    <Compile Include="03_classes\03_others\W_Perfil.cs" />
+    <Compile Include="03_classes\03_others\W_Permissao.cs" />
+    <Compile Include="03_classes\03_others\W_UsuarioPerfil.cs" />
+    <Compile Include="03_classes\03_others\Z_Padrao.cs" />
     <Compile Include="03_classes\03_others\Componente.cs" />
     <Compile Include="03_classes\03_others\Corbie_Admin.cs" />
     <Compile Include="03_classes\03_others\Desenho.cs" />
@@ -457,8 +458,8 @@
     <EmbeddedResource Include="02_formularios\00_login\FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\01_processos\FrmProcesso.resx">
-      <DependentUpon>FrmProcesso.cs</DependentUpon>
+    <EmbeddedResource Include="02_formularios\01_aplicacao_materia_prima\FrmMateriaPrimaApl.resx">
+      <DependentUpon>FrmMateriaPrimaApl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="02_formularios\02_propriedades\FrmFileProperties.resx">
       <DependentUpon>FrmFileProperties.cs</DependentUpon>
@@ -565,10 +566,11 @@
     <None Include="Resources\sheetmetal.png" />
     <None Include="Resources\toolbox_item.png" />
     <None Include="Resources\tools.png" />
-    <None Include="Resources\warning.png" />
     <None Include="Resources\weldment.png" />
     <None Include="Resources\weldmentcutlist.png" />
     <None Include="Resources\windows.png" />
+    <None Include="Resources\warning.png" />
+    <None Include="Resources\error.png" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

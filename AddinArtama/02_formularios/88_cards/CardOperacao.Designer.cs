@@ -39,9 +39,11 @@
       this.lblInfo.Location = new System.Drawing.Point(8, 8);
       this.lblInfo.Margin = new System.Windows.Forms.Padding(0);
       this.lblInfo.Name = "lblInfo";
-      this.lblInfo.Size = new System.Drawing.Size(405, 29);
+      this.lblInfo.Size = new System.Drawing.Size(405, 47);
       this.lblInfo.TabIndex = 8;
-      this.lblInfo.Text = "Operação: 105 DOBRAR\r\nMáquina: 209 DOBRADEIRA DOBRA LEVE ATÉ 4,75 SORG 3 METROS";
+      this.lblInfo.Text = "Operação: 105 DOBRAR\r\nMáquina: 209 DOBRADEIRA DOBRA LEVE ATÉ 4,75 SORG 3 METROS\r\n" +
+    "Tempo Operação: 00:00 | Número Operadores: 1";
+      this.lblInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.lblInfo.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LblInfo_MouseDown);
       this.lblInfo.MouseEnter += new System.EventHandler(this.CardOperacao_MouseEnter);
       this.lblInfo.MouseLeave += new System.EventHandler(this.CardOperacao_MouseLeave);
@@ -52,7 +54,7 @@
       this.btnRemover.BackColor = System.Drawing.Color.Transparent;
       this.btnRemover.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnRemover.Image = ((System.Drawing.Image)(resources.GetObject("btnRemover.Image")));
-      this.btnRemover.Location = new System.Drawing.Point(421, 12);
+      this.btnRemover.Location = new System.Drawing.Point(421, 21);
       this.btnRemover.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
       this.btnRemover.Name = "btnRemover";
       this.btnRemover.Size = new System.Drawing.Size(20, 21);
@@ -66,14 +68,14 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.BackColor = System.Drawing.Color.Transparent;
+      this.BackColor = System.Drawing.Color.White;
       this.Controls.Add(this.btnRemover);
       this.Controls.Add(this.lblInfo);
       this.Font = new System.Drawing.Font("Segoe UI", 8.75F);
       this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
       this.Name = "CardOperacao";
       this.Padding = new System.Windows.Forms.Padding(8, 8, 28, 8);
-      this.Size = new System.Drawing.Size(441, 45);
+      this.Size = new System.Drawing.Size(441, 63);
       this.UseCustomBackColor = true;
       this.UseCustomForeColor = true;
       this.MouseEnter += new System.EventHandler(this.CardOperacao_MouseEnter);

@@ -112,9 +112,9 @@ namespace AddinArtama {
             UcPainelTarefas.Instancia.ConfigurarPermissoes();
 
             // Carregar Variáveis de Ambiente
-            string nomeSistem = "Addin Formatec";
+            string nomeSistem = "Axion Artama";
             string pastaRaiz = "LM Projetos Data";
-            string cliente = "Formatec";
+            string cliente = "Artama";
             string mail = "michalakleo@gmail.com";
 
             ValPadrao.DefinirPadrao(pastaRaiz, nomeSistem, cliente, mail);
@@ -132,7 +132,7 @@ namespace AddinArtama {
             templates.Carregar();
             InfoSetting.Carregar();
             this.Hide();
-            UcPainelTarefas.Instancia.msMenu.Visible = UcPainelTarefas.Instancia.stpRodape.Visible = true;
+            UcPainelTarefas.Instancia.MostrarControles();
           } else {
             MsgBox.Show("Usuário ou Senha Inválido.", "Mensagem", MessageBoxButtons.OK, MessageBoxIcon.Information);
           }

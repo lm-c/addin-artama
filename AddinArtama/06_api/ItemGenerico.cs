@@ -134,7 +134,6 @@ namespace AddinArtama {
             origem = jsonObject["origem"]?.ToObject<int>() ?? 0,
             tipo = jsonObject["tipo"]?.ToObject<int>() ?? 0,
             procedencia = jsonObject["procedencia"]?.ToObject<int>() ?? 0,
-            situacao = jsonObject["situacao"]?.ToObject<int>() ?? 0,
             
             pesoBruto = jsonObject["dadosSaida"]["pesoBruto"]?.ToObject<double>() ?? 0,
             pesoLiquido = jsonObject["dadosSaida"]["pesoLiquido"]?.ToObject<double>() ?? 0,
@@ -142,6 +141,7 @@ namespace AddinArtama {
 
             mascaraEntrada = jsonObject["dadosEntrada"]["mascara"]?.ToString(),
             pesoPadraoNBR = jsonObject["dadosEntrada"]["pesoPadraoNBR"]?.ToObject<double>() ?? 0,
+            situacao = jsonObject["dadosEntrada"]["situacao"]?.ToObject<int>() ?? 0,
           };
         }
       } catch (Exception ex) {
@@ -152,26 +152,27 @@ namespace AddinArtama {
     }
 
     internal static void MontarItemGenerico(ProdutoErp produtoErp, ItemGenerico itemGenerico) {
-      var name = produtoErp.Name;
+      var codigo = produtoErp.CodComponente.StartsWith("10") || produtoErp.CodComponente.StartsWith("20") || produtoErp.CodComponente.StartsWith("40") ? produtoErp.CodComponente  : produtoErp.Name;
+      var denominacao  = produtoErp.Denominacao;
 
-      if (produtoErp.CodComponente.StartsWith("10") || produtoErp.CodComponente.StartsWith("20") || produtoErp.CodComponente.StartsWith("40")) {
-        name = produtoErp.Denominacao.Length + produtoErp.CodComponente.Length + 3 > 60
-            ? $"{produtoErp.Denominacao.Replace("\"", "").Substring(0, produtoErp.Denominacao.Length - produtoErp.CodComponente.Length - 3)} - {produtoErp.CodComponente}"
-            : $"{produtoErp.Denominacao.Replace("\"", "")} - {produtoErp.CodComponente}";
-      } else {
-        name = produtoErp.Denominacao.Length + produtoErp.Name.Length + 3 > 60
-            ? $"{produtoErp.Denominacao.Replace("\"", "").Substring(0, produtoErp.Denominacao.Length - produtoErp.Name.Length - 3)} - {produtoErp.Name}"
-            : $"{produtoErp.Denominacao.Replace("\"", "")} - {produtoErp.Name}";
-      }
+      var separador = " - ";
+      var maxComprimento = 50;
+
+      int espacoParaNome = maxComprimento - (codigo.Length + separador.Length);
+
+      // Corta o nome se necessário
+      var nomeAjustado = denominacao.Length > espacoParaNome
+          ? denominacao.Substring(0, espacoParaNome)
+          : denominacao;
+
+      string nomeParaErp = nomeAjustado + separador + codigo;
 
       itemGenerico.refTecnica = produtoErp.Name;
-      itemGenerico.nome = name;
+      itemGenerico.nome = nomeParaErp;
       itemGenerico.pesoBruto = produtoErp.PesoBruto;
       itemGenerico.pesoLiquido = produtoErp.PesoLiquido;
       itemGenerico.tipoDocumento = produtoErp.TipoComponente == TipoComponente.Montagem || produtoErp.ItensCorte.Count > 1 ? TipoDocumento.Montagem : TipoDocumento.Peca;
-      itemGenerico.unidadeMedida = produtoErp.TipoComponente == TipoComponente.Peca
-      ? "PC"
-      : "CJ";
+      itemGenerico.unidadeMedida = produtoErp.UnidadeMedida;
     }
 
   }

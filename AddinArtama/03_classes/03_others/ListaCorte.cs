@@ -24,6 +24,7 @@ namespace AddinArtama {
     public double CxdCompr { get; set; }
     public double Massa { get; set; }
     public int Quantidade { get; set; }
+    public string unidadeMedida { get; set; }
     public TipoListaMaterial Tipo { get; set; }
 
     public static List<ListaCorte> GetCutList(ModelDoc2 swModel, string nomePeca, out bool changeCutListName) {
@@ -71,7 +72,7 @@ namespace AddinArtama {
                 var nomeLista2 = $"Item da lista de corte {_return.Count + 1}";
                 var nomeLista3 = $"Item da lista de corte  {_return.Count + 1}";
 
-                if (swFeat.Name != nomeLista) {
+                if (swFeat.Name != nomeLista && swFeat.Name != nomeLista2 && swFeat.Name != nomeLista3) {
                   changeCutListName = true;
                   swFeat.Name = nomeLista;
                   if (swFeat.Name != nomeLista) {

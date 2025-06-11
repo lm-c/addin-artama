@@ -24,4 +24,13 @@ namespace AddinArtama {
 
 
   }
+
+  public class TipoPendencia : Attribute {
+    public TipoPendencia(PendenciaCritica pendenciaCritica) {
+      PendenciaCritica = pendenciaCritica;
+    }
+
+    public PendenciaCritica PendenciaCritica { get; }
+
+  }
 }

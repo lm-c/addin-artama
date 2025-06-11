@@ -39,5 +39,12 @@ namespace AddinArtama {
       return lista;
     }
 
+    public static bool EhPendenciaCritica(this Enum valor) {
+      FieldInfo fieldInfo = valor.GetType().GetField(valor.ToString());
+      TipoPendencia[] atributo = (TipoPendencia[])fieldInfo.GetCustomAttributes(typeof(TipoPendencia));
+
+      return atributo.Length > 0 ? atributo[0].PendenciaCritica == PendenciaCritica.Sim : false;
+    }
+
   }
 }

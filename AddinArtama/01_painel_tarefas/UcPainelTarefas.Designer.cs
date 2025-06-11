@@ -65,6 +65,7 @@
       this.msConfiguracaoProcesso = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
       this.msConfiguracaoIntegracao = new System.Windows.Forms.ToolStripMenuItem();
+      this.ptbPaint = new System.Windows.Forms.PictureBox();
       this.msMenu.SuspendLayout();
       this.stpRodape.SuspendLayout();
       this.msMenuDesenho.SuspendLayout();
@@ -72,6 +73,7 @@
       this.msMenuRelatorio.SuspendLayout();
       this.msMenuCadastro.SuspendLayout();
       this.msMenuCSW.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.ptbPaint)).BeginInit();
       this.SuspendLayout();
       // 
       // msMenu
@@ -168,7 +170,7 @@
       this.msImprimir.TabIndex = 5;
       this.msImprimir.TabStop = false;
       this.msImprimir.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.msImprimir, "Gerar PDFs");
+      this.cmxToolTip1.SetToolTip(this.msImprimir, "Exportar Arquivos");
       this.msImprimir.UseSelectable = true;
       this.msImprimir.UseVisualStyleBackColor = false;
       this.msImprimir.Click += new System.EventHandler(this.MsMenuExportar_Click);
@@ -216,7 +218,7 @@
       this.msProcess.TabIndex = 1;
       this.msProcess.TabStop = false;
       this.msProcess.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.msProcess, "Definir Processos");
+      this.cmxToolTip1.SetToolTip(this.msProcess, "Aplicação de Matéria Prima");
       this.msProcess.UseSelectable = true;
       this.msProcess.UseVisualStyleBackColor = false;
       this.msProcess.Click += new System.EventHandler(this.MsProcess_Click);
@@ -267,6 +269,7 @@
       // 
       // msMenuDesenho
       // 
+      this.msMenuDesenho.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.msMenuDesenho.IsMainMenu = false;
       this.msMenuDesenho.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.msCriarDesenho,
@@ -276,14 +279,14 @@
       this.msMenuDesenho.Name = "msMenuSistema";
       this.msMenuDesenho.NaoInverterCorImagem = false;
       this.msMenuDesenho.PrimaryColor = System.Drawing.Color.Empty;
-      this.msMenuDesenho.Size = new System.Drawing.Size(253, 48);
+      this.msMenuDesenho.Size = new System.Drawing.Size(257, 56);
       this.msMenuDesenho.Z_Teste = 0;
       // 
       // msCriarDesenho
       // 
       this.msCriarDesenho.Image = ((System.Drawing.Image)(resources.GetObject("msCriarDesenho.Image")));
       this.msCriarDesenho.Name = "msCriarDesenho";
-      this.msCriarDesenho.Size = new System.Drawing.Size(252, 22);
+      this.msCriarDesenho.Size = new System.Drawing.Size(256, 26);
       this.msCriarDesenho.Text = "Criar/Alterar Desenhos";
       this.msCriarDesenho.Click += new System.EventHandler(this.MsCriarDesenho_Click);
       // 
@@ -291,12 +294,13 @@
       // 
       this.msAtualizarDesenho.Image = ((System.Drawing.Image)(resources.GetObject("msAtualizarDesenho.Image")));
       this.msAtualizarDesenho.Name = "msAtualizarDesenho";
-      this.msAtualizarDesenho.Size = new System.Drawing.Size(252, 22);
+      this.msAtualizarDesenho.Size = new System.Drawing.Size(256, 26);
       this.msAtualizarDesenho.Text = "Atualizar Templates dos Desenhos";
       this.msAtualizarDesenho.Click += new System.EventHandler(this.MsAtualizarDesenho_Click);
       // 
       // msMenuExportar
       // 
+      this.msMenuExportar.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.msMenuExportar.IsMainMenu = false;
       this.msMenuExportar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.msExportarPDF,
@@ -306,14 +310,14 @@
       this.msMenuExportar.Name = "msMenuSistema";
       this.msMenuExportar.NaoInverterCorImagem = false;
       this.msMenuExportar.PrimaryColor = System.Drawing.Color.Empty;
-      this.msMenuExportar.Size = new System.Drawing.Size(175, 48);
+      this.msMenuExportar.Size = new System.Drawing.Size(179, 56);
       this.msMenuExportar.Z_Teste = 0;
       // 
       // msExportarPDF
       // 
       this.msExportarPDF.Image = ((System.Drawing.Image)(resources.GetObject("msExportarPDF.Image")));
       this.msExportarPDF.Name = "msExportarPDF";
-      this.msExportarPDF.Size = new System.Drawing.Size(174, 22);
+      this.msExportarPDF.Size = new System.Drawing.Size(178, 26);
       this.msExportarPDF.Text = "Exportar PDF/DWG";
       this.msExportarPDF.Click += new System.EventHandler(this.MsExportar_Click);
       // 
@@ -321,12 +325,13 @@
       // 
       this.msExportarDXF.Image = ((System.Drawing.Image)(resources.GetObject("msExportarDXF.Image")));
       this.msExportarDXF.Name = "msExportarDXF";
-      this.msExportarDXF.Size = new System.Drawing.Size(174, 22);
+      this.msExportarDXF.Size = new System.Drawing.Size(178, 26);
       this.msExportarDXF.Text = "Exportar DXF";
       this.msExportarDXF.Click += new System.EventHandler(this.MsExportarDXF_Click);
       // 
       // msMenuRelatorio
       // 
+      this.msMenuRelatorio.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.msMenuRelatorio.IsMainMenu = false;
       this.msMenuRelatorio.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.msProcessoFabricacao,
@@ -341,27 +346,27 @@
       this.msMenuRelatorio.Name = "msMenuSistema";
       this.msMenuRelatorio.NaoInverterCorImagem = false;
       this.msMenuRelatorio.PrimaryColor = System.Drawing.Color.Empty;
-      this.msMenuRelatorio.Size = new System.Drawing.Size(284, 126);
+      this.msMenuRelatorio.Size = new System.Drawing.Size(288, 146);
       this.msMenuRelatorio.Z_Teste = 0;
       // 
       // msProcessoFabricacao
       // 
       this.msProcessoFabricacao.Image = ((System.Drawing.Image)(resources.GetObject("msProcessoFabricacao.Image")));
       this.msProcessoFabricacao.Name = "msProcessoFabricacao";
-      this.msProcessoFabricacao.Size = new System.Drawing.Size(283, 22);
+      this.msProcessoFabricacao.Size = new System.Drawing.Size(287, 26);
       this.msProcessoFabricacao.Text = "Processo de Fabricação";
       this.msProcessoFabricacao.Click += new System.EventHandler(this.MsProcessoFabricacao_Click);
       // 
       // toolStripMenuItem4
       // 
       this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-      this.toolStripMenuItem4.Size = new System.Drawing.Size(280, 6);
+      this.toolStripMenuItem4.Size = new System.Drawing.Size(284, 6);
       // 
       // msPackList
       // 
       this.msPackList.Image = ((System.Drawing.Image)(resources.GetObject("msPackList.Image")));
       this.msPackList.Name = "msPackList";
-      this.msPackList.Size = new System.Drawing.Size(283, 22);
+      this.msPackList.Size = new System.Drawing.Size(287, 26);
       this.msPackList.Text = "Pack List";
       this.msPackList.Click += new System.EventHandler(this.MsPackList_Click);
       // 
@@ -369,7 +374,7 @@
       // 
       this.msPlanoPintura.Image = ((System.Drawing.Image)(resources.GetObject("msPlanoPintura.Image")));
       this.msPlanoPintura.Name = "msPlanoPintura";
-      this.msPlanoPintura.Size = new System.Drawing.Size(283, 22);
+      this.msPlanoPintura.Size = new System.Drawing.Size(287, 26);
       this.msPlanoPintura.Text = "Plano de Pintura";
       this.msPlanoPintura.Click += new System.EventHandler(this.MsPlanoPintura_Click);
       // 
@@ -377,20 +382,20 @@
       // 
       this.msManutPacklistPlanoDePintura.Image = ((System.Drawing.Image)(resources.GetObject("msManutPacklistPlanoDePintura.Image")));
       this.msManutPacklistPlanoDePintura.Name = "msManutPacklistPlanoDePintura";
-      this.msManutPacklistPlanoDePintura.Size = new System.Drawing.Size(283, 22);
+      this.msManutPacklistPlanoDePintura.Size = new System.Drawing.Size(287, 26);
       this.msManutPacklistPlanoDePintura.Text = "Manutenção Packlist e Plano de Pintura";
       this.msManutPacklistPlanoDePintura.Click += new System.EventHandler(this.MsManutPacklistPlanoDePintura_Click);
       // 
       // toolStripMenuItem1
       // 
       this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-      this.toolStripMenuItem1.Size = new System.Drawing.Size(280, 6);
+      this.toolStripMenuItem1.Size = new System.Drawing.Size(284, 6);
       // 
       // msReportWorks
       // 
       this.msReportWorks.Image = ((System.Drawing.Image)(resources.GetObject("msReportWorks.Image")));
       this.msReportWorks.Name = "msReportWorks";
-      this.msReportWorks.Size = new System.Drawing.Size(283, 22);
+      this.msReportWorks.Size = new System.Drawing.Size(287, 26);
       this.msReportWorks.Text = "Report Works";
       this.msReportWorks.Click += new System.EventHandler(this.MsReportWorks_Click);
       // 
@@ -420,7 +425,7 @@
       this.msMenuCadastro.Name = "msMenuSistema";
       this.msMenuCadastro.NaoInverterCorImagem = false;
       this.msMenuCadastro.PrimaryColor = System.Drawing.Color.Empty;
-      this.msMenuCadastro.Size = new System.Drawing.Size(232, 156);
+      this.msMenuCadastro.Size = new System.Drawing.Size(232, 134);
       this.msMenuCadastro.Z_Teste = 0;
       // 
       // msUsuarioCad
@@ -477,42 +482,60 @@
       this.msMenuCSW.Name = "msMenuSistema";
       this.msMenuCSW.NaoInverterCorImagem = false;
       this.msMenuCSW.PrimaryColor = System.Drawing.Color.Empty;
-      this.msMenuCSW.Size = new System.Drawing.Size(226, 88);
+      this.msMenuCSW.Size = new System.Drawing.Size(252, 88);
       this.msMenuCSW.Z_Teste = 0;
       // 
       // msCadastroProduto
       // 
       this.msCadastroProduto.Image = ((System.Drawing.Image)(resources.GetObject("msCadastroProduto.Image")));
       this.msCadastroProduto.Name = "msCadastroProduto";
-      this.msCadastroProduto.Size = new System.Drawing.Size(225, 26);
-      this.msCadastroProduto.Text = "Cadastro de Produto";
+      this.msCadastroProduto.Size = new System.Drawing.Size(251, 26);
+      this.msCadastroProduto.Text = "Cadastro de Produto/Engenharia";
       this.msCadastroProduto.Click += new System.EventHandler(this.MsCadastroProduto_Click);
       // 
       // msConfiguracaoProcesso
       // 
       this.msConfiguracaoProcesso.Image = ((System.Drawing.Image)(resources.GetObject("msConfiguracaoProcesso.Image")));
       this.msConfiguracaoProcesso.Name = "msConfiguracaoProcesso";
-      this.msConfiguracaoProcesso.Size = new System.Drawing.Size(225, 26);
+      this.msConfiguracaoProcesso.Size = new System.Drawing.Size(251, 26);
       this.msConfiguracaoProcesso.Text = "Configuração de Processo";
       this.msConfiguracaoProcesso.Click += new System.EventHandler(this.MsConfiguracaoProcesso_Click);
       // 
       // toolStripMenuItem2
       // 
       this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-      this.toolStripMenuItem2.Size = new System.Drawing.Size(222, 6);
+      this.toolStripMenuItem2.Size = new System.Drawing.Size(248, 6);
       // 
       // msConfiguracaoIntegracao
       // 
       this.msConfiguracaoIntegracao.Image = ((System.Drawing.Image)(resources.GetObject("msConfiguracaoIntegracao.Image")));
       this.msConfiguracaoIntegracao.Name = "msConfiguracaoIntegracao";
-      this.msConfiguracaoIntegracao.Size = new System.Drawing.Size(225, 26);
+      this.msConfiguracaoIntegracao.Size = new System.Drawing.Size(251, 26);
       this.msConfiguracaoIntegracao.Text = "Configuração de Integração";
       this.msConfiguracaoIntegracao.Click += new System.EventHandler(this.MsConfiguracaoIntegracao_Click);
+      // 
+      // ptbPaint
+      // 
+      this.ptbPaint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.ptbPaint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(54)))), ((int)(((byte)(71)))));
+      this.ptbPaint.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.ptbPaint.Image = ((System.Drawing.Image)(resources.GetObject("ptbPaint.Image")));
+      this.ptbPaint.Location = new System.Drawing.Point(295, 265);
+      this.ptbPaint.Name = "ptbPaint";
+      this.ptbPaint.Padding = new System.Windows.Forms.Padding(3);
+      this.ptbPaint.Size = new System.Drawing.Size(20, 20);
+      this.ptbPaint.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this.ptbPaint.TabIndex = 0;
+      this.ptbPaint.TabStop = false;
+      this.ptbPaint.Click += new System.EventHandler(this.PtbPaint_Click);
+      this.ptbPaint.MouseEnter += new System.EventHandler(this.PtbPaint_MouseEnter);
+      this.ptbPaint.MouseLeave += new System.EventHandler(this.PtbPaint_MouseLeave);
       // 
       // UcPainelTarefas
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.ptbPaint);
       this.Controls.Add(this.pnlMain);
       this.Controls.Add(this.stpRodape);
       this.Controls.Add(this.msMenu);
@@ -527,6 +550,7 @@
       this.msMenuRelatorio.ResumeLayout(false);
       this.msMenuCadastro.ResumeLayout(false);
       this.msMenuCSW.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.ptbPaint)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -564,8 +588,6 @@
     private System.Windows.Forms.ToolStripMenuItem msMateriaPrimaCad;
     private System.Windows.Forms.ToolStripMenuItem msMaterialCad;
     private System.Windows.Forms.ToolStripMenuItem msRedefinirSenha;
-    internal LmCorbieUI.Controls.LmPanel msMenu;
-    internal LmCorbieUI.Controls.LmStatusStrip stpRodape;
     internal LmCorbieUI.Controls.LmPanel pnlMain;
     private LmCorbieUI.Controls.LmMenuItem msCSW;
     private LmCorbieUI.Controls.LmDropdownMenu msMenuCSW;
@@ -573,5 +595,8 @@
     private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
     private System.Windows.Forms.ToolStripMenuItem msConfiguracaoIntegracao;
     private System.Windows.Forms.ToolStripMenuItem msConfiguracaoProcesso;
+    private System.Windows.Forms.PictureBox ptbPaint;
+    private LmCorbieUI.Controls.LmPanel msMenu;
+    private LmCorbieUI.Controls.LmStatusStrip stpRodape;
   }
 }

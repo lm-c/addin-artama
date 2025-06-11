@@ -127,7 +127,7 @@
       // 
       this.ptb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
       this.ptb.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ptb.BackgroundImage")));
-      this.ptb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.ptb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
       this.ptb.Location = new System.Drawing.Point(6, 66);
       this.ptb.Name = "ptb";
       this.ptb.Size = new System.Drawing.Size(269, 229);
@@ -140,7 +140,7 @@
       this.lblCarregando.BackColor = System.Drawing.Color.Transparent;
       this.lblCarregando.FontSize = LmCorbieUI.Design.LmLabelSize.Tall;
       this.lblCarregando.FontWeight = LmCorbieUI.Design.LmLabelWeight.Bold;
-      this.lblCarregando.Location = new System.Drawing.Point(30, 251);
+      this.lblCarregando.Location = new System.Drawing.Point(30, 276);
       this.lblCarregando.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
       this.lblCarregando.Name = "lblCarregando";
       this.lblCarregando.Size = new System.Drawing.Size(220, 39);

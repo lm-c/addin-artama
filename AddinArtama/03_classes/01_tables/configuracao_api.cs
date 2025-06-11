@@ -30,48 +30,14 @@ namespace AddinArtama {
     [StringLength(500)]
     public string token { get; set; }
 
-    /// <summary>
-    /// 3 - Materiais acabados - nivel 1 da máscara
-    /// </summary>
     [Browsable(false)]
-    [StringLength(1)]
-    public string grupo { get; set; }
-
-    /// <summary>
-    /// 05 - Rotina importação addin - nivel 2 da máscara
-    /// </summary>
-    [Browsable(false)]
-    [StringLength(2)]
-    public string subgrupo { get; set; }
-
-    /// <summary>
-    /// 01 - Rotina importação addin - usado para peças - nivel 3 da máscara
-    /// </summary>
-    [Browsable(false)]
-    [StringLength(2)]
-    public string tipo_peca { get; set; }
-
-    /// <summary>
-    /// 01 - Rotina importação addin - usado para montagem - nivel 3 da máscara
-    /// </summary>
-    [Browsable(false)]
-    [StringLength(2)]
-    public string tipo_montagem { get; set; }
-
-    /// <summary>
-    /// 01 - Rotina importação addin - nivel 4 da máscara
-    /// </summary>
-    [Browsable(false)]
-    [StringLength(2)]
-    public string familia { get; set; }
-
-    /// <summary>
-    /// 01 - Rotina importação addin - usado para peças - nivel 5 da máscara (usar no código reduzido aumentar quando acabado sequencial)
-    /// </summary>
-    [Browsable(false)]
-    [StringLength(2)]
-    public string classificacao { get; set; }
+    [StringLength(15)]
+    public string mascara_peca { get; set; }
     
+    [Browsable(false)]
+    [StringLength(15)]
+    public string mascara_conjunto { get; set; }
+
     ///// <summary>
     ///// último sequencial usado para o código reduzido (Quando alterado nivel 5, deve ser zerado
     ///// </summary>
@@ -117,13 +83,9 @@ namespace AddinArtama {
             modelAlt.endereco = configuracao.endereco;
             modelAlt.token = configuracao.token;
 
-            modelAlt.grupo = configuracao.grupo;
-            modelAlt.subgrupo = configuracao.subgrupo;
-            modelAlt.tipo_peca = configuracao.tipo_peca;
-            modelAlt.tipo_montagem = configuracao.tipo_montagem;
-            modelAlt.familia = configuracao.familia;
-            modelAlt.classificacao = configuracao.classificacao;
-            
+            modelAlt.mascara_peca = configuracao.mascara_peca;
+            modelAlt.mascara_conjunto = configuracao.mascara_conjunto;
+
             modelAlt.classificacaoOrigem = configuracao.classificacaoOrigem;
             modelAlt.classificacaoFinalidade = configuracao.classificacaoFinalidade;
             modelAlt.tipoControleSaida = configuracao.tipoControleSaida;

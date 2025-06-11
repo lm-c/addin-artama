@@ -35,16 +35,22 @@ namespace AddinArtama {
       _tnSolucao = trvSolution.Nodes.Add(PermissoesSistema.Solucao.ToString(), PermissoesSistema.Solucao.ObterDescricaoEnum());
 
       NovoNo(_tnSolucao, PermissoesSistema.AplicacaoProcesso);
+
       NovoNo(_tnSolucao, PermissoesSistema.PropsPersonalizadas);
+
       TreeNode tnDesenho = NovoNo(_tnSolucao, PermissoesSistema.Desenho);
       NovoNo(tnDesenho, PermissoesSistema.CriarAlterarDesenhos);
       NovoNo(tnDesenho, PermissoesSistema.AtualizarTemplatesDesenhos);
+
       TreeNode tnExportar = NovoNo(_tnSolucao, PermissoesSistema.Exportar);
       NovoNo(tnExportar, PermissoesSistema.ExportarPDF);
       NovoNo(tnExportar, PermissoesSistema.ExportarDXF);
+
       TreeNode tnCadastros = NovoNo(_tnSolucao, PermissoesSistema.Cadastros);
       NovoNo(tnCadastros, PermissoesSistema.UsuarioCad);
       NovoNo(tnCadastros, PermissoesSistema.PerfilUsuarioCad);
+      NovoNo(tnCadastros, PermissoesSistema.MaterialCad);
+      NovoNo(tnCadastros, PermissoesSistema.MateriaPrimaCad);
       NovoNo(tnCadastros, PermissoesSistema.SenhaRedefinir);
 
       TreeNode tnRelatorios = NovoNo(_tnSolucao, PermissoesSistema.Relatorios);
@@ -54,6 +60,11 @@ namespace AddinArtama {
       NovoNo(tnRelatorios, PermissoesSistema.ManutencaoPinturaPackList);
       NovoNo(tnRelatorios, PermissoesSistema.ReportWorks);
 
+      TreeNode tnMenuIntegracao = NovoNo(_tnSolucao, PermissoesSistema.menuIntegracao);
+      NovoNo(tnMenuIntegracao, PermissoesSistema.produtoCad);
+      NovoNo(tnMenuIntegracao, PermissoesSistema.processoConfig);
+      NovoNo(tnMenuIntegracao, PermissoesSistema.IntegracaoConfig);
+
       NovoNo(_tnSolucao, PermissoesSistema.Configuracao);
 
       _tnSolucao.ExpandAll();
@@ -62,9 +73,9 @@ namespace AddinArtama {
       CheckTreeViewNode(_tnSolucao);
       verificarParent = true;
 
-      tnDesenho.Collapse(true);
-      tnCadastros.Collapse(true);
-      tnRelatorios.Collapse(true);
+      //tnDesenho.Collapse(true);
+      //tnCadastros.Collapse(true);
+      //tnRelatorios.Collapse(true);
     }
 
     private static TreeNode NovoNo(TreeNode value, PermissoesSistema perm) {

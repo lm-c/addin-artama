@@ -43,8 +43,12 @@ namespace AddinArtama {
     }
 
     internal void SetText() {
-      var proc = this.Tag as Processo;
-      lblInfo.Text = $"Operação: {proc.codOperacao} {proc.descrOperacao}\r\nMáquina: {proc.codMaquina} {proc.descrMaquina}";
+      var proc = this.Tag as produto_erp_operacao;
+      var operacao = Processo.ListaProcessos.FirstOrDefault(x => x.codAxion == proc.processo_id);
+      lblInfo.Text = $"" +
+        $"Operação: {operacao.codOperacao} {operacao.descrOperacao}\r\n" +
+        $"Máquina: {operacao.codMaquina} {operacao.descrMaquina}\r\n" +
+        $"Tempo Operação: {proc.tempo} | QTD Operadores: {proc.qtd_operador}";
     }
 
     private void BtnRemover_Click(object sender, EventArgs e) {
@@ -52,8 +56,6 @@ namespace AddinArtama {
     }
 
     private void LblInfo_MouseDown(object sender, MouseEventArgs e) {
-
-
       MouseDownCtrl?.Invoke(this, e);
     }
 

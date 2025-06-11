@@ -237,6 +237,8 @@ namespace AddinArtama {
             Maquina = swTableAnnotation.get_Text(i, 10),
           };
 
+          reportWorks.Operacao = reportWorks.Operacao.Replace("^", "/");
+
           if (vModelPathNames != null)
             reportWorks.PathName = vModelPathNames[0];
 

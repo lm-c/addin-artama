@@ -18,7 +18,7 @@ namespace AddinArtama {
       public string nomeArquivoDesenhoEng { get; set; }
       public bool engenhariaFantasma { get; set; }
       public string descEngenhariaFantasma { get; set; }
-      public string loteProjecaoCusto { get; set; }
+      public int statusEngenharia { get; set; }
       public List<ComponenteEng> componentes = new List<ComponenteEng>();
       public List<OperacaoEng> operacoes = new List<OperacaoEng>();
     }
@@ -86,6 +86,7 @@ namespace AddinArtama {
         bodyObject = bodyObject.TrimEnd(',') + "]," +
 
         "\"operacoes\": [";
+
         foreach (var operacao in engenharia.operacoes) {
           bodyObject += "{" +
               $"\"seqOperacao\": {operacao.seqOperacao}," +
@@ -136,6 +137,7 @@ namespace AddinArtama {
           _return = new Engenharia {
             descricaoProduto = jsonObject["descricao"]?.ToString(),
             codClassificacao = jsonObject["codClassificacao"]?.ToObject<int>() ?? 0,
+            statusEngenharia = jsonObject["statusEngenharia"]?.ToObject<int>() ?? 0,
 
             componentes = jsonObject["componentes"]?.Select(c => new ComponenteEng {
               seqComponente = c["seqComponente"]?.ToObject<int>() ?? 0,
@@ -174,14 +176,8 @@ namespace AddinArtama {
       var configApi = configuracao_api.Selecionar();
 
       try {
-        var tipoMascara = string.Empty;
-        if (itemGenerico.tipoDocumento == TipoDocumento.Peca) {
-          tipoMascara = configApi.tipo_peca;
-        } else {
-          tipoMascara = configApi.tipo_montagem;
-        }
 
-        var mascara = $"{configApi.grupo}.{configApi.subgrupo}.{tipoMascara}.{configApi.familia}.{configApi.classificacao}";
+        var mascara = itemGenerico.tipoDocumento == TipoDocumento.Peca ? configApi.mascara_peca : configApi.mascara_conjunto;
 
         /* inicio variaveis */
         var codigo = string.Empty;
@@ -220,7 +216,20 @@ namespace AddinArtama {
           var responseData = response.Content;
           jsonObject = JObject.Parse(responseData);
           codigo = (string)jsonObject["codigo"];
-         
+
+          if (codigo.EndsWith("9999")) {
+            var splitMascEnt = mascara_ent.Split('.');
+            splitMascEnt[splitMascEnt.Length - 1] = (Convert.ToInt32(splitMascEnt[splitMascEnt.Length - 1]) + 1).ToString("00");
+
+            if (itemGenerico.tipoDocumento == TipoDocumento.Peca) {
+              configApi.mascara_peca = string.Join(".", splitMascEnt);
+            } else {
+              configApi.mascara_conjunto = string.Join(".", splitMascEnt);
+            }
+
+            db.SaveChanges();
+          }
+
           return codigo;
         } else {
           var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);

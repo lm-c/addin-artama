@@ -1,6 +1,6 @@
 ﻿namespace AddinArtama
 {
-    partial class FrmProcesso
+    partial class FrmMateriaPrimaApl
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmProcesso));
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMateriaPrimaApl));
       this.txtComponente = new LmCorbieUI.Controls.LmTextBox();
       this.cmxLabel5 = new LmCorbieUI.Controls.LmLabel();
       this.lblCodMat = new LmCorbieUI.Controls.LmLabel();
@@ -332,7 +332,7 @@
       this.lmLabel2.Name = "lmLabel2";
       this.lmLabel2.Size = new System.Drawing.Size(107, 15);
       this.lmLabel2.TabIndex = 24;
-      this.lmLabel2.Text = "DENAMINAÇÃO";
+      this.lmLabel2.Text = "DENOMINAÇÃO";
       this.lmLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // lmLabel4
@@ -639,7 +639,7 @@
       this.tmrInicioLocalizar.Tag = "0";
       this.tmrInicioLocalizar.Tick += new System.EventHandler(this.TmrInicioLocalizar_Tick);
       // 
-      // FrmProcesso
+      // FrmMateriaPrimaApl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -652,10 +652,10 @@
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Movimentar = false;
-      this.Name = "FrmProcesso";
+      this.Name = "FrmMateriaPrimaApl";
       this.Padding = new System.Windows.Forms.Padding(0, 30, 0, 0);
       this.Resizable = false;
-      this.Text = "Definir Processos";
+      this.Text = "Aplicação de Matéria Prima";
       this.Loaded += new LmCorbieUI.LmForms.LmSingleForm.FormLoad(this.FrmProcesso_Loaded);
       this.pnlControl.ResumeLayout(false);
       this.pnlDados.ResumeLayout(false);
