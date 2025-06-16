@@ -392,13 +392,17 @@ namespace AddinArtama {
             if (!File.Exists(produtoErp.PathName))
               continue;
 
+            var codComp = swTableAnnotation.get_Text(i, 3).Trim();
+            if (string.IsNullOrEmpty(codComp))
+              continue;
+
             var qtd = Convert.ToInt32(swTableAnnotation.get_Text(i, 1));
 
             produtoErp.TipoComponente = ptNm.ToUpper().EndsWith("SLDPRT") ? TipoComponente.Peca : TipoComponente.Montagem;
             var nivel = swTableAnnotation.get_Text(i, 0).Trim();
             produtoErp.Nivel = "1." + nivel;
             produtoErp.Quantidade = qtd;
-            produtoErp.CodComponente = swTableAnnotation.get_Text(i, 3).Trim();
+            produtoErp.CodComponente = codComp;
             produtoErp.CodProduto = swTableAnnotation.get_Text(i, 4).Trim();
             produtoErp.Denominacao = swTableAnnotation.get_Text(i, 6);
             var comprim = swTableAnnotation.get_Text(i, 10);
@@ -465,7 +469,8 @@ namespace AddinArtama {
             }
 
             // engenharia de produto
-            CreateTreeCompNode(rootNode, nodes, produtoErp, nivel);
+            bool verificaMaterial = produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItensCorte[0].Quantidade == 1;
+            CreateTreeCompNode(rootNode, nodes, produtoErp, nivel, verificaMaterial);
 
             if (produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItensCorte.Count > 1 ||
               (produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItensCorte.Count == 1 && produtoErp.ItensCorte[0].Quantidade > 1)) {
@@ -500,7 +505,7 @@ namespace AddinArtama {
                 if (produtoErp.Name.Length + sufixo.Length > 50)
                   produtoErp.Name = produtoErp.Name.Substring(0, 50 - sufixo.Length) + sufixo;
 
-                CreateTreeCompNode(rootNode, nodes, item, nivel + "." + indiceNome);
+                CreateTreeCompNode(rootNode, nodes, item, nivel + "." + indiceNome, verificaMaterial: true);
               }
             }
 
@@ -513,7 +518,7 @@ namespace AddinArtama {
       }
     }
 
-    private static void CreateTreeCompNode(TreeNode rootNode, Dictionary<string, TreeNode> nodes, ProdutoErp produtoErp, string nivel) {
+    private static void CreateTreeCompNode(TreeNode rootNode, Dictionary<string, TreeNode> nodes, ProdutoErp produtoErp, string nivel, bool verificaMaterial) {
       string nodeText = $"{produtoErp.Name} - {produtoErp.Denominacao}";
       var node = new TreeNode(nodeText);
 
@@ -524,7 +529,7 @@ namespace AddinArtama {
       node.ImageIndex = iconIndex;
       node.SelectedImageIndex = iconIndex;
 
-      if (produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItensCorte.Count == 1 &&
+      if (verificaMaterial && produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItensCorte.Count == 1 &&
         !produtoErp.CodComponente.StartsWith("40")) {
         var itemCorte = produtoErp.ItensCorte.FirstOrDefault();
 
