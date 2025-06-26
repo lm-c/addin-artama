@@ -47,5 +47,7 @@ namespace AddinArtama {
     ItemAlterado = 4,
     [Description("Material errado no projeto"), TipoPendencia(PendenciaCritica.Sim)]
     MateriaErrado = 5,
+    [Description("Erro Impedindo Geração de Código"), TipoPendencia(PendenciaCritica.Sim)]
+    ErroAoCadastrarCod = 6,
   }
 }

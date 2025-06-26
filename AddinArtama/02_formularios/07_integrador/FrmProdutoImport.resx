@@ -117,42 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnProximo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAALGPC/xhBQAAAI9JREFUOE+d
-        0sEKgkAARdH5C2mhm6DAhGhXCBH0/39QQouiIIrCXLix+4jZBfPqwgERngtnwpdqjD+Pflv0OGGqF24V
-        7hhwxAR2c1yh8QX6mN0CN8TxDHZLPKHxGSXs9LM6aHxABqsVHojDEZJt8IJGO+RIplELjfawRmvEUYMC
-        yXRm8Rh+ugB/XzllXPIQ3pIhJRB7M5dzAAAAAElFTkSuQmCC
-</value>
-  </data>
   <metadata name="cmxToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>97, 17</value>
   </metadata>
-  <data name="btnVoltar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAALGPC/xhBQAAAIhJREFUOE+d
-        0rEKgmAUhuH/MnKwxcGwQEdBMPX+b8GGBsVQQaiGlnoPcRYR/oMvPCDCp8txhiIU/0d7J/T4oJYXlmJ0
-        +GLGGd4ueEBGI1J4ky8PkNGEDN4S6GhBDm8H3CGjNxqYCqBD89+0EC1k/EIFc0fcIOMnrjC3Hpcwt+sA
-        tF0np20cuXM/qoIlEySZo4sAAAAASUVORK5CYII=
-</value>
-  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnSalvar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAALGPC/xhBQAAAJ1JREFUOE/V
         0j0OQUEUhuFJbMB+2JbEEjQWoKDT0PgJUViCRq2ilSgkdML7TnKnMTeGzpc8N+fknlNMcgLp4oYL+ujV
         2GCNJmLueGIeu/ccMEYLzu0Rl200s8nkDP9Vi1rhp8UHUrOwyWQL395GNatUXDHFpMYO2cVvxc8SDZsP
         ccbZtDi0KIyz/7boyY0sCuOstx2P/IhBoVMIofMCIjRZLfIk3TEAAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="btnCarrProcess.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAARpJREFUOE+V
-        009Kw0AYhvFQV2KFCm5cKYjWC9Q7iFu9gFDtQrCiIrgoHkP8t7B4DG+gS4sUsYKXULDV52mcEmnH2Bd+
-        dDL5vkkmSZOcnGAtHY6XBezjEV+4wwpyU8QlPmFj1hNKiMbmB4SGNzzjA6eYhNnEdDr8nWvYaMMuJrCH
-        CkKO0EOzf5TJErpwgS0nItmBNdYuOxFyDE+8oOBEJJ57hbUHToScw8mhWxuRW1h71j/6yQX+u4A11nrR
-        QQ7hZAd5W3Cb1tozSBnhIVadiKQGa/xOFp3I5gq+ouzKq/BVeuVtvMMF3PJQprCRDpNZ3MAFW3BrNuoe
-        1kYzgzZCQ/is/fXB/dkcMgfvwEb/UHXMY+yso5EORyVJvgHYMkniZa8eUAAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="btnAtualizarProcesso.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -163,6 +137,22 @@
         0TrMG4ZYwA6Yua4L5QzvsHnPdZtk8AMbGnWaKU+IzssIs3t9U4KSxy+i8yXusIne+Cts2HKd0kYfI9j8
         y3U1hDnHh6N1NFXYAUUVcTn2mXZvmFPhk1NMoc1zxN3waPSy7OkFFT5JYgBtflbhk2voB6rjRsXfBMEa
         Ra5Pfqvw6uIAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="btnProximo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAALGPC/xhBQAAAI9JREFUOE+d
+        0sEKgkAARdH5C2mhm6DAhGhXCBH0/39QQouiIIrCXLix+4jZBfPqwgERngtnwpdqjD+Pflv0OGGqF24V
+        7hhwxAR2c1yh8QX6mN0CN8TxDHZLPKHxGSXs9LM6aHxABqsVHojDEZJt8IJGO+RIplELjfawRmvEUYMC
+        yXRm8Rh+ugB/XzllXPIQ3pIhJRB7M5dzAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="btnVoltar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAALGPC/xhBQAAAIhJREFUOE+d
+        0rEKgmAUhuH/MnKwxcGwQEdBMPX+b8GGBsVQQaiGlnoPcRYR/oMvPCDCp8txhiIU/0d7J/T4oJYXlmJ0
+        +GLGGd4ueEBGI1J4ky8PkNGEDN4S6GhBDm8H3CGjNxqYCqBD89+0EC1k/EIFc0fcIOMnrjC3Hpcwt+sA
+        tF0np20cuXM/qoIlEySZo4sAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="btnInserir.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

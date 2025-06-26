@@ -30,9 +30,10 @@ namespace AddinArtama {
       public TipoDocumento tipoDocumento { get; set; }
     }
 
-    internal static async Task UpdateItemGenericoAsync(ContextoDados db, ProdutoErp produtoErp) {      
+    internal static async Task UpdateItemGenericoAsync(ContextoDados db, ProdutoErp produtoErp) {
+      ItemGenerico itemGenerico = new ItemGenerico();
       try {
-        var itemGenerico = await Api.GetItemGenericoAsync(produtoErp.CodProduto);
+        itemGenerico = await Api.GetItemGenericoAsync(produtoErp.CodProduto);
 
         Api.MontarItemGenerico(produtoErp, itemGenerico);
       
@@ -82,7 +83,7 @@ namespace AddinArtama {
           throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
-        Toast.Error($"Erro ao Alterar Item: {ex.Message}");
+        Toast.Error($"Erro ao Alterar Item {produtoErp.Name}: {ex.Message}");
       }
 
     }
@@ -168,7 +169,7 @@ namespace AddinArtama {
       string nomeParaErp = nomeAjustado + separador + codigo;
 
       itemGenerico.refTecnica = produtoErp.Name;
-      itemGenerico.nome = nomeParaErp;
+      itemGenerico.nome = nomeParaErp?.Replace("\"", "\\\"") ?? string.Empty;
       itemGenerico.pesoBruto = produtoErp.PesoBruto;
       itemGenerico.pesoLiquido = produtoErp.PesoLiquido;
       itemGenerico.tipoDocumento = produtoErp.TipoComponente == TipoComponente.Montagem || produtoErp.ItensCorte.Count > 1 ? TipoDocumento.Montagem : TipoDocumento.Peca;

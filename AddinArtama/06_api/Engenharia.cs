@@ -183,7 +183,7 @@ namespace AddinArtama {
         var codigo = string.Empty;
         var mascara_ent = mascara;
         var mascara_sai = mascara;
-        var descricao = itemGenerico.nome;
+        var descricao = itemGenerico.nome?.Replace("\"", "\\\"") ?? string.Empty;
         var pesoBruto = itemGenerico.pesoBruto;
         var pesoLiquido = itemGenerico.pesoLiquido;
         var unidadeMedida = itemGenerico.unidadeMedida;

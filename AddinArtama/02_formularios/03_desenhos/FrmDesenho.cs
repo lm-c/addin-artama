@@ -310,7 +310,7 @@ namespace AddinArtama {
         var swModel = (ModelDoc2)swView.ReferencedDocument;
         string activeConfiguration = swModel.GetActiveConfiguration().Name;
 
-        int AnchorType = (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_BottomLeft;
+        int AnchorType = (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_BottomRight;
         int BomType = (int)swBomType_e.swBomType_TopLevelOnly;
 
         if (swDocumentTypes_E == swDocumentTypes_e.swDocPART) {

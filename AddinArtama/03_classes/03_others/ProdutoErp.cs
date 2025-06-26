@@ -1,4 +1,5 @@
 ﻿using LmCorbieUI;
+using LmCorbieUI.Controls;
 using LmCorbieUI.Metodos;
 using LmCorbieUI.Metodos.AtributosCustomizados;
 using SolidWorks.Interop.sldworks;
@@ -117,7 +118,7 @@ namespace AddinArtama {
     public List<PendenciasEngenharia> Pendencias = new List<PendenciasEngenharia>();
     public List<produto_erp_operacao> Operacoes = new List<produto_erp_operacao>();
 
-    public static async Task<SortableBindingList<ProdutoErp>> GetComponentsAsync(TreeView treeView, string montageGeralNome) {
+    public static async Task<SortableBindingList<ProdutoErp>> GetComponentsAsync(TreeView treeView, string montageGeralNome, LmLabel lblProgress) {
       var _listaProduto = new List<ProdutoErp>();
 
       try {
@@ -221,9 +222,9 @@ namespace AddinArtama {
             string templateGeral = $"{Application.StartupPath}\\01 - Addin LM\\ListaCompleta.sldbomtbt";
             int BomTypeGeral = (int)swBomType_e.swBomType_Indented;
             int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
-            bool DetailedCutList = false;
+            bool DetailedCutList = true;
             var swBOMAnnotationGeral = swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList);
-            PegaDadosListaGeral(swBOMAnnotationGeral, rootNode);
+            PegaDadosListaGeral(swBOMAnnotationGeral, rootNode, lblProgress);
             ListaCorte.ExcluirLista(swModel);
           } else {
             int status = 0;
@@ -343,6 +344,7 @@ namespace AddinArtama {
           rootNode.ExpandAll();
 
           MsgBox.ShowWaitMessage("Analisando componentes...");
+
           await PercorrerTreeViewAnalisarCompAsync(db, rootNode, _listaProduto, montageGeralNome);
         }
       } catch (Exception ex) {
@@ -353,7 +355,7 @@ namespace AddinArtama {
       return new SortableBindingList<ProdutoErp>(_listaProduto);
     }
 
-    private static void PegaDadosListaGeral(BomTableAnnotation swBOMAnnotation, TreeNode rootNode) {
+    private static void PegaDadosListaGeral(BomTableAnnotation swBOMAnnotation, TreeNode rootNode, LmLabel lblProgress) {
       string nameShort = "";
       try {
         int status = 0;
@@ -373,16 +375,21 @@ namespace AddinArtama {
         var swBOMFeature = swBOMAnnotation.BomFeature;
 
         Dictionary<string, TreeNode> nodes = new Dictionary<string, TreeNode>();
+        string nivelPecaLido = string.Empty;
 
         for (int i = lStartRow; i < swTableAnnotation.TotalRowCount; i++) {
           vModelPathNames = (string[])swBOMAnnotation.GetModelPathNames(i, out strItemNumber, out strPartNumber);
+
+          int porcentagem = (int)((double)(i + 1) / swTableAnnotation.TotalRowCount * 100);
+          lblProgress.Text = $"Lendo componentes... {i + 1} de {swTableAnnotation.TotalRowCount} ({porcentagem:0.00}%)";
+          lblProgress.Refresh();
 
           if (vModelPathNames != null) {
             var produtoErp = new ProdutoErp();
             string ptNm = vModelPathNames[0];
 
             produtoErp.PathName = ptNm;
-            produtoErp.Name = Path.GetFileNameWithoutExtension(produtoErp.PathName);
+            produtoErp.Name = nameShort = Path.GetFileNameWithoutExtension(produtoErp.PathName);
             if (produtoErp.Name.Contains("^"))
               produtoErp.Name = produtoErp.Name.Substring(0, produtoErp.Name.IndexOf("^"));
 
@@ -392,14 +399,28 @@ namespace AddinArtama {
             if (!File.Exists(produtoErp.PathName))
               continue;
 
-            var codComp = swTableAnnotation.get_Text(i, 3).Trim();
-            if (string.IsNullOrEmpty(codComp))
-              continue;
-
-            var qtd = Convert.ToInt32(swTableAnnotation.get_Text(i, 1));
-
             produtoErp.TipoComponente = ptNm.ToUpper().EndsWith("SLDPRT") ? TipoComponente.Peca : TipoComponente.Montagem;
             var nivel = swTableAnnotation.get_Text(i, 0).Trim();
+
+            if (produtoErp.TipoComponente == TipoComponente.Peca) {
+              if (nivel.StartsWith(nivelPecaLido + "."))
+                continue;
+              else
+                nivelPecaLido = nivel;
+
+              nivelPecaLido = nivel;
+            }
+
+            var qtd = Convert.ToInt32(swTableAnnotation.get_Text(i, 1));
+            var codMaterial = swTableAnnotation.get_Text(i, 2).Trim();
+            var codComp = swTableAnnotation.get_Text(i, 3).Trim();
+
+            if (!string.IsNullOrEmpty(codMaterial) || produtoErp.Name.Contains("~"))
+              continue;
+
+            if (string.IsNullOrEmpty(codComp))
+              codComp = produtoErp.Name;
+
             produtoErp.Nivel = "1." + nivel;
             produtoErp.Quantidade = qtd;
             produtoErp.CodComponente = codComp;
@@ -426,14 +447,20 @@ namespace AddinArtama {
               : ptNm.ToUpper().EndsWith("SLDPRT")
               ? TipoComponente.Peca : TipoComponente.Montagem;
 
-            int swTipo = ptNm.ToUpper().EndsWith("SLDPRT") ? (int)swDocumentTypes_e.swDocPART : (int)swDocumentTypes_e.swDocASSEMBLY;
+            var swTipo = ptNm.ToUpper().EndsWith("SLDPRT") ? swDocumentTypes_e.swDocPART : swDocumentTypes_e.swDocASSEMBLY;
 
             produto_erp_operacao.SelecionarProcessoProduto(produtoErp);
 
             var swModel = Sw.App.OpenDoc6(produtoErp.PathName,
-            swTipo, (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
+            (int)swTipo, (int)swOpenDocOptions_e.swOpenDocOptions_Silent, produtoErp.Configuracao, ref status, ref warnings);
 
             if (produtoErp.TipoComponente == TipoComponente.Peca) {
+              if (swModel == null) {
+                MsgBox.Show($"Erro ao abrir o arquivo {produtoErp.PathName}", "Addin LM Projetos",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                continue;
+              }
+
               produtoErp.ItensCorte = ListaCorte.GetCutList(swModel, produtoErp.PathName, out bool changeCutList);
 
               if (changeCutList && produtoErp.ItensCorte.Count > 1) {
@@ -457,19 +484,24 @@ namespace AddinArtama {
               : Properties.Resources.assembly;
             produtoErp.Img2D = desenhoExiste ? Properties.Resources.draw : Properties.Resources.not_draw;
 
-            if ((produtoErp.TipoComponente == TipoComponente.ItemBiblioteca || produtoErp.CodComponente.StartsWith("40")) && string.IsNullOrEmpty(produtoErp.CodProduto)) {
+            if (swModel != null && produtoErp.TipoComponente == TipoComponente.ItemBiblioteca || (produtoErp.CodComponente.StartsWith("40")) && string.IsNullOrEmpty(produtoErp.CodProduto)) {
               produtoErp.CodProduto = produtoErp.CodComponente;
               var swModelDocExt = swModel.Extension;
-              var swConfMgr = swModel.ConfigurationManager;
-              var swConf = swConfMgr.ActiveConfiguration;
               var swCustPropMngr = swModelDocExt.get_CustomPropertyManager("");
+
+              if (produtoErp.CodComponente.StartsWith("10")) {
+                swCustPropMngr.Delete2("Código Produto");
+                swCustPropMngr = swModelDocExt.get_CustomPropertyManager(produtoErp.Configuracao);
+              }
+
               swCustPropMngr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, produtoErp.CodComponente, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
               swModel.Save();
-            }
+            } else if (swModel == null && produtoErp.TipoComponente == TipoComponente.ItemBiblioteca && produtoErp.CodComponente.StartsWith("10"))
+              produtoErp.CodProduto = produtoErp.CodComponente;
 
             // engenharia de produto
-            bool verificaMaterial = produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItensCorte[0].Quantidade == 1;
+            bool verificaMaterial = produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItensCorte.Count > 0 && produtoErp.ItensCorte[0].Quantidade == 1;
             CreateTreeCompNode(rootNode, nodes, produtoErp, nivel, verificaMaterial);
 
             if (produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItensCorte.Count > 1 ||
@@ -513,7 +545,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar dados da Lista\n\n{ex.Message}", "Addin LM Projetos",
+        MsgBox.Show($"Erro ao pegar dados da Lista\n\nItem: {nameShort}\n\n{ex.Message}", "Addin LM Projetos",
              MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
@@ -562,8 +594,12 @@ namespace AddinArtama {
 
       if (nivel.Contains('.')) {
         var parentLevel = nivel.Substring(0, nivel.LastIndexOf('.'));
-        nodes[parentLevel].Nodes.Add(node);
+        if (((ProdutoErp)nodes[parentLevel].Tag).TipoComponente != TipoComponente.ItemBiblioteca) {
+          nodes[nivel] = node;
+          nodes[parentLevel].Nodes.Add(node);
+        }
       } else {
+        nodes[nivel] = node;
         rootNode.Nodes.Add(node);
       }
     }
@@ -657,12 +693,12 @@ namespace AddinArtama {
             var swModelDocExt = swModel.Extension;
             var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
 
-            if(produtoErp.ItensCorte.Count == 1)
-{            produtoErp.ItensCorte[0].CodProduto = produtoErp.CodProduto;
-            bool boolstatus = swModel.Extension.SelectByID2(produtoErp.ItensCorte[0].NomeLista, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
+            if (produtoErp.ItensCorte.Count == 1) {
+              produtoErp.ItensCorte[0].CodProduto = produtoErp.CodProduto;
+              bool boolstatus = swModel.Extension.SelectByID2(produtoErp.ItensCorte[0].NomeLista, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
 
-            SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
-            Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
+              SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+              Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
               swCustPropMgr = swFeat.CustomPropertyManager;
             }
 
@@ -736,7 +772,7 @@ namespace AddinArtama {
 
             } else {
               await
-                VerificarOperacaoERPAsync(db, produtoErp, swModel, engenharia.operacoes);
+                VerificarOperacaoERPAsync(db, produtoErp, swModel, engenharia?.operacoes);
             }
 
             produtoErp.CadastrarAddin = true;

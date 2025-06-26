@@ -17,6 +17,7 @@ namespace AddinArtama {
     string _montageGeralNome = string.Empty;
     SortableBindingList<ProdutoErp> _produtos = new SortableBindingList<ProdutoErp>();
     TreeView _arvoreCompleta = new TreeView();
+    bool _trabalhando = false;
 
     Color corErro = Color.Red;
     Color corAlerta = Color.Blue;
@@ -64,12 +65,22 @@ namespace AddinArtama {
     }
 
     private void BtnCarrProcess_Click(object sender, EventArgs e) {
+      if (_trabalhando) {
+        _trabalhando = false;
+        btnSalvar.Enabled = true;
+        btnCarrProcess.Image = Properties.Resources.carregar;
+        btnCarrProcess.Text = " Carregar Processos";
+        return;
+      }
+
       CarregarProcessosAsync();
     }
 
     private async Task CarregarProcessosAsync() {
       MsgBox.ShowWaitMessage("Lendo componentes da montagem...");
       try {
+        ptbMaterialError.Visible = false;
+
         if (Sw.App.ActiveDoc == null) {
           Toast.Warning("Sem documentos abertos");
           return;
@@ -88,8 +99,16 @@ namespace AddinArtama {
           _produtos = new SortableBindingList<ProdutoErp>();
           dgv.CarregarGrid(_produtos);
 
-          _produtos = await ProdutoErp.GetComponentsAsync(_arvoreCompleta, _montageGeralNome);
+          lblProgress.Visible = true;
+          btnCarrProcess.Enabled = btnSalvar.Enabled = false;
+          _produtos = await ProdutoErp.GetComponentsAsync(_arvoreCompleta, _montageGeralNome, lblProgress);
+          btnCarrProcess.Enabled = btnSalvar.Enabled = true;
+          lblProgress.Text = $"Carregando Grid....";
+
           CarregarGrid();
+
+          lblProgress.Visible = false;
+          lblProgress.Text = $"";
         } else {
           Toast.Warning("Comando apenas para Peças e Montagens");
         }
@@ -117,8 +136,8 @@ namespace AddinArtama {
           Toast.Warning("Carregar Desenhos primeiro");
           return;
         }
-        
-        if (_produtos.Any(x=> string.IsNullOrEmpty( x.Denominacao))) {
+
+        if (_produtos.Any(x => string.IsNullOrEmpty(x.Denominacao))) {
           Toast.Warning("Favor preencher todas as Denominações");
           return;
         }
@@ -348,9 +367,15 @@ namespace AddinArtama {
     }
 
     private void CadastrarNovo(ProdutoErp produtoErp) {
-      try {
-        Invoke(new MethodInvoker(async () => {
+      Invoke(new MethodInvoker(async () => {
+        var nomeProduto = string.Empty;
+        try {
           MsgBox.ShowWaitMessage("Cadastrando Produtos...");
+
+          _trabalhando = true;
+          btnSalvar.Enabled = false;
+          btnCarrProcess.Image = Properties.Resources.cancelar;
+          btnCarrProcess.Text = " Cancelar";
 
           using (ContextoDados db = new ContextoDados()) {
             ModelDoc2 swModel = default(ModelDoc2);
@@ -364,6 +389,14 @@ namespace AddinArtama {
             var config = db.configuracao_api.FirstOrDefault();
 
             while (true) {
+              if(!_trabalhando) {
+                MsgBox.CloseWaitMessage();
+                Toast.Black("Cadastro de produtos cancelado pelo usuário.");
+                return;
+              }
+
+              nomeProduto = produtoErp.Name;
+
               int tipo = produtoErp.PathName.EndsWith("SLDASM")
               ? (int)swDocumentTypes_e.swDocASSEMBLY
               : (int)swDocumentTypes_e.swDocPART;
@@ -381,8 +414,8 @@ namespace AddinArtama {
                   }
                 }
               } else {
-                //if (produtoErp.TipoComponente != TipoComponente.ItemBiblioteca && produtoErp.TipoComponente != TipoComponente.ListaMaterial)
-                //  await Api.UpdateItemGenericoAsync(db, produtoErp);
+                if (produtoErp.TipoComponente != TipoComponente.ItemBiblioteca && produtoErp.TipoComponente != TipoComponente.ListaMaterial)
+                  await Api.UpdateItemGenericoAsync(db, produtoErp);
 
                 if (!string.IsNullOrEmpty(produtoErp.CodProduto)) {
                   if (produtoErp.CadastrarAddin) {
@@ -395,7 +428,7 @@ namespace AddinArtama {
                 swModel = Sw.App.OpenDoc6(produtoErp.PathName, tipo,
                   (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
 
-                if (!swModel.IsOpenedReadOnly()) {
+                if (swModel != null && !swModel.IsOpenedReadOnly()) {
                   var swModelDocExt = swModel.Extension;
                   var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
 
@@ -418,16 +451,29 @@ namespace AddinArtama {
               }
 
               produtoErp.Pendencias = new List<PendenciasEngenharia>();
-              produtoErp.ImgPendencia = new Bitmap(20, 20);
 
-              dgv.Grid.Rows[startIndex].DefaultCellStyle.ForeColor = dgv.Grid.Rows[startIndex].DefaultCellStyle.SelectionForeColor = corSucesso;
+              if (!string.IsNullOrEmpty(produtoErp.CodProduto)) {
+                produtoErp.ImgPendencia = new Bitmap(20, 20);
+                dgv.Grid.Rows[startIndex].DefaultCellStyle.ForeColor = dgv.Grid.Rows[startIndex].DefaultCellStyle.SelectionForeColor = corSucesso;
+              } else {
+                produtoErp.ImgPendencia = Properties.Resources.error;
+                produtoErp.Pendencias.Add(PendenciasEngenharia.ErroAoCadastrarCod);
+                dgv.Grid.Rows[startIndex].DefaultCellStyle.ForeColor = dgv.Grid.Rows[startIndex].DefaultCellStyle.SelectionForeColor = corErro;
+              }
+
               produtoErp.CadastrarProdutoErp = produtoErp.CadastrarAddin = false;
 
               startIndex++;
               if (startIndex >= dgv.Grid.Rows.Count)
                 break;
 
+              if (startIndex < dgv.Grid.FirstDisplayedScrollingRowIndex ||
+                  startIndex > dgv.Grid.FirstDisplayedScrollingRowIndex + dgv.Grid.DisplayedRowCount(false) - 1) {
+                dgv.Grid.FirstDisplayedScrollingRowIndex = startIndex;
+              }
+
               var prod = dgv.Grid.Rows[startIndex].DataBoundItem as ProdutoErp;
+
               if (prod.Nivel.Contains(nivelPai + "."))
                 produtoErp = prod;
               else break;
@@ -445,21 +491,32 @@ namespace AddinArtama {
 
             swModel.Save3(5, ref status, ref warnings);
 
+            _trabalhando = false;
+            btnSalvar.Enabled = true;
+            btnCarrProcess.Image = Properties.Resources.carregar;
+            btnCarrProcess.Text = " Carregar Processos";
+
             MsgBox.Show("Cadastro de produtos e engenharia finalizado com sucesso", "Addin LM Projetos",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
           }
-        }));
-      } catch (Exception ex) {
-        MsgBox.Show($"Erro ao atualizar tempalte\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
-      } finally {
-        // MsgBox.CloseWaitMessage();
-        //CarregarGrid();
-      }
+        } catch (Exception ex) {
+          // dgv.RowIndexChanged += Dgv_RowIndexChanged;
+          MsgBox.Show($"Erro ao cadastrar produto\n\nItem: {nomeProduto}\n\n{ex.Message}", "Addin LM Projetos",
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        } finally {
+
+        }
+      }));
     }
 
     private async Task PercorrerTreeViewSalvarEngAsync(ContextoDados db, TreeNode node, configuracao_api configApi) {
       try {
+        if (!_trabalhando) {
+          MsgBox.CloseWaitMessage();
+          Toast.Black("Cadastro de engenharia cancelado pelo usuário.");
+          return;
+        }
+
         var produtoErp = node.Tag as ProdutoErp;
         if (produtoErp != null) {
           if (produtoErp.TipoComponente != TipoComponente.ListaMaterial && produtoErp.TipoComponente != TipoComponente.ItemBiblioteca) {
@@ -527,10 +584,10 @@ namespace AddinArtama {
                       qtd = compr / 1000; // para cabo de aço
                       break;
                       case "KG":
-                      qtd = produtoErp.PesoBruto; 
+                      qtd = produtoErp.PesoBruto;
                       break;
                       case "L":
-                      qtd = compr; 
+                      qtd = compr;
                       break;
                       default:
                       break;
@@ -581,7 +638,6 @@ namespace AddinArtama {
 
             if (eng == null || eng.statusEngenharia == 1)
               await Api.CadastrarEngenhariaAsync(db, engenharia);
-
           }
         }
       } catch (Exception ex) {

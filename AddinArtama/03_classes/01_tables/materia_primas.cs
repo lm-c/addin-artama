@@ -92,8 +92,12 @@ namespace AddinArtama {
         var valores = new object[10];
         short pos = 0;
 
-        condicoes += $"Id > @{pos} && ";
+        condicoes += $"id > @{pos} && ";
         valores[pos] = 0;
+        pos++;
+        
+        condicoes += $"tipo_materia_prima == @{pos} && ";
+        valores[pos] = TipoMateriaPrima.Chapa;
         pos++;
 
         if (ativo != null) {
@@ -117,7 +121,6 @@ namespace AddinArtama {
 
         var chapas = Enumerable.ToList(
           from x in db.materia_primas.Where(condicoes, valores).OrderBy(x => x.espessura)
-              .Where(x => x.ativo && x.tipo_materia_prima == TipoMateriaPrima.Chapa && x.espessura >= (espessura - 0.3) && x.espessura <= (espessura + 0.3))
           select new {
             x.id,
             x.codigo,
@@ -130,6 +133,7 @@ namespace AddinArtama {
         foreach (var chapa in chapas) {
           _return.Add(new Z_Chapa {
             Id = chapa.id,
+            Espessura = chapa.espessura,
             CodigoChapa = chapa.codigo,
             DescricaoChapa = chapa.descricao,
             DescricaoMaterial = chapa.material,
@@ -160,6 +164,7 @@ namespace AddinArtama {
 
           _return = (new Z_Chapa {
             Id = chapa.id,
+            Espessura = chapa.espessura,
             CodigoChapa = chapa.codigo,
             DescricaoChapa = chapa.descricao,
             DescricaoMaterial = chapa.material,

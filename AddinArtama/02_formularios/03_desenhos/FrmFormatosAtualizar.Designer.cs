@@ -30,12 +30,7 @@
         {
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmFormatosAtualizar));
-      this.lblPercDesenho = new LmCorbieUI.Controls.LmLabel();
       this.lmPanel1 = new LmCorbieUI.Controls.LmPanel();
-      this.btnAtualizar = new LmCorbieUI.Controls.LmButton();
-      this.btnCancelar = new LmCorbieUI.Controls.LmButton();
-      this.btnCarregar = new LmCorbieUI.Controls.LmButton();
-      this.dgv = new LmCorbieUI.Controls.LmDataGridView();
       this.cmsOpenFile = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.tsmSelectAll = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmUnselectAll = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,20 +38,13 @@
       this.tsmOpen3D = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmOpen2D = new System.Windows.Forms.ToolStripMenuItem();
       this.cmxToolTip1 = new System.Windows.Forms.ToolTip(this.components);
+      this.btnAtualizar = new LmCorbieUI.Controls.LmButton();
+      this.btnCancelar = new LmCorbieUI.Controls.LmButton();
+      this.btnCarregar = new LmCorbieUI.Controls.LmButton();
+      this.dgv = new LmCorbieUI.Controls.LmDataGridView();
       this.lmPanel1.SuspendLayout();
       this.cmsOpenFile.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // lblPercDesenho
-      // 
-      this.lblPercDesenho.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.lblPercDesenho.Location = new System.Drawing.Point(0, 428);
-      this.lblPercDesenho.Margin = new System.Windows.Forms.Padding(3);
-      this.lblPercDesenho.Name = "lblPercDesenho";
-      this.lblPercDesenho.Size = new System.Drawing.Size(350, 22);
-      this.lblPercDesenho.TabIndex = 77;
-      this.lblPercDesenho.Text = "Peça 0 de 0";
-      this.lblPercDesenho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // lmPanel1
       // 
@@ -68,105 +56,8 @@
       this.lmPanel1.IsPanelMenu = false;
       this.lmPanel1.Location = new System.Drawing.Point(0, 30);
       this.lmPanel1.Name = "lmPanel1";
-      this.lmPanel1.Size = new System.Drawing.Size(350, 50);
-      this.lmPanel1.TabIndex = 78;
-      // 
-      // btnAtualizar
-      // 
-      this.btnAtualizar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnAtualizar.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnAtualizar.BorderRadius = 15;
-      this.btnAtualizar.BorderSize = 0;
-      this.btnAtualizar.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnAtualizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnAtualizar.Image = ((System.Drawing.Image)(resources.GetObject("btnAtualizar.Image")));
-      this.btnAtualizar.Location = new System.Drawing.Point(36, 9);
-      this.btnAtualizar.Margin = new System.Windows.Forms.Padding(1);
-      this.btnAtualizar.Name = "btnAtualizar";
-      this.btnAtualizar.Size = new System.Drawing.Size(31, 31);
-      this.btnAtualizar.TabIndex = 13;
-      this.btnAtualizar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnAtualizar, "Salvar");
-      this.btnAtualizar.UseVisualStyleBackColor = false;
-      this.btnAtualizar.Click += new System.EventHandler(this.BtnAtualizar_Click);
-      // 
-      // btnCancelar
-      // 
-      this.btnCancelar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnCancelar.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnCancelar.BorderRadius = 15;
-      this.btnCancelar.BorderSize = 0;
-      this.btnCancelar.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnCancelar.Enabled = false;
-      this.btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnCancelar.Image = ((System.Drawing.Image)(resources.GetObject("btnCancelar.Image")));
-      this.btnCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.btnCancelar.Location = new System.Drawing.Point(69, 9);
-      this.btnCancelar.Margin = new System.Windows.Forms.Padding(1);
-      this.btnCancelar.Name = "btnCancelar";
-      this.btnCancelar.Size = new System.Drawing.Size(119, 31);
-      this.btnCancelar.TabIndex = 2;
-      this.btnCancelar.Tag = "Avançar";
-      this.btnCancelar.Text = " Cancelar";
-      this.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.btnCancelar.UseVisualStyleBackColor = false;
-      this.btnCancelar.Click += new System.EventHandler(this.BtnCancelar_Click);
-      // 
-      // btnCarregar
-      // 
-      this.btnCarregar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnCarregar.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnCarregar.BorderRadius = 15;
-      this.btnCarregar.BorderSize = 0;
-      this.btnCarregar.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnCarregar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnCarregar.Image = ((System.Drawing.Image)(resources.GetObject("btnCarregar.Image")));
-      this.btnCarregar.Location = new System.Drawing.Point(3, 8);
-      this.btnCarregar.Margin = new System.Windows.Forms.Padding(1);
-      this.btnCarregar.Name = "btnCarregar";
-      this.btnCarregar.Size = new System.Drawing.Size(31, 31);
-      this.btnCarregar.TabIndex = 0;
-      this.btnCarregar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnCarregar, "Carregar");
-      this.btnCarregar.UseVisualStyleBackColor = false;
-      this.btnCarregar.Click += new System.EventHandler(this.BtnCarrDesenhos_Click);
-      // 
-      // dgv
-      // 
-      this.dgv.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(222)))), ((int)(((byte)(251)))));
-      this.dgv.Botao1Largura = 100;
-      this.dgv.Botao1Texto = "";
-      this.dgv.Botao2Largura = 100;
-      this.dgv.Botao2Texto = "";
-      this.dgv.ColunaOrdenacaoGrid = "";
-      this.dgv.ColunasBloqueadasGrid = "";
-      this.dgv.ColunasOcultasGrid = "";
-      this.dgv.ColunasOcultasImpressGrid = "";
-      this.dgv.ContextMenuStrip = this.cmsOpenFile;
-      this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.dgv.EnabledCsvButton = true;
-      this.dgv.EnabledFind = true;
-      this.dgv.EnabledHideColumnsButton = true;
-      this.dgv.EnabledPdfButton = true;
-      this.dgv.EnabledRefreshButton = true;
-      this.dgv.LimparSelecaoAposCarregar = false;
-      this.dgv.Location = new System.Drawing.Point(0, 80);
-      this.dgv.Margin = new System.Windows.Forms.Padding(0);
-      this.dgv.MostrarRodapeBotoes = false;
-      this.dgv.MostrarTotalizador = false;
-      this.dgv.Name = "dgv";
-      this.dgv.PermiteAutoDimensionarLinha = false;
-      this.dgv.PermiteDimensionarColuna = true;
-      this.dgv.PermiteOrdenarColunas = true;
-      this.dgv.PermiteOrdenarLinhas = true;
-      this.dgv.PermiteQuebrarLinhaCabecalho = false;
-      this.dgv.PermiteSelecaoMultipla = false;
-      this.dgv.PosColunasGrid = "";
-      this.dgv.Size = new System.Drawing.Size(350, 348);
-      this.dgv.TabIndex = 79;
-      this.dgv.Texto = "";
-      this.dgv.TituloRelatorio = "";
-      this.dgv.UseSelectable = true;
+      this.lmPanel1.Size = new System.Drawing.Size(269, 113);
+      this.lmPanel1.TabIndex = 0;
       // 
       // cmsOpenFile
       // 
@@ -217,14 +108,116 @@
       this.tsmOpen2D.Text = "Abrir 2D";
       this.tsmOpen2D.Click += new System.EventHandler(this.TsmOpen2D_Click);
       // 
+      // btnAtualizar
+      // 
+      this.btnAtualizar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnAtualizar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+      this.btnAtualizar.BorderColor = System.Drawing.Color.PaleVioletRed;
+      this.btnAtualizar.BorderRadius = 13;
+      this.btnAtualizar.BorderSize = 0;
+      this.btnAtualizar.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnAtualizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnAtualizar.Image = ((System.Drawing.Image)(resources.GetObject("btnAtualizar.Image")));
+      this.btnAtualizar.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.btnAtualizar.Location = new System.Drawing.Point(3, 41);
+      this.btnAtualizar.Name = "btnAtualizar";
+      this.btnAtualizar.Size = new System.Drawing.Size(259, 26);
+      this.btnAtualizar.TabIndex = 1;
+      this.btnAtualizar.Text = " Inicar Atualização";
+      this.btnAtualizar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.btnAtualizar.UseVisualStyleBackColor = false;
+      this.btnAtualizar.Click += new System.EventHandler(this.BtnAtualizar_Click);
+      // 
+      // btnCancelar
+      // 
+      this.btnCancelar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCancelar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+      this.btnCancelar.BorderColor = System.Drawing.Color.PaleVioletRed;
+      this.btnCancelar.BorderRadius = 13;
+      this.btnCancelar.BorderSize = 0;
+      this.btnCancelar.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnCancelar.Enabled = false;
+      this.btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCancelar.Image = ((System.Drawing.Image)(resources.GetObject("btnCancelar.Image")));
+      this.btnCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.btnCancelar.Location = new System.Drawing.Point(3, 73);
+      this.btnCancelar.Name = "btnCancelar";
+      this.btnCancelar.Size = new System.Drawing.Size(259, 26);
+      this.btnCancelar.TabIndex = 2;
+      this.btnCancelar.Tag = "Avançar";
+      this.btnCancelar.Text = " Cancelar";
+      this.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.btnCancelar.UseVisualStyleBackColor = false;
+      this.btnCancelar.Click += new System.EventHandler(this.BtnCancelar_Click);
+      // 
+      // btnCarregar
+      // 
+      this.btnCarregar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCarregar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+      this.btnCarregar.BorderColor = System.Drawing.Color.PaleVioletRed;
+      this.btnCarregar.BorderRadius = 13;
+      this.btnCarregar.BorderSize = 0;
+      this.btnCarregar.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnCarregar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCarregar.Image = ((System.Drawing.Image)(resources.GetObject("btnCarregar.Image")));
+      this.btnCarregar.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.btnCarregar.Location = new System.Drawing.Point(3, 9);
+      this.btnCarregar.Name = "btnCarregar";
+      this.btnCarregar.Size = new System.Drawing.Size(259, 26);
+      this.btnCarregar.TabIndex = 0;
+      this.btnCarregar.Text = " Selecionar Diretório";
+      this.btnCarregar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.btnCarregar.UseVisualStyleBackColor = false;
+      this.btnCarregar.Click += new System.EventHandler(this.BtnCarrDesenhos_Click);
+      // 
+      // dgv
+      // 
+      this.dgv.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(222)))), ((int)(((byte)(251)))));
+      this.dgv.Botao1Largura = 100;
+      this.dgv.Botao1Texto = "";
+      this.dgv.Botao2Largura = 100;
+      this.dgv.Botao2Texto = "";
+      this.dgv.ColunaOrdenacaoGrid = "";
+      this.dgv.ColunasBloqueadasGrid = "";
+      this.dgv.ColunasOcultasGrid = "";
+      this.dgv.ColunasOcultasImpressGrid = "";
+      this.dgv.ContextMenuStrip = this.cmsOpenFile;
+      this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.dgv.EnabledCsvButton = false;
+      this.dgv.EnabledFind = true;
+      this.dgv.EnabledHideColumnsButton = false;
+      this.dgv.EnabledPdfButton = false;
+      this.dgv.EnabledRefreshButton = false;
+      this.dgv.LimparSelecaoAposCarregar = false;
+      this.dgv.Location = new System.Drawing.Point(0, 143);
+      this.dgv.Margin = new System.Windows.Forms.Padding(0);
+      this.dgv.MostrarRodapeBotoes = true;
+      this.dgv.MostrarTotalizador = false;
+      this.dgv.Name = "dgv";
+      this.dgv.PermiteAutoDimensionarLinha = false;
+      this.dgv.PermiteDimensionarColuna = true;
+      this.dgv.PermiteOrdenarColunas = true;
+      this.dgv.PermiteOrdenarLinhas = true;
+      this.dgv.PermiteQuebrarLinhaCabecalho = false;
+      this.dgv.PermiteSelecaoMultipla = false;
+      this.dgv.PosColunasGrid = "";
+      this.dgv.Size = new System.Drawing.Size(269, 307);
+      this.dgv.TabIndex = 1;
+      this.dgv.Texto = "";
+      this.dgv.TituloRelatorio = "";
+      this.dgv.UseSelectable = true;
+      this.dgv.ProcurarTextChanged += new LmCorbieUI.Controls.LmDataGridView.TxtChange(this.dgv_ProcurarTextChanged);
+      // 
       // FrmFormatosAtualizar
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(350, 450);
+      this.ClientSize = new System.Drawing.Size(269, 450);
       this.Controls.Add(this.dgv);
       this.Controls.Add(this.lmPanel1);
-      this.Controls.Add(this.lblPercDesenho);
       this.HelpButton = true;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Location = new System.Drawing.Point(0, 0);
@@ -236,7 +229,6 @@
       this.ShowInTaskbar = false;
       this.Text = "Atualizar Templates dos Desenhos";
       this.Loaded += new LmCorbieUI.LmForms.LmSingleForm.FormLoad(this.FrmFormatosAtualizar_Loaded);
-      this.ClickHelp += new LmCorbieUI.LmForms.LmSingleForm.ButClick(this.FrmFormatosAtualizar_ClickHelp);
       this.lmPanel1.ResumeLayout(false);
       this.cmsOpenFile.ResumeLayout(false);
       this.ResumeLayout(false);
@@ -244,13 +236,7 @@
         }
 
         #endregion
-
-        private LmCorbieUI.Controls.LmLabel lblPercDesenho;
         private LmCorbieUI.Controls.LmPanel lmPanel1;
-        private LmCorbieUI.Controls.LmButton btnCancelar;
-        private LmCorbieUI.Controls.LmButton btnCarregar;
-        private LmCorbieUI.Controls.LmButton btnAtualizar;
-        private LmCorbieUI.Controls.LmDataGridView dgv;
         private System.Windows.Forms.ToolTip cmxToolTip1;
         private System.Windows.Forms.ContextMenuStrip cmsOpenFile;
         private System.Windows.Forms.ToolStripMenuItem tsmSelectAll;
@@ -258,5 +244,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem tsmOpen3D;
         private System.Windows.Forms.ToolStripMenuItem tsmOpen2D;
-    }
+    private LmCorbieUI.Controls.LmButton btnAtualizar;
+    private LmCorbieUI.Controls.LmButton btnCancelar;
+    private LmCorbieUI.Controls.LmButton btnCarregar;
+    private LmCorbieUI.Controls.LmDataGridView dgv;
+  }
 }

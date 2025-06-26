@@ -61,10 +61,12 @@
     <Reference Include="K4os.Hash.xxHash, Version=1.0.7.0, Culture=neutral, PublicKeyToken=32cd54395057cec3, processorArchitecture=MSIL">
       <HintPath>..\packages\K4os.Hash.xxHash.1.0.7\lib\net46\K4os.Hash.xxHash.dll</HintPath>
     </Reference>
-    <Reference Include="LmCorbieCriptografar">
+    <Reference Include="LmCorbieCriptografar, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\LmCorbieUI\LmCorbieUI\bin\Debug\LmCorbieCriptografar.dll</HintPath>
     </Reference>
-    <Reference Include="LmCorbieUI">
+    <Reference Include="LmCorbieUI, Version=4.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\LmCorbieUI\LmCorbieUI\bin\Debug\LmCorbieUI.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -396,6 +398,7 @@
     <Compile Include="03_classes\01_tables\templates.cs" />
     <Compile Include="03_classes\01_tables\usuario_alocados.cs" />
     <Compile Include="03_classes\01_tables\usuarios.cs" />
+    <Compile Include="03_classes\03_others\FormatoPadrao.cs" />
     <Compile Include="03_classes\03_others\W_Perfil.cs" />
     <Compile Include="03_classes\03_others\W_Permissao.cs" />
     <Compile Include="03_classes\03_others\W_UsuarioPerfil.cs" />
@@ -571,6 +574,8 @@
     <None Include="Resources\windows.png" />
     <None Include="Resources\warning.png" />
     <None Include="Resources\error.png" />
+    <None Include="Resources\carregar.png" />
+    <None Include="Resources\cancelar.png" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -587,7 +592,19 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\AddinArtama.pdb"
+    <PostBuildEvent>rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\de" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\es" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\fr" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\it" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\ja" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\ko" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\pt" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\ru" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\zh-CHS" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\zh-CHT" /s/q
+
+del "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\LmCorbieUI.pdb"
+del "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\AddinArtama.pdb"
 
 xcopy "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\Instalador\Atualizador\AtualizarAddin.bat" "C:\Temp" /Y /A /V
 call  "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\Instalador\Atualizador\AttOnBuildAddin.exe"</PostBuildEvent>
