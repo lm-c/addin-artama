@@ -172,7 +172,7 @@ namespace AddinArtama {
       itemGenerico.nome = nomeParaErp?.Replace("\"", "\\\"") ?? string.Empty;
       itemGenerico.pesoBruto = produtoErp.PesoBruto;
       itemGenerico.pesoLiquido = produtoErp.PesoLiquido;
-      itemGenerico.tipoDocumento = produtoErp.TipoComponente == TipoComponente.Montagem || produtoErp.ItensCorte.Count > 1 ? TipoDocumento.Montagem : TipoDocumento.Peca;
+      itemGenerico.tipoDocumento = produtoErp.TipoComponente == TipoComponente.Montagem ? TipoDocumento.Montagem : TipoDocumento.Peca;
       itemGenerico.unidadeMedida = produtoErp.UnidadeMedida;
     }
 

@@ -281,13 +281,13 @@ namespace AddinArtama {
         swModel.ClearSelection2(true);
         swModel.ShowConfiguration2(produtoErp.Configuracao);
 
-        if (produtoErp.ItensCorte != null && produtoErp.ItensCorte.Count == 1 && produtoErp.ItensCorte[0].Tipo == TipoListaMaterial.Chapa)
-          ListaCorte.RefreshCutList(swModel, "", produtoErp.ItensCorte[0]);
+        if (produtoErp.ItemCorte != null && produtoErp.ItemCorte.Tipo == TipoListaMaterial.Chapa)
+          ListaCorte.RefreshCutList(swModel, "", produtoErp.ItemCorte);
 
         if (produtoErp.Referencia.StartsWith("Item da lista de corte")) {
           var swModelDocExt = swModel.Extension;
 
-          bool boolstatus = swModel.Extension.SelectByID2(produtoErp.ItensCorte[0].NomeLista, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
+          bool boolstatus = swModel.Extension.SelectByID2(produtoErp.Referencia, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
         }
 
         if (produtoErp.Pendencias.Where(y => y.EhPendenciaCritica()).ToList().Count > 0) {
@@ -328,18 +328,18 @@ namespace AddinArtama {
       lblPeso.Text = produtoErp.PesoBruto + " kg";
       lblCodigoProduto.Text = produtoErp.CodProduto;
 
-      if (produtoErp.ItensCorte?.Count == 1 || produtoErp.Referencia.StartsWith("Item da lista de corte")) {
-        var espess = produtoErp.ItensCorte[0].CxdEspess;
-        var largur = produtoErp.ItensCorte[0].CxdLarg;
-        var compri = produtoErp.ItensCorte[0].CxdCompr;
-        var descricMaterial = produtoErp.ItensCorte[0].Denominacao;
-        var tipo = produtoErp.ItensCorte[0].Tipo;
-        var codigo = produtoErp.ItensCorte[0].Codigo;
+      if (produtoErp.ItemCorte != null && produtoErp.TipoComponente == TipoComponente.Peca || produtoErp.Referencia.StartsWith("Item da lista de corte")) {
+        var espess = produtoErp.ItemCorte.CxdEspess;
+        var largur = produtoErp.ItemCorte.CxdLarg;
+        var compri = produtoErp.ItemCorte.CxdCompr;
+        var descricMaterial = produtoErp.ItemCorte.Denominacao;
+        var tipo = produtoErp.ItemCorte.Tipo;
+        var codigo = produtoErp.ItemCorte.Codigo;
 
-        lblPeso.Text = produtoErp.ItensCorte[0].Massa + " kg";
+        lblPeso.Text = produtoErp.ItemCorte.Massa + " kg";
 
         lblEspess.Text = tipo == TipoListaMaterial.Chapa ? $"{espess}x{largur}x{compri}" : $"{compri}";
-        lblDescMat.Text = produtoErp.ItensCorte[0].Denominacao;
+        lblDescMat.Text = produtoErp.ItemCorte.Denominacao;
         lblCodMat.Text = codigo.ToString();
 
         ptbMaterialError.Visible = produtoErp.Pendencias.Contains(PendenciasEngenharia.MateriaErrado);
@@ -433,8 +433,8 @@ namespace AddinArtama {
                   var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
 
                   if (produtoErp.Referencia.StartsWith("Item da lista de corte")) {
-                    produtoErp.ItensCorte[0].CodProduto = produtoErp.CodProduto;
-                    bool boolstatus = swModel.Extension.SelectByID2(produtoErp.ItensCorte[0].NomeLista, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
+                    //produtoErp.ItensCorte[0].CodProduto = produtoErp.CodProduto;
+                    bool boolstatus = swModel.Extension.SelectByID2(produtoErp.Referencia, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
 
                     SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
                     Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
@@ -558,17 +558,17 @@ namespace AddinArtama {
                     itemFilho.PesoLiquido = produtoFilho.PesoLiquido;
                     itemFilho.SobremetalCompr = produtoFilho.SobremetalCompr;
                     itemFilho.SobremetalLarg = produtoFilho.SobremetalLarg;
-                    if (itemFilho.ItensCorte.Count > 0)
-                      itemFilho.ItensCorte[0].unidadeMedida = produtoFilho.ItensCorte[0].unidadeMedida;
+                    //if (itemFilho.ItensCorte.Count > 0)
+                    //  itemFilho.ItensCorte[0].unidadeMedida = produtoFilho.ItensCorte[0].unidadeMedida;
                   }
 
                   var classificacao = itemFilho.CodComponente.StartsWith("10") || itemFilho.CodComponente.StartsWith("20") ? 5 : itemFilho.TipoComponente == TipoComponente.Montagem ? 3 : 4;
 
                   double qtd = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.Quantidade : 1;
-                  double compr = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.Comprimento : itemFilho.ItensCorte[0].CxdCompr + itemFilho.SobremetalCompr;
+                  double compr = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.Comprimento : itemFilho.Comprimento + itemFilho.SobremetalCompr;
 
                   if (itemFilho.TipoComponente == TipoComponente.ListaMaterial) {
-                    switch (itemFilho.ItensCorte[0].unidadeMedida) {
+                    switch (itemFilho.UnidadeMedida) {
                       case "M":
                       compr = compr / 1000;
                       break;
@@ -600,8 +600,8 @@ namespace AddinArtama {
                     quantidade = qtd,
                     itemKanban = 0,
                     comprimento = compr,
-                    largura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdLarg + itemFilho.SobremetalLarg,
-                    espessura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItensCorte[0].CxdEspess,
+                    largura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItemCorte.CxdLarg + itemFilho.SobremetalLarg,
+                    espessura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItemCorte.CxdEspess,
                     percQuebra = 0,
                     codClassificacaoInsumo = classificacao, // 1 = produto, 3 = subconjunto, 4 = peças e 5 = insumo comprado
                   };
@@ -650,10 +650,9 @@ namespace AddinArtama {
         var espessura = 0.0;
         var largura = 0.0;
         var comprimento = 0.0;
-        var peso = 0.0;
 
-        if (item.TipoComponente == TipoComponente.Peca && item.ItensCorte.Count == 1) {
-          var itemCorte = item.ItensCorte[0];
+        if (item.TipoComponente == TipoComponente.Peca && item.ItemCorte != null) {
+          var itemCorte = item.ItemCorte;
           espessura = itemCorte.CxdEspess;
           largura = itemCorte.CxdLarg;
           comprimento = itemCorte.CxdCompr;
@@ -697,8 +696,8 @@ namespace AddinArtama {
         var largura = 0.0;
         var comprimento = 0.0;
 
-        if (item.TipoComponente == TipoComponente.Peca && item.ItensCorte.Count == 1) {
-          var itemCorte = item.ItensCorte[0];
+        if (item.TipoComponente == TipoComponente.Peca && item.ItemCorte != null) {
+          var itemCorte = item.ItemCorte;
           espessura = itemCorte.CxdEspess;
           largura = itemCorte.CxdLarg;
           comprimento = itemCorte.CxdCompr;
@@ -1014,7 +1013,7 @@ namespace AddinArtama {
     private void PtbMaterialError_Click(object sender, EventArgs e) {
       try {
         var produtoERP = dgv.Grid.CurrentRow.DataBoundItem as ProdutoErp;
-        var espMat = produtoERP.ItensCorte[0].CxdEspess;
+        var espMat = produtoERP.ItemCorte.CxdEspess;
         var list = materia_primas.Selecionar(ativo: true, espMat);
         var defatlList = list.ToList().Select(x => new DefaultObject { Codigo = x.CodigoChapa, Descricao = x.DescricaoChapa }).ToList();
         var chapaDesc = MsgBox.InputBox("Selecione a chapa correta", lmValueType: LmCorbieUI.Design.LmValueType.ComboBox, itens: defatlList);
@@ -1030,13 +1029,11 @@ namespace AddinArtama {
           swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
           if (swModel.GetType() == (int)swDocumentTypes_e.swDocPART) {
-            var cutList = produtoERP.ItensCorte[0];
+            var cutList = produtoERP.ItemCorte;         
             cutList.Codigo = mat.CodigoChapa;
             cutList.Denominacao = mat.DescricaoChapa;
             cutList.Material = mat.DescricaoMaterial;
             ListaCorte.UpdateCutList(swModel, cutList);
-
-            //swPart.SetMaterialPropertyName2(produtoERP.Configuracao, config_sistema.model.local_base_dados_material, mat.material_descricao);
 
             lblCodMat.Text = mat.CodigoChapa.ToString();
             lblDescMat.Text = mat.DescricaoChapa;
