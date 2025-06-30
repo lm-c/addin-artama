@@ -1,4 +1,5 @@
-﻿using iTextSharp.text;
+﻿using Google.Protobuf.WellKnownTypes;
+using iTextSharp.text;
 using LmCorbieUI;
 using LmCorbieUI.Controls;
 using LmCorbieUI.Metodos;
@@ -166,6 +167,8 @@ namespace AddinArtama {
 
           swCustPropMngr = swModelDocExt.get_CustomPropertyManager("");
 
+          swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+
           swCustPropMngr.Get2("Código Produto", out valOut, out resolvedValOut);
           produtoErp.CodProduto = resolvedValOut;
           swCustPropMngr.Get2("Denominação", out valOut, out resolvedValOut);
@@ -189,7 +192,6 @@ namespace AddinArtama {
             Toast.Warning("Recurso indisponivel para o componentes de biblioteca.");
             return new SortableBindingList<ProdutoErp>();
           }
-
 
           swCustPropMngr = swModelDocExt.get_CustomPropertyManager(swConf.Name);
 
@@ -215,6 +217,8 @@ namespace AddinArtama {
           produtoErp.Quantidade = 1;
 
           produtoErp.Configuracao = swConf.Name;
+
+          produto_erp_operacao.SelecionarProcessoProduto(produtoErp);
 
           TreeNode rootNode = treeView.Nodes.Add("Root", $"{produtoErp.Name} - {produtoErp.Denominacao}", 0);
           rootNode.Tag = produtoErp;
@@ -265,7 +269,7 @@ namespace AddinArtama {
                   Denominacao = produtoErp.Denominacao,
                   Referencia = itemCorte.NomeLista,
                   CodComponente = produtoErp.CodComponente,
-                  CodProduto = itemCorte.Codigo.ToString(),
+                  CodProduto = itemCorte.CodProduto.ToString(),
                   Img3D = Properties.Resources.part,
                   Img2D = produtoErp.Img2D,
                   TipoComponente = TipoComponente.Peca,
@@ -292,9 +296,9 @@ namespace AddinArtama {
                 // add material da peça de soldagem
                 var itemLista = new ProdutoErp {
                   PathName = produtoErp.PathName,
-                  Name = produtoErp.Name,
+                  Name = produtoErp.Name + sufixo,
                   Denominacao = itemCorte.Denominacao,
-                  Referencia = produtoErp.Referencia,
+                  Referencia = itemCorte.NomeLista,
                   CodComponente = itemCorte.Codigo.ToString(),
                   CodProduto = itemCorte.Codigo.ToString(),
                   TipoComponente = TipoComponente.ListaMaterial,
@@ -348,7 +352,6 @@ namespace AddinArtama {
           rootNode.ExpandAll();
 
           MsgBox.ShowWaitMessage("Analisando componentes...");
-
           await PercorrerTreeViewAnalisarCompAsync(db, rootNode, _listaProduto, montageGeralNome);
         }
       } catch (Exception ex) {
@@ -457,6 +460,17 @@ namespace AddinArtama {
 
             var swModel = Sw.App.OpenDoc6(produtoErp.PathName,
             (int)swTipo, (int)swOpenDocOptions_e.swOpenDocOptions_Silent, produtoErp.Configuracao, ref status, ref warnings);
+
+            if(produtoErp.PesoLiquido == 0) {
+              ModelDocExtension swModelDocExt = swModel.Extension;
+              CustomPropertyManager swCustPropMngr = swModelDocExt.get_CustomPropertyManager("");
+              swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+              swCustPropMngr.Get2("Massa", out _, out string resolvedValOut);
+              double.TryParse(resolvedValOut, NumberStyles.Any, CultureInfo.InvariantCulture, out double massaKG);
+              produtoErp.PesoLiquido = Math.Round(massaKG, 3);
+              produtoErp.PesoBruto = produtoErp.PesoLiquido;
+            }
+
             var itensCorte = new List<ListaCorte>();
 
             if (produtoErp.TipoComponente == TipoComponente.Peca) {
@@ -478,6 +492,8 @@ namespace AddinArtama {
                 Desenho.InserirAtualizarListaMaterias(swModel);
                 swModel.Save();
                 Sw.App.CloseDoc(pathNameDesenho);
+              } else if (itensCorte.Count == 1) {
+                produtoErp.ItemCorte = itensCorte[0];
               }
             }
 
@@ -507,7 +523,7 @@ namespace AddinArtama {
 
             // engenharia de produto
             bool verificaMaterial = produtoErp.TipoComponente == TipoComponente.Peca && itensCorte.Count > 0 && itensCorte[0].Quantidade == 1;
-            CreateTreeCompNode(rootNode, nodes, produtoErp, nivel, verificaMaterial, itensCorte);
+            CreateTreeCompNode(rootNode, nodes, produtoErp, nivel, verificaMaterial);
 
             if (produtoErp.TipoComponente == TipoComponente.Peca && itensCorte.Count > 1 ||
               (produtoErp.TipoComponente == TipoComponente.Peca && itensCorte.Count == 1 && itensCorte[0].Quantidade > 1)) {
@@ -525,7 +541,7 @@ namespace AddinArtama {
                   Denominacao = produtoErp.Denominacao,
                   Referencia = itemCorte.NomeLista,
                   CodComponente = produtoErp.CodComponente,
-                  CodProduto = produtoErp.CodProduto,
+                  CodProduto = itemCorte.CodProduto,
                   Img3D = Properties.Resources.part,
                   Img2D = produtoErp.Img2D,
                   TipoComponente = TipoComponente.Peca,
@@ -542,7 +558,7 @@ namespace AddinArtama {
                 if (produtoErp.Name.Length + sufixo.Length > 50)
                   produtoErp.Name = produtoErp.Name.Substring(0, 50 - sufixo.Length) + sufixo;
 
-                CreateTreeCompNode(rootNode, nodes, item, nivel + "." + indiceNome, verificaMaterial: true, new List<ListaCorte>() { itemCorte });
+                CreateTreeCompNode(rootNode, nodes, item, nivel + "." + indiceNome, verificaMaterial: true);
               }
             }
 
@@ -555,35 +571,33 @@ namespace AddinArtama {
       }
     }
 
-    private static void CreateTreeCompNode(TreeNode rootNode, Dictionary<string, TreeNode> nodes, ProdutoErp produtoErp, string nivel, bool verificaMaterial, List<ListaCorte> itensCorte) {
+    private static void CreateTreeCompNode(TreeNode rootNode, Dictionary<string, TreeNode> nodes, ProdutoErp produtoErp, string nivel, bool verificaMaterial) {
       string nodeText = $"{produtoErp.Name} - {produtoErp.Denominacao}";
       var node = new TreeNode(nodeText);
 
       node.Tag = produtoErp;
 
-      var iconIndex = produtoErp.TipoComponente == TipoComponente.ItemBiblioteca ? 5 : produtoErp.TipoComponente == TipoComponente.Montagem || itensCorte.Count > 1 ? 0 : 1;
+      var iconIndex = produtoErp.TipoComponente == TipoComponente.ItemBiblioteca ? 5 : produtoErp.TipoComponente == TipoComponente.Montagem  ? 0 : 1;
 
       node.ImageIndex = iconIndex;
       node.SelectedImageIndex = iconIndex;
 
-      if (verificaMaterial && produtoErp.TipoComponente == TipoComponente.Peca && !produtoErp.CodComponente.StartsWith("40")) {
-        var itemCorte = itensCorte.FirstOrDefault();
-
+      if (verificaMaterial && produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.ItemCorte != null) {
         var produtoFilho = new ProdutoErp {
           PathName = produtoErp.PathName,
           Name = produtoErp.Name,
-          Denominacao = itemCorte.Denominacao,
+          Denominacao = produtoErp.ItemCorte.Denominacao,
           Referencia = produtoErp.Referencia,
-          CodComponente = itemCorte.Codigo.ToString(),
-          CodProduto = itemCorte.Codigo.ToString(),
+          CodComponente = produtoErp.ItemCorte.Codigo.ToString(),
+          CodProduto = produtoErp.ItemCorte.Codigo.ToString(),
           TipoComponente = TipoComponente.ListaMaterial,
           Nivel = produtoErp.Nivel + ".1",
           Configuracao = produtoErp.Configuracao,
-          Quantidade = itemCorte.Quantidade,
-          ItemCorte = itemCorte,
+          Quantidade = produtoErp.ItemCorte.Quantidade,
+          ItemCorte = produtoErp.ItemCorte,
         };
 
-        int imgIndex = itemCorte.Tipo == TipoListaMaterial.Chapa ? 3 : 4;
+        int imgIndex = produtoErp.ItemCorte.Tipo == TipoListaMaterial.Chapa ? 3 : 4;
 
         string nodeTextFilho = $"{produtoFilho.CodComponente} - {produtoFilho.Denominacao}";
         var nodeFilho = new TreeNode(nodeTextFilho);
@@ -658,9 +672,9 @@ namespace AddinArtama {
          *  === Mudanças que acontecem no produto aqui, devem ser replicadas manualmente ao preparar engenharia para cadastro, pois este produto pode estar em outtro ponto da arvore
          * */
         // analizar materia prima
-        if (produtoErp.TipoComponente == TipoComponente.Peca ) {
+        if (produtoErp.TipoComponente == TipoComponente.Peca) {
           produtoErp.UnidadeMedida = "PC";
-          var material = await Api.GetItemGenericoAsync(produtoErp.ItemCorte.Codigo.ToString());
+          var material = await Api.GetItemGenericoAsync(produtoErp.ItemCorte?.Codigo.ToString());
           if (material != null) {
             produtoErp.ItemCorte.unidadeMedida = material.unidadeMedida;
             // analisar material
@@ -681,7 +695,7 @@ namespace AddinArtama {
             }
 
             produtoErp.PesoBruto = Math.Round(produtoErp.PesoBruto, 4);
-          } else {
+          } else if (produtoErp.ItemCorte != null) {
             AdicionarPendencia(produtoErp, PendenciasEngenharia.MateriaPrimaInexistente);
           }
         } else {
@@ -705,12 +719,38 @@ namespace AddinArtama {
               swCustPropMgr = swFeat.CustomPropertyManager;
             }
 
-            swCustPropMgr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+            swCustPropMgr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
             swCustPropMgr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, produtoErp.CodProduto, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
             swModel.Save();
           } else {
             // chamar api, igual TGM
             produtoErp.CadastrarProdutoErp = !produtoErp.CodComponente.StartsWith("40");
+            var itens = await Api.GetItemGenericoByNameAsync(produtoErp.Name);
+            itens = itens.Where(x => x.nome.EndsWith(produtoErp.Name) && x.situacao == 1).ToList();
+            if (itens.Count == 1) {
+              produtoErp.CadastrarProdutoErp = produtoErp.CadastrarAddin = false;
+              produtoErp.CodProduto = itens[0].codigo.ToString();
+
+              var swModelDocExt = swModel.Extension;
+              var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
+
+              if (produtoErp.TipoComponente == TipoComponente.Peca && produtoErp.Referencia.StartsWith("Item da lista de corte")) {
+                bool boolstatus = swModel.Extension.SelectByID2(produtoErp.ItemCorte.NomeLista, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
+
+                SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+                Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
+                swCustPropMgr = swFeat.CustomPropertyManager;
+              }
+
+              swCustPropMgr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+              swCustPropMgr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, produtoErp.CodProduto, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+              swModel.Save();
+            } else if (itens.Count > 1) {
+              string msg = string.Join("\r\n", itens.Select(item => $"- {item.codigo}"));
+
+              MsgBox.Show($"Foram encontrados mais de um código para este item {produtoErp.Name}.\r\n" +
+                $"{msg}","Item em Duplicidade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
             produtoErp.CadastrarAddin = true;
           }

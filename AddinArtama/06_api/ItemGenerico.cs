@@ -17,7 +17,7 @@ namespace AddinArtama {
       public string refTecnica { get; set; }
       public string mascaraEntrada { get; set; }
       public string mascaraSaida { get; set; }
-      public string classificacaoFiscal { get; set; } 
+      public string classificacaoFiscal { get; set; }
       public string unidadeMedida { get; set; }
       public int finalidade { get; set; }
       public int origem { get; set; }
@@ -34,9 +34,13 @@ namespace AddinArtama {
       ItemGenerico itemGenerico = new ItemGenerico();
       try {
         itemGenerico = await Api.GetItemGenericoAsync(produtoErp.CodProduto);
-
+        
         Api.MontarItemGenerico(produtoErp, itemGenerico);
-      
+
+        if (produtoErp.Fantasma) {
+          itemGenerico.situacao = 0;
+        }
+
         JObject jsonObject = new JObject();
 
         var client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico/{itemGenerico.codigo}");
@@ -64,9 +68,9 @@ namespace AddinArtama {
                     $"\"mascara\": \"{itemGenerico.mascaraEntrada}\"," +
                     $"\"situacao\": {itemGenerico.situacao}," +
                     $"\"descricao\": \"{itemGenerico.nome}\"" +
-                    //$"\"justificaiva\": \"string\"," +
-                    //$"\"dataDesativacao\": \"string\"," +
-                    //$"\"dataReativacao\": \"string\"," +
+              //$"\"justificaiva\": \"string\"," +
+              //$"\"dataDesativacao\": \"string\"," +
+              //$"\"dataReativacao\": \"string\"," +
               "}" +
             "}";
 
@@ -115,6 +119,9 @@ namespace AddinArtama {
     internal static async Task<ItemGenerico> GetItemGenericoAsync(string codigo) {
       ItemGenerico _return = null;
 
+      if (string.IsNullOrEmpty(codigo))
+        return _return;
+
       try {
         var client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico/{codigo}");
         var request = Api.CreateRequest(Method.GET);
@@ -135,7 +142,7 @@ namespace AddinArtama {
             origem = jsonObject["origem"]?.ToObject<int>() ?? 0,
             tipo = jsonObject["tipo"]?.ToObject<int>() ?? 0,
             procedencia = jsonObject["procedencia"]?.ToObject<int>() ?? 0,
-            
+
             pesoBruto = jsonObject["dadosSaida"]["pesoBruto"]?.ToObject<double>() ?? 0,
             pesoLiquido = jsonObject["dadosSaida"]["pesoLiquido"]?.ToObject<double>() ?? 0,
             mascaraSaida = jsonObject["dadosSaida"]["mascara"]?.ToString(),
@@ -146,15 +153,84 @@ namespace AddinArtama {
           };
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao carregar item genérico");
+        LmException.ShowException(ex, $"Item código: {codigo} | Erro ao pesquisar item genérico");
+      }
+
+      return _return;
+    }
+
+    internal static async Task<List<ItemGenerico>> GetItemGenericoByNameAsync(string nomeItem) {
+      List<ItemGenerico> _return = new List<ItemGenerico>();
+
+      if (string.IsNullOrEmpty(nomeItem))
+        return _return;
+
+      try {
+        var client = Api.GetClient(modulo: "itens", endpoint: $"itemGenerico?descricao={nomeItem}");
+        var request = Api.CreateRequest(Method.GET);
+
+        var response = await client.ExecuteAsync(request);
+
+        if (response.IsSuccessful) {
+          var responseData = response.Content;
+          var jsonObject = JObject.Parse(responseData);
+
+          // Acessar o array "data"
+          var dataArray = jsonObject["data"] as JArray;
+
+          if (dataArray != null) {
+            foreach (var item in dataArray) {
+              var codigo = item["codigo"]?.ToString();
+              var nome = item["nome"]?.ToString();
+              var refTecnica = item["refTecnica"]?.ToString();
+              var unidadeMedida = item["unidadeMedida"]?.ToString();
+              var classificacaoFiscal = item["classificacaoFiscal"]?.ToString();
+              var finalidade = item["finalidade"]?.ToObject<int>() ?? 0;
+              var origem = item["origem"]?.ToObject<int>() ?? 0;
+              var tipo = item["tipo"]?.ToObject<int>() ?? 0;
+              var procedencia = item["procedencia"]?.ToObject<int>() ?? 0;
+
+              var pesoBruto = item["dadosSaida"]["pesoBruto"]?.ToObject<double>() ?? 0;
+              var pesoLiquido = item["dadosSaida"]["pesoLiquido"]?.ToObject<double>() ?? 0;
+              var mascaraSaida = item["dadosSaida"]["mascara"]?.ToString();
+
+              var mascaraEntrada = item["dadosEntrada"]["mascara"]?.ToString();
+              var pesoPadraoNBR = item["dadosEntrada"]["pesoPadraoNBR"]?.ToObject<double>() ?? 0;
+              var situacao = item["dadosEntrada"]["situacao"]?.ToObject<int>() ?? 0;
+
+              var itemGenerico = new ItemGenerico {
+                codigo = codigo,
+                nome = nome,
+                refTecnica = refTecnica,
+                unidadeMedida = unidadeMedida,
+                classificacaoFiscal = classificacaoFiscal,
+                finalidade = finalidade,
+                origem = origem,
+                tipo = tipo,
+                procedencia = procedencia,
+
+                pesoBruto = pesoBruto,
+                pesoLiquido = pesoLiquido,
+                mascaraSaida = mascaraSaida,
+
+                mascaraEntrada = mascaraEntrada,
+                pesoPadraoNBR = pesoPadraoNBR,
+                situacao = situacao,
+              };
+              _return.Add(itemGenerico);
+            }
+          }
+        }
+      } catch (Exception ex) {
+        LmException.ShowException(ex, $"Item nome: {nomeItem} | Erro ao pesquisar item genérico");
       }
 
       return _return;
     }
 
     internal static void MontarItemGenerico(ProdutoErp produtoErp, ItemGenerico itemGenerico) {
-      var codigo = produtoErp.CodComponente.StartsWith("10") || produtoErp.CodComponente.StartsWith("20") || produtoErp.CodComponente.StartsWith("40") ? produtoErp.CodComponente  : produtoErp.Name;
-      var denominacao  = produtoErp.Denominacao;
+      var codigo = produtoErp.CodComponente.StartsWith("10") || produtoErp.CodComponente.StartsWith("20") || produtoErp.CodComponente.StartsWith("40") ? produtoErp.CodComponente : produtoErp.Name;
+      var denominacao = produtoErp.Denominacao;
 
       var separador = " - ";
       var maxComprimento = 50;

@@ -405,6 +405,10 @@ namespace AddinArtama {
                 var itemGenerico = new Api.ItemGenerico();
                 MontarItemGenerico(produtoErp, itemGenerico);
 
+                if (produtoErp.Fantasma) {
+                  itemGenerico.situacao = 0;
+                }
+
                 var codigoNovo = await Api.DuplicarItemGenericoAsync(db, itemGenerico);
 
                 if (!string.IsNullOrEmpty(codigoNovo)) {
@@ -414,8 +418,9 @@ namespace AddinArtama {
                   }
                 }
               } else {
-                if (produtoErp.TipoComponente != TipoComponente.ItemBiblioteca && produtoErp.TipoComponente != TipoComponente.ListaMaterial)
+                if (produtoErp.TipoComponente != TipoComponente.ItemBiblioteca && produtoErp.TipoComponente != TipoComponente.ListaMaterial) {
                   await Api.UpdateItemGenericoAsync(db, produtoErp);
+                }
 
                 if (!string.IsNullOrEmpty(produtoErp.CodProduto)) {
                   if (produtoErp.CadastrarAddin) {
@@ -542,6 +547,7 @@ namespace AddinArtama {
               codClassificacao = produtoErp.TipoComponente == TipoComponente.Montagem ? 3 : 4,
               nomeArquivoDesenhoEng = produtoErp.Name,
               descricaoProduto = $"{produtoErp.Denominacao} - {produtoErp.Name}",
+              engenhariaFantasma = produtoErp.Fantasma,
             };
 
             if (node.Nodes.Count > 0) {
@@ -550,6 +556,7 @@ namespace AddinArtama {
                 int index = i + 1;
                 TreeNode nodeFilho = (TreeNode)list[i];
                 var itemFilho = nodeFilho.Tag as ProdutoErp;
+
                 if (itemFilho != null) {
                   var produtoFilho = _produtos.ToList().FirstOrDefault(x => itemFilho.Name == x.Name && itemFilho.Referencia == x.Referencia && itemFilho.Configuracao == x.Configuracao);
                   if (produtoFilho != null) {
@@ -558,19 +565,20 @@ namespace AddinArtama {
                     itemFilho.PesoLiquido = produtoFilho.PesoLiquido;
                     itemFilho.SobremetalCompr = produtoFilho.SobremetalCompr;
                     itemFilho.SobremetalLarg = produtoFilho.SobremetalLarg;
-                    //if (itemFilho.ItensCorte.Count > 0)
-                    //  itemFilho.ItensCorte[0].unidadeMedida = produtoFilho.ItensCorte[0].unidadeMedida;
+                    if (itemFilho.ItemCorte != null)
+                      itemFilho.ItemCorte.unidadeMedida = produtoFilho.ItemCorte.unidadeMedida;
                   }
 
                   var classificacao = itemFilho.CodComponente.StartsWith("10") || itemFilho.CodComponente.StartsWith("20") ? 5 : itemFilho.TipoComponente == TipoComponente.Montagem ? 3 : 4;
 
                   double qtd = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.Quantidade : 1;
-                  double compr = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.Comprimento : itemFilho.Comprimento + itemFilho.SobremetalCompr;
+                  double compr = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.Comprimento : itemFilho.ItemCorte.CxdCompr + itemFilho.SobremetalCompr;
+                  string um = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.UnidadeMedida : itemFilho.ItemCorte.unidadeMedida;
 
                   if (itemFilho.TipoComponente == TipoComponente.ListaMaterial) {
-                    switch (itemFilho.UnidadeMedida) {
+                    switch (um) {
                       case "M":
-                      compr = compr / 1000;
+                      qtd = compr / 1000;
                       break;
                       case "KG":
                       qtd = produtoErp.PesoBruto; // pego do pai pois lista de corte sempre terá um produto apenas
@@ -641,7 +649,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        Toast.Error("Erro ao gerar Engenharia:\r\n" + ex.Message);
+        Toast.Error($"Erro ao gerar Engenharia.\n\nItem{((ProdutoErp)node.Tag).Name}:\n\n{ex.Message}");
       }
     }
 
@@ -905,8 +913,6 @@ namespace AddinArtama {
       var swModelDocExt = swModel.Extension;
       var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
 
-      swCustPropMgr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-
       if (swModel.GetType() == (int)swDocumentTypes_e.swDocPART) {
         swCustPropMgr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Material\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
       } else
@@ -1025,8 +1031,6 @@ namespace AddinArtama {
 
           var swModelDocExt = swModel.Extension;
           var swCustPropMngr = swModelDocExt.get_CustomPropertyManager("");
-
-          swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
           if (swModel.GetType() == (int)swDocumentTypes_e.swDocPART) {
             var cutList = produtoERP.ItemCorte;         

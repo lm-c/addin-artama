@@ -34,6 +34,12 @@
       this.cmxLabel2 = new LmCorbieUI.Controls.LmLabel();
       this.cmxToolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.lblCodigoProduto = new LmCorbieUI.Controls.LmLabel();
+      this.btnAtualizarProcesso = new LmCorbieUI.Controls.LmButton();
+      this.btnProximo = new LmCorbieUI.Controls.LmButton();
+      this.btnVoltar = new LmCorbieUI.Controls.LmButton();
+      this.ptbMaterialError = new System.Windows.Forms.PictureBox();
+      this.btnSalvar = new LmCorbieUI.Controls.LmButton();
+      this.btnCarrProcess = new LmCorbieUI.Controls.LmButton();
       this.pnlDados = new LmCorbieUI.Controls.LmPanel();
       this.lmLabel10 = new LmCorbieUI.Controls.LmLabel();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -59,18 +65,13 @@
       this.tbpOperacoes = new LmCorbieUI.Controls.LmTabPage();
       this.lmPanelOP = new LmCorbieUI.Controls.LmPanel();
       this.lmLabel3 = new LmCorbieUI.Controls.LmLabel();
+      this.btnInserir = new LmCorbieUI.Controls.LmButton();
+      this.txtOperacao = new LmCorbieUI.Controls.LmTextBox();
       this.flpOperacoes = new LmCorbieUI.Controls.LmPanelFlow();
       this.tbpEngenharia = new LmCorbieUI.Controls.LmTabPage();
       this.trvProduto = new System.Windows.Forms.TreeView();
       this.tmr = new System.Windows.Forms.Timer(this.components);
-      this.btnAtualizarProcesso = new LmCorbieUI.Controls.LmButton();
-      this.btnProximo = new LmCorbieUI.Controls.LmButton();
-      this.btnVoltar = new LmCorbieUI.Controls.LmButton();
-      this.btnInserir = new LmCorbieUI.Controls.LmButton();
-      this.txtOperacao = new LmCorbieUI.Controls.LmTextBox();
-      this.ptbMaterialError = new System.Windows.Forms.PictureBox();
-      this.btnSalvar = new LmCorbieUI.Controls.LmButton();
-      this.btnCarrProcess = new LmCorbieUI.Controls.LmButton();
+      ((System.ComponentModel.ISupportInitialize)(this.ptbMaterialError)).BeginInit();
       this.pnlDados.SuspendLayout();
       this.tableLayoutPanel1.SuspendLayout();
       this.lmPanel1.SuspendLayout();
@@ -81,7 +82,6 @@
       this.tbpOperacoes.SuspendLayout();
       this.lmPanelOP.SuspendLayout();
       this.tbpEngenharia.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.ptbMaterialError)).BeginInit();
       this.SuspendLayout();
       // 
       // lblCodMat
@@ -127,6 +127,130 @@
       this.lblCodigoProduto.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
       this.cmxToolTip1.SetToolTip(this.lblCodigoProduto, "Clique para Copiar");
       this.lblCodigoProduto.Click += new System.EventHandler(this.LblCodigoProduto_Click);
+      // 
+      // btnAtualizarProcesso
+      // 
+      this.btnAtualizarProcesso.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnAtualizarProcesso.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+      this.btnAtualizarProcesso.BorderColor = System.Drawing.Color.PaleVioletRed;
+      this.btnAtualizarProcesso.BorderRadius = 13;
+      this.btnAtualizarProcesso.BorderSize = 0;
+      this.btnAtualizarProcesso.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnAtualizarProcesso.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnAtualizarProcesso.Image = ((System.Drawing.Image)(resources.GetObject("btnAtualizarProcesso.Image")));
+      this.btnAtualizarProcesso.Location = new System.Drawing.Point(265, 62);
+      this.btnAtualizarProcesso.Margin = new System.Windows.Forms.Padding(1);
+      this.btnAtualizarProcesso.Name = "btnAtualizarProcesso";
+      this.btnAtualizarProcesso.Size = new System.Drawing.Size(26, 26);
+      this.btnAtualizarProcesso.TabIndex = 5;
+      this.btnAtualizarProcesso.Tag = "";
+      this.btnAtualizarProcesso.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.cmxToolTip1.SetToolTip(this.btnAtualizarProcesso, "Atualizar Processos");
+      this.btnAtualizarProcesso.UseVisualStyleBackColor = false;
+      this.btnAtualizarProcesso.Click += new System.EventHandler(this.BtnAtualizarProcesso_Click);
+      // 
+      // btnProximo
+      // 
+      this.btnProximo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnProximo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+      this.btnProximo.BorderColor = System.Drawing.Color.PaleVioletRed;
+      this.btnProximo.BorderRadius = 13;
+      this.btnProximo.BorderSize = 0;
+      this.btnProximo.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnProximo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnProximo.Image = ((System.Drawing.Image)(resources.GetObject("btnProximo.Image")));
+      this.btnProximo.Location = new System.Drawing.Point(237, 62);
+      this.btnProximo.Margin = new System.Windows.Forms.Padding(1);
+      this.btnProximo.Name = "btnProximo";
+      this.btnProximo.Size = new System.Drawing.Size(26, 26);
+      this.btnProximo.TabIndex = 4;
+      this.btnProximo.Tag = "Avançar";
+      this.btnProximo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.cmxToolTip1.SetToolTip(this.btnProximo, "Próxima peça");
+      this.btnProximo.UseVisualStyleBackColor = false;
+      this.btnProximo.Click += new System.EventHandler(this.BtnProximo_Click);
+      // 
+      // btnVoltar
+      // 
+      this.btnVoltar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnVoltar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+      this.btnVoltar.BorderColor = System.Drawing.Color.PaleVioletRed;
+      this.btnVoltar.BorderRadius = 13;
+      this.btnVoltar.BorderSize = 0;
+      this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnVoltar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
+      this.btnVoltar.Location = new System.Drawing.Point(209, 62);
+      this.btnVoltar.Margin = new System.Windows.Forms.Padding(1);
+      this.btnVoltar.Name = "btnVoltar";
+      this.btnVoltar.Size = new System.Drawing.Size(26, 26);
+      this.btnVoltar.TabIndex = 3;
+      this.btnVoltar.Tag = "Voltar";
+      this.btnVoltar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.cmxToolTip1.SetToolTip(this.btnVoltar, "Peça anterior");
+      this.btnVoltar.UseVisualStyleBackColor = false;
+      this.btnVoltar.Click += new System.EventHandler(this.BtnVoltar_Click);
+      // 
+      // ptbMaterialError
+      // 
+      this.ptbMaterialError.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.ptbMaterialError.Image = global::AddinArtama.Properties.Resources.error;
+      this.ptbMaterialError.Location = new System.Drawing.Point(201, 21);
+      this.ptbMaterialError.Name = "ptbMaterialError";
+      this.ptbMaterialError.Size = new System.Drawing.Size(20, 20);
+      this.ptbMaterialError.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this.ptbMaterialError.TabIndex = 78;
+      this.ptbMaterialError.TabStop = false;
+      this.cmxToolTip1.SetToolTip(this.ptbMaterialError, "Alterar Material");
+      this.ptbMaterialError.Visible = false;
+      this.ptbMaterialError.VisibleChanged += new System.EventHandler(this.PtbMaterialError_VisibleChanged);
+      this.ptbMaterialError.Click += new System.EventHandler(this.PtbMaterialError_Click);
+      // 
+      // btnSalvar
+      // 
+      this.btnSalvar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnSalvar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+      this.btnSalvar.BorderColor = System.Drawing.Color.PaleVioletRed;
+      this.btnSalvar.BorderRadius = 13;
+      this.btnSalvar.BorderSize = 0;
+      this.btnSalvar.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnSalvar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnSalvar.Image = ((System.Drawing.Image)(resources.GetObject("btnSalvar.Image")));
+      this.btnSalvar.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.btnSalvar.Location = new System.Drawing.Point(154, 113);
+      this.btnSalvar.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+      this.btnSalvar.Name = "btnSalvar";
+      this.btnSalvar.Size = new System.Drawing.Size(146, 26);
+      this.btnSalvar.TabIndex = 4;
+      this.btnSalvar.Text = " Salvar";
+      this.btnSalvar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.cmxToolTip1.SetToolTip(this.btnSalvar, "Salvar/Atualizar Produto e Engenharia");
+      this.btnSalvar.UseVisualStyleBackColor = false;
+      this.btnSalvar.Click += new System.EventHandler(this.BtnSalvar_Click);
+      // 
+      // btnCarrProcess
+      // 
+      this.btnCarrProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCarrProcess.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+      this.btnCarrProcess.BorderColor = System.Drawing.Color.PaleVioletRed;
+      this.btnCarrProcess.BorderRadius = 13;
+      this.btnCarrProcess.BorderSize = 0;
+      this.btnCarrProcess.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnCarrProcess.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCarrProcess.Image = global::AddinArtama.Properties.Resources.carregar;
+      this.btnCarrProcess.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.btnCarrProcess.Location = new System.Drawing.Point(3, 113);
+      this.btnCarrProcess.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+      this.btnCarrProcess.Name = "btnCarrProcess";
+      this.btnCarrProcess.Size = new System.Drawing.Size(145, 26);
+      this.btnCarrProcess.TabIndex = 3;
+      this.btnCarrProcess.Text = " Carregar";
+      this.btnCarrProcess.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.cmxToolTip1.SetToolTip(this.btnCarrProcess, "Carregar componentes");
+      this.btnCarrProcess.UseVisualStyleBackColor = false;
+      this.btnCarrProcess.Click += new System.EventHandler(this.BtnCarrProcess_Click);
       // 
       // pnlDados
       // 
@@ -461,7 +585,7 @@
       this.tbcOperacoes.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tbcOperacoes.Location = new System.Drawing.Point(0, 297);
       this.tbcOperacoes.Name = "tbcOperacoes";
-      this.tbcOperacoes.SelectedIndex = 0;
+      this.tbcOperacoes.SelectedIndex = 2;
       this.tbcOperacoes.Size = new System.Drawing.Size(305, 295);
       this.tbcOperacoes.TabIndex = 1;
       this.tbcOperacoes.UseSelectable = true;
@@ -571,109 +695,6 @@
       this.lmLabel3.Text = "Operação *";
       this.lmLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
-      // flpOperacoes
-      // 
-      this.flpOperacoes.AllowDrop = true;
-      this.flpOperacoes.AutoScroll = true;
-      this.flpOperacoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
-      this.flpOperacoes.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.flpOperacoes.Location = new System.Drawing.Point(3, 96);
-      this.flpOperacoes.Name = "flpOperacoes";
-      this.flpOperacoes.Padding = new System.Windows.Forms.Padding(0, 5, 0, 9);
-      this.flpOperacoes.Size = new System.Drawing.Size(289, 152);
-      this.flpOperacoes.TabIndex = 6;
-      this.flpOperacoes.SizeChanged += new System.EventHandler(this.FlpProcess_SizeChanged);
-      this.flpOperacoes.DragDrop += new System.Windows.Forms.DragEventHandler(this.FlpOperacoes_DragDrop);
-      this.flpOperacoes.DragEnter += new System.Windows.Forms.DragEventHandler(this.FlpOperacoes_DragEnter);
-      // 
-      // tbpEngenharia
-      // 
-      this.tbpEngenharia.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.tbpEngenharia.Controls.Add(this.trvProduto);
-      this.tbpEngenharia.Location = new System.Drawing.Point(4, 38);
-      this.tbpEngenharia.Name = "tbpEngenharia";
-      this.tbpEngenharia.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
-      this.tbpEngenharia.Size = new System.Drawing.Size(297, 253);
-      this.tbpEngenharia.TabIndex = 2;
-      this.tbpEngenharia.Text = "Engenharia";
-      // 
-      // trvProduto
-      // 
-      this.trvProduto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
-      this.trvProduto.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.trvProduto.Location = new System.Drawing.Point(0, 9);
-      this.trvProduto.Name = "trvProduto";
-      this.trvProduto.Size = new System.Drawing.Size(295, 242);
-      this.trvProduto.TabIndex = 7;
-      // 
-      // tmr
-      // 
-      this.tmr.Interval = 1000;
-      this.tmr.Tick += new System.EventHandler(this.Tmr_Tick);
-      // 
-      // btnAtualizarProcesso
-      // 
-      this.btnAtualizarProcesso.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnAtualizarProcesso.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnAtualizarProcesso.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnAtualizarProcesso.BorderRadius = 13;
-      this.btnAtualizarProcesso.BorderSize = 0;
-      this.btnAtualizarProcesso.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnAtualizarProcesso.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnAtualizarProcesso.Image = ((System.Drawing.Image)(resources.GetObject("btnAtualizarProcesso.Image")));
-      this.btnAtualizarProcesso.Location = new System.Drawing.Point(265, 62);
-      this.btnAtualizarProcesso.Margin = new System.Windows.Forms.Padding(1);
-      this.btnAtualizarProcesso.Name = "btnAtualizarProcesso";
-      this.btnAtualizarProcesso.Size = new System.Drawing.Size(26, 26);
-      this.btnAtualizarProcesso.TabIndex = 5;
-      this.btnAtualizarProcesso.Tag = "";
-      this.btnAtualizarProcesso.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnAtualizarProcesso, "Atualizar Processos");
-      this.btnAtualizarProcesso.UseVisualStyleBackColor = false;
-      this.btnAtualizarProcesso.Click += new System.EventHandler(this.BtnAtualizarProcesso_Click);
-      // 
-      // btnProximo
-      // 
-      this.btnProximo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnProximo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnProximo.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnProximo.BorderRadius = 13;
-      this.btnProximo.BorderSize = 0;
-      this.btnProximo.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnProximo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnProximo.Image = ((System.Drawing.Image)(resources.GetObject("btnProximo.Image")));
-      this.btnProximo.Location = new System.Drawing.Point(237, 62);
-      this.btnProximo.Margin = new System.Windows.Forms.Padding(1);
-      this.btnProximo.Name = "btnProximo";
-      this.btnProximo.Size = new System.Drawing.Size(26, 26);
-      this.btnProximo.TabIndex = 4;
-      this.btnProximo.Tag = "Avançar";
-      this.btnProximo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnProximo, "Próxima peça");
-      this.btnProximo.UseVisualStyleBackColor = false;
-      this.btnProximo.Click += new System.EventHandler(this.BtnProximo_Click);
-      // 
-      // btnVoltar
-      // 
-      this.btnVoltar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnVoltar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnVoltar.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnVoltar.BorderRadius = 13;
-      this.btnVoltar.BorderSize = 0;
-      this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnVoltar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
-      this.btnVoltar.Location = new System.Drawing.Point(209, 62);
-      this.btnVoltar.Margin = new System.Windows.Forms.Padding(1);
-      this.btnVoltar.Name = "btnVoltar";
-      this.btnVoltar.Size = new System.Drawing.Size(26, 26);
-      this.btnVoltar.TabIndex = 3;
-      this.btnVoltar.Tag = "Voltar";
-      this.btnVoltar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnVoltar, "Peça anterior");
-      this.btnVoltar.UseVisualStyleBackColor = false;
-      this.btnVoltar.Click += new System.EventHandler(this.BtnVoltar_Click);
-      // 
       // btnInserir
       // 
       this.btnInserir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -730,66 +751,45 @@
       this.txtOperacao.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
       this.txtOperacao.WaterMarkFont = new System.Drawing.Font("Segoe UI", 8.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Pixel);
       // 
-      // ptbMaterialError
+      // flpOperacoes
       // 
-      this.ptbMaterialError.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.ptbMaterialError.Image = global::AddinArtama.Properties.Resources.error;
-      this.ptbMaterialError.Location = new System.Drawing.Point(201, 21);
-      this.ptbMaterialError.Name = "ptbMaterialError";
-      this.ptbMaterialError.Size = new System.Drawing.Size(20, 20);
-      this.ptbMaterialError.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-      this.ptbMaterialError.TabIndex = 78;
-      this.ptbMaterialError.TabStop = false;
-      this.cmxToolTip1.SetToolTip(this.ptbMaterialError, "Alterar Material");
-      this.ptbMaterialError.Visible = false;
-      this.ptbMaterialError.VisibleChanged += new System.EventHandler(this.PtbMaterialError_VisibleChanged);
-      this.ptbMaterialError.Click += new System.EventHandler(this.PtbMaterialError_Click);
+      this.flpOperacoes.AllowDrop = true;
+      this.flpOperacoes.AutoScroll = true;
+      this.flpOperacoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
+      this.flpOperacoes.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.flpOperacoes.Location = new System.Drawing.Point(3, 96);
+      this.flpOperacoes.Name = "flpOperacoes";
+      this.flpOperacoes.Padding = new System.Windows.Forms.Padding(0, 5, 0, 9);
+      this.flpOperacoes.Size = new System.Drawing.Size(289, 152);
+      this.flpOperacoes.TabIndex = 6;
+      this.flpOperacoes.SizeChanged += new System.EventHandler(this.FlpProcess_SizeChanged);
+      this.flpOperacoes.DragDrop += new System.Windows.Forms.DragEventHandler(this.FlpOperacoes_DragDrop);
+      this.flpOperacoes.DragEnter += new System.Windows.Forms.DragEventHandler(this.FlpOperacoes_DragEnter);
       // 
-      // btnSalvar
+      // tbpEngenharia
       // 
-      this.btnSalvar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnSalvar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnSalvar.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnSalvar.BorderRadius = 13;
-      this.btnSalvar.BorderSize = 0;
-      this.btnSalvar.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnSalvar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSalvar.Image = ((System.Drawing.Image)(resources.GetObject("btnSalvar.Image")));
-      this.btnSalvar.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.btnSalvar.Location = new System.Drawing.Point(154, 113);
-      this.btnSalvar.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
-      this.btnSalvar.Name = "btnSalvar";
-      this.btnSalvar.Size = new System.Drawing.Size(146, 26);
-      this.btnSalvar.TabIndex = 4;
-      this.btnSalvar.Text = " Salvar";
-      this.btnSalvar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnSalvar, "Salvar/Atualizar Produto e Engenharia");
-      this.btnSalvar.UseVisualStyleBackColor = false;
-      this.btnSalvar.Click += new System.EventHandler(this.BtnSalvar_Click);
+      this.tbpEngenharia.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.tbpEngenharia.Controls.Add(this.trvProduto);
+      this.tbpEngenharia.Location = new System.Drawing.Point(4, 38);
+      this.tbpEngenharia.Name = "tbpEngenharia";
+      this.tbpEngenharia.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
+      this.tbpEngenharia.Size = new System.Drawing.Size(297, 253);
+      this.tbpEngenharia.TabIndex = 2;
+      this.tbpEngenharia.Text = "Engenharia";
       // 
-      // btnCarrProcess
+      // trvProduto
       // 
-      this.btnCarrProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnCarrProcess.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnCarrProcess.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnCarrProcess.BorderRadius = 13;
-      this.btnCarrProcess.BorderSize = 0;
-      this.btnCarrProcess.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnCarrProcess.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnCarrProcess.Image = global::AddinArtama.Properties.Resources.carregar;
-      this.btnCarrProcess.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.btnCarrProcess.Location = new System.Drawing.Point(3, 113);
-      this.btnCarrProcess.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
-      this.btnCarrProcess.Name = "btnCarrProcess";
-      this.btnCarrProcess.Size = new System.Drawing.Size(145, 26);
-      this.btnCarrProcess.TabIndex = 3;
-      this.btnCarrProcess.Text = " Carregar";
-      this.btnCarrProcess.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnCarrProcess, "Carregar componentes");
-      this.btnCarrProcess.UseVisualStyleBackColor = false;
-      this.btnCarrProcess.Click += new System.EventHandler(this.BtnCarrProcess_Click);
+      this.trvProduto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
+      this.trvProduto.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.trvProduto.Location = new System.Drawing.Point(0, 9);
+      this.trvProduto.Name = "trvProduto";
+      this.trvProduto.Size = new System.Drawing.Size(295, 242);
+      this.trvProduto.TabIndex = 7;
+      // 
+      // tmr
+      // 
+      this.tmr.Interval = 1000;
+      this.tmr.Tick += new System.EventHandler(this.Tmr_Tick);
       // 
       // FrmProdutoImport
       // 
@@ -810,6 +810,7 @@
       this.Text = "Cadastro de Produto/Engenharia";
       this.Loaded += new LmCorbieUI.LmForms.LmSingleForm.FormLoad(this.FrmProcessoAplicacao_Loaded);
       this.Load += new System.EventHandler(this.FrmProcessoAplicacao_Load);
+      ((System.ComponentModel.ISupportInitialize)(this.ptbMaterialError)).EndInit();
       this.pnlDados.ResumeLayout(false);
       this.pnlDados.PerformLayout();
       this.tableLayoutPanel1.ResumeLayout(false);
@@ -822,7 +823,6 @@
       this.lmPanelOP.ResumeLayout(false);
       this.lmPanelOP.PerformLayout();
       this.tbpEngenharia.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.ptbMaterialError)).EndInit();
       this.ResumeLayout(false);
 
         }

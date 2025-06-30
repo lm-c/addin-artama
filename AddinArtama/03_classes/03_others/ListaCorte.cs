@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace AddinArtama {
   internal class ListaCorte {
     public int Codigo { get; set; }
-    //public string CodProduto { get; set; }
+    public string CodProduto { get; set; }
     public string NomeLista { get; set; }
     public string Denominacao { get; set; }
     public string Material { get; set; }
@@ -117,8 +117,8 @@ namespace AddinArtama {
                   int.TryParse(sResolvedvalue, out int cod);
                   listaCorte.Codigo = cod;
 
-                  //swCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
-                  //listaCorte.CodProduto = sResolvedvalue;
+                  swCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
+                  listaCorte.CodProduto = sResolvedvalue;
 
                   swCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
                   listaCorte.Denominacao = sResolvedvalue;
@@ -221,8 +221,8 @@ namespace AddinArtama {
                   int.TryParse(sResolvedvalue, out int cod);
                   listaCorte.Codigo = cod;
 
-                  //swCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
-                  //listaCorte.CodProduto = sResolvedvalue;
+                  swCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
+                  listaCorte.CodProduto = sResolvedvalue;
 
                   swCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
                   listaCorte.Denominacao = sResolvedvalue;
@@ -290,7 +290,7 @@ namespace AddinArtama {
         string nomePeca = Path.GetFileName(swModel.GetPathName());
 
         swCustPropMngr.Add3("Código", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.Codigo.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-        //swCustPropMngr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.CodProduto.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+        swCustPropMngr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.CodProduto.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
         swCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.Denominacao.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
         swCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText,
             $"\"SW-Largura da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\" X \"SW-Comprimento da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\"",
