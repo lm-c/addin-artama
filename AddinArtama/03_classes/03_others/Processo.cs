@@ -19,19 +19,19 @@ using System.Globalization;
 
 namespace AddinArtama {
   internal class Processo {
-    [DisplayName("Código Interno")]
+    [DisplayName("Código Axion")]
     [LarguraColunaGrid(120)]
     public int codAxion { get; set; }
 
-    [DisplayName("Código Operação")]
+    [DisplayName("Cód. Oper.")]
     [LarguraColunaGrid(120)]
     [DataObjectField(true, false)]
     [AlinhamentoColunaGrid(System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter)]
     public int codOperacao { get; set; }
 
     [Browsable(false)]
-    [DisplayName("Abreviatura")]
-    [LarguraColunaGrid(120)]
+    [DisplayName("Abrev.")]
+    [LarguraColunaGrid(80)]
     public string abreviatura { get; set; }
 
     [DisplayName("Descrição Operação")]
@@ -39,29 +39,29 @@ namespace AddinArtama {
     [DataObjectField(false, true)]
     public string descrOperacao { get; set; }
 
-    [DisplayName("Código Máquina")]
-    [LarguraColunaGrid(120)]
+    [DisplayName("Cód. Máq.")]
+    [LarguraColunaGrid(100)]
     public int codMaquina { get; set; }
 
     [DisplayName("Descrição Máquina")]
-    [LarguraColunaGrid(150)]
+    [LarguraColunaGrid(200)]
     public string descrMaquina { get; set; }
 
-    [DisplayName("Máscara Máquina")]
-    [LarguraColunaGrid(120)]
+    [DisplayName("Másc. Máqu.")]
+    [LarguraColunaGrid(100)]
     public string mascaraMaquina { get; set; }
 
     [DisplayName("Tipo")]
     [LarguraColunaGrid(100)]
     public string tipo { get; set; }
 
-    [DisplayName("Cenytro de Custo")]
+    [DisplayName("Centro de Custo")]
     [LarguraColunaGrid(100)]
     public string centroCusto { get; set; }
 
     [Browsable(false)]
-    [DisplayName("Fase produção")]
-    [LarguraColunaGrid(120)]
+    [DisplayName("Fase Prod.")]
+    [LarguraColunaGrid(100)]
     public int faseProducao { get; set; }
 
     [Browsable(false)]
@@ -155,7 +155,7 @@ namespace AddinArtama {
           produtoErp.CodComponente = resolvedValOut;
           swCustPropMngr.Get2("Massa (kg)", out valOut, out resolvedValOut);
           double.TryParse(resolvedValOut, NumberStyles.Any, CultureInfo.InvariantCulture, out double massa);
-          produtoErp.PesoLiquido = Math.Round(massa, 3);
+          produtoErp.PesoLiquido = Math.Round(massa, 4);
           produtoErp.PesoBruto = produtoErp.PesoLiquido;
           swCustPropMngr.Get2("OPERAÇÃO", out valOut, out resolvedValOut);
           var ops = resolvedValOut;
@@ -260,7 +260,7 @@ namespace AddinArtama {
                   ItemCorte = itemCorte,
                 };
 
-                PegarOperacoes(_listaProduto, produtoErp, itemCorte.Operacao);
+                // PegarOperacoes(_listaProduto, produtoErp, itemCorte.Operacao);
 
                 if (produtoErp.Name.Length + sufixo.Length > 50)
                   produtoErp.Name = produtoErp.Name.Substring(0, 50 - sufixo.Length) + sufixo;

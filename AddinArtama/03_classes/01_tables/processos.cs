@@ -37,7 +37,7 @@ namespace AddinArtama {
       try {
         using (ContextoDados db = new ContextoDados()) {
           if (processo.id == 0) {
-            if (db.processos.Any(x => x.codigo_operacao == processo.codigo_operacao)) {
+            if (db.processos.Any(x => x.codigo_operacao == processo.codigo_operacao && x.codigo_maquina == processo.codigo_maquina)) {
               Toast.Warning("Já existe um registro com este processo vinculado a uma máquina");
               return false;
             }
@@ -47,7 +47,7 @@ namespace AddinArtama {
 
             Toast.Success("Processo Cadastrado com Sucesso!");
           } else {
-            if (db.processos.Any((x => x.id != processo.id && x.codigo_operacao == processo.codigo_operacao))) {
+            if (db.processos.Any((x => x.id != processo.id && x.codigo_operacao == processo.codigo_operacao && x.codigo_maquina == processo.codigo_maquina))) {
               Toast.Warning("Já existe um registro com este processo vinculado a uma máquina");
               return false;
             }

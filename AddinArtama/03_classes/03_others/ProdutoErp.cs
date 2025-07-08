@@ -90,6 +90,9 @@ namespace AddinArtama {
     public double PesoLiquido { get; set; }
 
     [Browsable(false)]
+    public double PesoPadraoNBR { get; set; }
+
+    [Browsable(false)]
     public string PathName { get; set; }
 
     [Browsable(false)]
@@ -177,7 +180,7 @@ namespace AddinArtama {
           produtoErp.CodComponente = resolvedValOut;
           swCustPropMngr.Get2("Massa", out valOut, out resolvedValOut);
           double.TryParse(resolvedValOut, NumberStyles.Any, CultureInfo.InvariantCulture, out double massa);
-          produtoErp.PesoLiquido = Math.Round(massa, 3);
+          produtoErp.PesoLiquido = Math.Round(massa, 4);
           produtoErp.PesoBruto = produtoErp.PesoLiquido;
           swCustPropMngr.Get2("Fantasma", out valOut, out resolvedValOut);
           produtoErp.Fantasma = !string.IsNullOrEmpty(resolvedValOut) && resolvedValOut.ToLower() == "sim";
@@ -352,7 +355,8 @@ namespace AddinArtama {
           rootNode.ExpandAll();
 
           MsgBox.ShowWaitMessage("Analisando componentes...");
-          await PercorrerTreeViewAnalisarCompAsync(db, rootNode, _listaProduto, montageGeralNome);
+
+          await PercorrerTreeViewAnalisarCompAsync(db, rootNode, _listaProduto, montageGeralNome, lblProgress);
         }
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao pegar lista produtos\n\n{ex.Message}", "Addin LM Projetos",
@@ -425,7 +429,7 @@ namespace AddinArtama {
             if (!string.IsNullOrEmpty(codMaterial) || produtoErp.Name.Contains("~"))
               continue;
 
-            if (string.IsNullOrEmpty(codComp))
+            if (string.IsNullOrEmpty(codComp))0
               codComp = produtoErp.Name;
 
             produtoErp.Nivel = "1." + nivel;
@@ -434,7 +438,8 @@ namespace AddinArtama {
             produtoErp.CodProduto = swTableAnnotation.get_Text(i, 4).Trim();
             produtoErp.Denominacao = swTableAnnotation.get_Text(i, 6);
             var comprim = swTableAnnotation.get_Text(i, 10);
-            produtoErp.Comprimento = !string.IsNullOrEmpty(comprim) ? Convert.ToDouble(comprim.Replace(".", ",")) : 0;
+            double.TryParse(comprim.Replace(".", ","), out double comprimento);
+            produtoErp.Comprimento = comprimento;
             produtoErp.Configuracao = swTableAnnotation.get_Text(i, 11);
             produtoErp.Referencia = produtoErp.Name;
             var massa = swTableAnnotation.get_Text(i, 13);
@@ -461,13 +466,13 @@ namespace AddinArtama {
             var swModel = Sw.App.OpenDoc6(produtoErp.PathName,
             (int)swTipo, (int)swOpenDocOptions_e.swOpenDocOptions_Silent, produtoErp.Configuracao, ref status, ref warnings);
 
-            if(produtoErp.PesoLiquido == 0) {
+            if (produtoErp.PesoLiquido == 0) {
               ModelDocExtension swModelDocExt = swModel.Extension;
               CustomPropertyManager swCustPropMngr = swModelDocExt.get_CustomPropertyManager("");
               swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
               swCustPropMngr.Get2("Massa", out _, out string resolvedValOut);
               double.TryParse(resolvedValOut, NumberStyles.Any, CultureInfo.InvariantCulture, out double massaKG);
-              produtoErp.PesoLiquido = Math.Round(massaKG, 3);
+              produtoErp.PesoLiquido = Math.Round(massaKG, 4);
               produtoErp.PesoBruto = produtoErp.PesoLiquido;
             }
 
@@ -577,7 +582,7 @@ namespace AddinArtama {
 
       node.Tag = produtoErp;
 
-      var iconIndex = produtoErp.TipoComponente == TipoComponente.ItemBiblioteca ? 5 : produtoErp.TipoComponente == TipoComponente.Montagem  ? 0 : 1;
+      var iconIndex = produtoErp.TipoComponente == TipoComponente.ItemBiblioteca ? 5 : produtoErp.TipoComponente == TipoComponente.Montagem ? 0 : 1;
 
       node.ImageIndex = iconIndex;
       node.SelectedImageIndex = iconIndex;
@@ -624,9 +629,11 @@ namespace AddinArtama {
 
     #region Analizar Componentes e montar Lista de produtos
 
-    private static async Task PercorrerTreeViewAnalisarCompAsync(ContextoDados db, TreeNode node, List<ProdutoErp> _listaProduto, string montageGeralNome) {
-      try {
+    private static async Task PercorrerTreeViewAnalisarCompAsync(ContextoDados db, TreeNode node, List<ProdutoErp> _listaProduto, string montageGeralNome, Label lblProgress) {
         var produtoErp = node.Tag as ProdutoErp;
+
+      try {
+
         if (produtoErp != null) {
           if (!_listaProduto.Any(x => x.Name == produtoErp.Name && x.Referencia == produtoErp.Referencia && x.Configuracao == produtoErp.Configuracao)) {
 
@@ -648,13 +655,17 @@ namespace AddinArtama {
 
             if (node.Nodes.Count > 0) {
               foreach (TreeNode nodeFilho in node.Nodes) {
-                await PercorrerTreeViewAnalisarCompAsync(db, nodeFilho, _listaProduto, montageGeralNome);
+
+                lblProgress.Text = $"Analisando Produto '{produtoErp.Name}'";
+                lblProgress.Refresh();
+
+                await PercorrerTreeViewAnalisarCompAsync(db, nodeFilho, _listaProduto, montageGeralNome, lblProgress);
               }
             }
           }
         }
       } catch (Exception ex) {
-        Toast.Error("Erro ao fazer análise:\r\n" + ex.Message);
+        Toast.Error($"Erro ao fazer análise.\r\nItem: {produtoErp?.Name}\n\n{ex.Message}");
       }
     }
 
@@ -673,28 +684,24 @@ namespace AddinArtama {
          * */
         // analizar materia prima
         if (produtoErp.TipoComponente == TipoComponente.Peca) {
-          produtoErp.UnidadeMedida = "PC";
           var material = await Api.GetItemGenericoAsync(produtoErp.ItemCorte?.Codigo.ToString());
+          produtoErp.UnidadeMedida = "PC";
           if (material != null) {
             produtoErp.ItemCorte.unidadeMedida = material.unidadeMedida;
+            produtoErp.PesoLiquido = produtoErp.ItemCorte.Massa;
+            produtoErp.PesoPadraoNBR = material.pesoPadraoNBR;
             // analisar material
-            if (produtoErp.ItemCorte.Tipo == TipoListaMaterial.Chapa) {
-              var chapas = materia_primas.Selecionar(ativo: true, produtoErp.ItemCorte.CxdEspess);
+            if (produtoErp.ItemCorte.Tipo == TipoListaMaterial.Chapa && produtoErp.ItemCorte.Espessura > 0) {
+              var chapas = materia_primas.Selecionar(ativo: true, produtoErp.ItemCorte.Espessura);
               if (!chapas.Any(x => x.CodigoChapa == produtoErp.ItemCorte.Codigo))
                 AdicionarPendencia(produtoErp, PendenciasEngenharia.MateriaErrado);
             } else {
 
             }
 
-            // analisar peso
-            produtoErp.PesoLiquido = produtoErp.ItemCorte.Massa;
-            if (produtoErp.ItemCorte.Tipo == TipoListaMaterial.Chapa) {
-              produtoErp.PesoBruto = (produtoErp.ItemCorte.CxdLarg / 1000) * (produtoErp.ItemCorte.CxdCompr / 1000) * material.pesoPadraoNBR;
-            } else {
-              produtoErp.PesoBruto = (produtoErp.ItemCorte.CxdCompr / 1000) * material.pesoPadraoNBR;
-            }
+            // calcular peso
+            CalcularPeso(ref produtoErp);
 
-            produtoErp.PesoBruto = Math.Round(produtoErp.PesoBruto, 4);
           } else if (produtoErp.ItemCorte != null) {
             AdicionarPendencia(produtoErp, PendenciasEngenharia.MateriaPrimaInexistente);
           }
@@ -723,10 +730,10 @@ namespace AddinArtama {
             swCustPropMgr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, produtoErp.CodProduto, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
             swModel.Save();
           } else {
-            // chamar api, igual TGM
+            // verificar cadastros no ERP
             produtoErp.CadastrarProdutoErp = !produtoErp.CodComponente.StartsWith("40");
-            var itens = await Api.GetItemGenericoByNameAsync(produtoErp.Name);
-            itens = itens.Where(x => x.nome.EndsWith(produtoErp.Name) && x.situacao == 1).ToList();
+            var itens = await Api.GetItemGenericoByNameAsync(" - " + produtoErp.Name);
+            itens = itens.Where(x => x.nome.EndsWith(" - " + produtoErp.Name) && x.situacao == 1).ToList();
             if (itens.Count == 1) {
               produtoErp.CadastrarProdutoErp = produtoErp.CadastrarAddin = false;
               produtoErp.CodProduto = itens[0].codigo.ToString();
@@ -749,7 +756,7 @@ namespace AddinArtama {
               string msg = string.Join("\r\n", itens.Select(item => $"- {item.codigo}"));
 
               MsgBox.Show($"Foram encontrados mais de um código para este item {produtoErp.Name}.\r\n" +
-                $"{msg}","Item em Duplicidade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                $"{msg}", "Item em Duplicidade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             produtoErp.CadastrarAddin = true;
@@ -764,22 +771,14 @@ namespace AddinArtama {
             produtoErp.SobremetalCompr = prod.sobremetal_comprimento;
             produtoErp.CadastrarProdutoErp = produtoErp.CadastrarAddin = false;
 
+            if (produtoErp.SobremetalCompr > 0 || produtoErp.SobremetalLarg > 0)
+              CalcularPeso(ref produtoErp);
+
             if (engenharia != null) {
+              if (engenharia.tipoEngenharia == "2")
+                produtoErp.Fantasma = true;
+
               await VerificarOperacaoERPAsync(db, produtoErp, swModel, engenharia.operacoes);
-              //// se for estrutura adiocionar código nos filhos
-              //if (produtoErp.ItensCorte.Count > 1 && engenharia != null) {
-              //  for (int indiceLista = 0; indiceLista < node.Nodes.Count; indiceLista++) {
-              //    var itemNo = node.Nodes[indiceLista].Tag as ProdutoErp;
-              //    if (engenharia != null && engenharia.componentes.Count > indiceLista) {
-              //      var compEngenharia = engenharia.componentes[indiceLista];
-              //      itemNo.CodProduto = compEngenharia.codInsumo;
-              //      itemNo.CadastrarProdutoErp = false;
-              //    } else {
-              //      itemNo.CadastrarProdutoErp = true;
-              //      itemNo.CodProduto = string.Empty;
-              //    }
-              //  }
-              //}
             }
           } else {
             var engenharia = await Api.GetEngenhariaAsync(produtoErp.CodProduto);
@@ -798,20 +797,6 @@ namespace AddinArtama {
 
               if (!produtoErp.CadastrarProdutoErp && engenharia != null) {
                 await VerificarOperacaoERPAsync(db, produtoErp, swModel, engenharia.operacoes);
-                //// se for estrutura adiocionar código nos filhos
-                //if (produtoErp.ItensCorte.Count > 1 && engenharia != null) {
-                //  for (int indiceLista = 0; indiceLista < node.Nodes.Count; indiceLista++) {
-                //    var itemNo = node.Nodes[indiceLista].Tag as ProdutoErp;
-                //    if (engenharia != null && engenharia.componentes.Count > indiceLista) {
-                //      var compEngenharia = engenharia.componentes[indiceLista];
-                //      itemNo.CodProduto = compEngenharia.codInsumo;
-                //      itemNo.CadastrarProdutoErp = false;
-                //    } else {
-                //      itemNo.CadastrarProdutoErp = true;
-                //      itemNo.CodProduto = string.Empty;
-                //    }
-                //  }
-                //}
               }
 
             } else {
@@ -832,6 +817,21 @@ namespace AddinArtama {
         throw new Exception(ex.Message);
         //LmException.ShowException(ex, "Erro ao analisar produto");
       }
+    }
+
+    internal static void CalcularPeso(ref ProdutoErp produtoErp) {
+      if (produtoErp.PesoPadraoNBR == 0)
+        return;
+
+      if (produtoErp.ItemCorte.Tipo == TipoListaMaterial.Chapa) {
+        produtoErp.PesoBruto = ((produtoErp.ItemCorte.Largura + produtoErp.SobremetalLarg) / 1000) *
+          ((produtoErp.ItemCorte.Comprimento + produtoErp.SobremetalCompr) / 1000) * produtoErp.PesoPadraoNBR;
+      } else {
+        produtoErp.PesoBruto = ((produtoErp.ItemCorte.Comprimento + produtoErp.SobremetalCompr) / 1000) * produtoErp.PesoPadraoNBR;
+      }
+      produtoErp.PesoBruto = Math.Round(produtoErp.PesoBruto, 4);
+      if (produtoErp.PesoLiquido > produtoErp.PesoBruto)
+        produtoErp.PesoLiquido = produtoErp.PesoBruto;
     }
 
     private static async Task VerificarOperacaoERPAsync(ContextoDados db, ProdutoErp produtoErp, ModelDoc2 swModel, List<OperacaoEng> engenhariaOperacoes) {

@@ -38,6 +38,7 @@ namespace AddinArtama {
       configuracao_api.Salvar(model);
 
       Api.token = model.token;
+      Api.chave_edrawings = model.chave_edrawings;
       Api.url = model.endereco;
       Api.codigoEmpresa = model.codigoEmpresa;
 

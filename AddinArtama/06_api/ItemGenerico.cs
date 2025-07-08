@@ -84,10 +84,10 @@ namespace AddinArtama {
         } else {
           var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
           var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro ao Alterar Item";
-          throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
+          throw new Exception($"Item: {produtoErp.Name}\n\nErro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
-        Toast.Error($"Erro ao Alterar Item {produtoErp.Name}: {ex.Message}");
+        Toast.Error($"{ex.Message}");
       }
 
     }
@@ -186,9 +186,9 @@ namespace AddinArtama {
               var unidadeMedida = item["unidadeMedida"]?.ToString();
               var classificacaoFiscal = item["classificacaoFiscal"]?.ToString();
               var finalidade = item["finalidade"]?.ToObject<int>() ?? 0;
-              var origem = item["origem"]?.ToObject<int>() ?? 0;
+              var origem = item["origem"]?.ToString();
               var tipo = item["tipo"]?.ToObject<int>() ?? 0;
-              var procedencia = item["procedencia"]?.ToObject<int>() ?? 0;
+              var procedencia = item["procedencia"]?.ToString();
 
               var pesoBruto = item["dadosSaida"]["pesoBruto"]?.ToObject<double>() ?? 0;
               var pesoLiquido = item["dadosSaida"]["pesoLiquido"]?.ToObject<double>() ?? 0;
@@ -196,7 +196,7 @@ namespace AddinArtama {
 
               var mascaraEntrada = item["dadosEntrada"]["mascara"]?.ToString();
               var pesoPadraoNBR = item["dadosEntrada"]["pesoPadraoNBR"]?.ToObject<double>() ?? 0;
-              var situacao = item["dadosEntrada"]["situacao"]?.ToObject<int>() ?? 0;
+              var situacao = item["dadosEntrada"]["situacao"]?.ToString() ?? "";
 
               var itemGenerico = new ItemGenerico {
                 codigo = codigo,
@@ -205,9 +205,9 @@ namespace AddinArtama {
                 unidadeMedida = unidadeMedida,
                 classificacaoFiscal = classificacaoFiscal,
                 finalidade = finalidade,
-                origem = origem,
+                origem = !string.IsNullOrEmpty( origem) ? int.Parse(origem) : 0,
                 tipo = tipo,
-                procedencia = procedencia,
+                procedencia = !string.IsNullOrEmpty(procedencia) ? int.Parse(procedencia) : 0,
 
                 pesoBruto = pesoBruto,
                 pesoLiquido = pesoLiquido,
@@ -215,8 +215,8 @@ namespace AddinArtama {
 
                 mascaraEntrada = mascaraEntrada,
                 pesoPadraoNBR = pesoPadraoNBR,
-                situacao = situacao,
-              };
+                situacao = !string.IsNullOrEmpty(situacao) ? int.Parse(situacao) : 1,
+                              };
               _return.Add(itemGenerico);
             }
           }

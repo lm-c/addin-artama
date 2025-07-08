@@ -23,7 +23,7 @@ namespace AddinArtama {
     [StringLength(70)]
     public string descricao { get; set; }
 
-    [StringLength(50)]
+    [StringLength(70)]
     public string name { get; set; }
 
     [StringLength(250)]

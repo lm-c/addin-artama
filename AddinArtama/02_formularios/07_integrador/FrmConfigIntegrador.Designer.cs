@@ -48,6 +48,10 @@
       this.lmLabel10 = new LmCorbieUI.Controls.LmLabel();
       this.txtClassificacaoFiscal = new LmCorbieUI.Controls.LmTextBox();
       this.lmGroupBox1 = new LmCorbieUI.Controls.LmGroupBox();
+      this.lmLabel1 = new LmCorbieUI.Controls.LmLabel();
+      this.lmTextBox2 = new LmCorbieUI.Controls.LmTextBox();
+      this.lmLabel8 = new LmCorbieUI.Controls.LmLabel();
+      this.lmTextBox1 = new LmCorbieUI.Controls.LmTextBox();
       this.lmGroupBox3 = new LmCorbieUI.Controls.LmGroupBox();
       this.lmLabel25 = new LmCorbieUI.Controls.LmLabel();
       this.txtCodEmpresa = new LmCorbieUI.Controls.LmTextBox();
@@ -56,10 +60,8 @@
       this.txtToken = new LmCorbieUI.Controls.LmTextBox();
       this.txtEndereco = new LmCorbieUI.Controls.LmTextBox();
       this.btnSalvar = new LmCorbieUI.Controls.LmButton();
-      this.lmLabel8 = new LmCorbieUI.Controls.LmLabel();
-      this.lmTextBox1 = new LmCorbieUI.Controls.LmTextBox();
-      this.lmLabel1 = new LmCorbieUI.Controls.LmLabel();
-      this.lmTextBox2 = new LmCorbieUI.Controls.LmTextBox();
+      this.lmLabel2 = new LmCorbieUI.Controls.LmLabel();
+      this.txtEDrawings = new LmCorbieUI.Controls.LmTextBox();
       this.lmGroupBox2.SuspendLayout();
       this.lmGroupBox1.SuspendLayout();
       this.lmGroupBox3.SuspendLayout();
@@ -85,9 +87,9 @@
       this.lmGroupBox2.Controls.Add(this.txtClassificacaoFiscal);
       this.lmGroupBox2.Dock = System.Windows.Forms.DockStyle.Top;
       this.lmGroupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(41)))), ((int)(((byte)(38)))));
-      this.lmGroupBox2.Location = new System.Drawing.Point(2, 240);
+      this.lmGroupBox2.Location = new System.Drawing.Point(2, 274);
       this.lmGroupBox2.Name = "lmGroupBox2";
-      this.lmGroupBox2.Size = new System.Drawing.Size(847, 180);
+      this.lmGroupBox2.Size = new System.Drawing.Size(847, 177);
       this.lmGroupBox2.TabIndex = 2;
       this.lmGroupBox2.TabStop = false;
       this.lmGroupBox2.Text = "Dados do Produto";
@@ -435,15 +437,99 @@
       this.lmGroupBox1.Controls.Add(this.lmTextBox1);
       this.lmGroupBox1.Dock = System.Windows.Forms.DockStyle.Top;
       this.lmGroupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(41)))), ((int)(((byte)(38)))));
-      this.lmGroupBox1.Location = new System.Drawing.Point(2, 138);
+      this.lmGroupBox1.Location = new System.Drawing.Point(2, 172);
       this.lmGroupBox1.Name = "lmGroupBox1";
       this.lmGroupBox1.Size = new System.Drawing.Size(847, 102);
       this.lmGroupBox1.TabIndex = 1;
       this.lmGroupBox1.TabStop = false;
       this.lmGroupBox1.Text = "Mascara";
       // 
+      // lmLabel1
+      // 
+      this.lmLabel1.Location = new System.Drawing.Point(39, 59);
+      this.lmLabel1.Margin = new System.Windows.Forms.Padding(3);
+      this.lmLabel1.Name = "lmLabel1";
+      this.lmLabel1.Size = new System.Drawing.Size(165, 30);
+      this.lmLabel1.TabIndex = 36;
+      this.lmLabel1.Text = "Mascara Conjunto";
+      this.lmLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      // 
+      // lmTextBox2
+      // 
+      this.lmTextBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
+      this.lmTextBox2.BorderRadius = 15;
+      this.lmTextBox2.BorderSize = 2;
+      this.lmTextBox2.F7ToolTipText = null;
+      this.lmTextBox2.F8ToolTipText = null;
+      this.lmTextBox2.F9ToolTipText = null;
+      this.lmTextBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+      this.lmTextBox2.IconF7 = ((System.Drawing.Image)(resources.GetObject("lmTextBox2.IconF7")));
+      this.lmTextBox2.IconToolTipText = null;
+      this.lmTextBox2.Lines = new string[0];
+      this.lmTextBox2.Location = new System.Drawing.Point(210, 59);
+      this.lmTextBox2.MaxLength = 15;
+      this.lmTextBox2.Name = "lmTextBox2";
+      this.lmTextBox2.PasswordChar = '\0';
+      this.lmTextBox2.Propriedade = "mascara_conjunto";
+      this.lmTextBox2.ScrollBars = System.Windows.Forms.ScrollBars.None;
+      this.lmTextBox2.SelectedText = "";
+      this.lmTextBox2.SelectionLength = 0;
+      this.lmTextBox2.SelectionStart = 0;
+      this.lmTextBox2.ShortcutsEnabled = true;
+      this.lmTextBox2.Size = new System.Drawing.Size(347, 30);
+      this.lmTextBox2.TabIndex = 1;
+      this.lmTextBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+      this.lmTextBox2.UnderlinedStyle = false;
+      this.lmTextBox2.UseSelectable = true;
+      this.lmTextBox2.Valor_Decimais = ((short)(0));
+      this.lmTextBox2.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
+      this.lmTextBox2.WaterMarkFont = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
+      // 
+      // lmLabel8
+      // 
+      this.lmLabel8.Location = new System.Drawing.Point(39, 23);
+      this.lmLabel8.Margin = new System.Windows.Forms.Padding(3);
+      this.lmLabel8.Name = "lmLabel8";
+      this.lmLabel8.Size = new System.Drawing.Size(165, 30);
+      this.lmLabel8.TabIndex = 34;
+      this.lmLabel8.Text = "Mascara Peca";
+      this.lmLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      // 
+      // lmTextBox1
+      // 
+      this.lmTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
+      this.lmTextBox1.BorderRadius = 15;
+      this.lmTextBox1.BorderSize = 2;
+      this.lmTextBox1.F7ToolTipText = null;
+      this.lmTextBox1.F8ToolTipText = null;
+      this.lmTextBox1.F9ToolTipText = null;
+      this.lmTextBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+      this.lmTextBox1.IconF7 = ((System.Drawing.Image)(resources.GetObject("lmTextBox1.IconF7")));
+      this.lmTextBox1.IconToolTipText = null;
+      this.lmTextBox1.Lines = new string[0];
+      this.lmTextBox1.Location = new System.Drawing.Point(210, 23);
+      this.lmTextBox1.MaxLength = 15;
+      this.lmTextBox1.Name = "lmTextBox1";
+      this.lmTextBox1.PasswordChar = '\0';
+      this.lmTextBox1.Propriedade = "mascara_peca";
+      this.lmTextBox1.ScrollBars = System.Windows.Forms.ScrollBars.None;
+      this.lmTextBox1.SelectedText = "";
+      this.lmTextBox1.SelectionLength = 0;
+      this.lmTextBox1.SelectionStart = 0;
+      this.lmTextBox1.ShortcutsEnabled = true;
+      this.lmTextBox1.Size = new System.Drawing.Size(347, 30);
+      this.lmTextBox1.TabIndex = 0;
+      this.lmTextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+      this.lmTextBox1.UnderlinedStyle = false;
+      this.lmTextBox1.UseSelectable = true;
+      this.lmTextBox1.Valor_Decimais = ((short)(0));
+      this.lmTextBox1.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
+      this.lmTextBox1.WaterMarkFont = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
+      // 
       // lmGroupBox3
       // 
+      this.lmGroupBox3.Controls.Add(this.lmLabel2);
+      this.lmGroupBox3.Controls.Add(this.txtEDrawings);
       this.lmGroupBox3.Controls.Add(this.lmLabel25);
       this.lmGroupBox3.Controls.Add(this.txtCodEmpresa);
       this.lmGroupBox3.Controls.Add(this.lmLabel23);
@@ -454,7 +540,7 @@
       this.lmGroupBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(41)))), ((int)(((byte)(38)))));
       this.lmGroupBox3.Location = new System.Drawing.Point(2, 35);
       this.lmGroupBox3.Name = "lmGroupBox3";
-      this.lmGroupBox3.Size = new System.Drawing.Size(847, 103);
+      this.lmGroupBox3.Size = new System.Drawing.Size(847, 137);
       this.lmGroupBox3.TabIndex = 0;
       this.lmGroupBox3.TabStop = false;
       this.lmGroupBox3.Text = "API";
@@ -508,7 +594,7 @@
       this.lmLabel23.Name = "lmLabel23";
       this.lmLabel23.Size = new System.Drawing.Size(165, 30);
       this.lmLabel23.TabIndex = 17;
-      this.lmLabel23.Text = "Token";
+      this.lmLabel23.Text = "Token Consistem";
       this.lmLabel23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
       // lmLabel24
@@ -592,7 +678,7 @@
       this.btnSalvar.BorderSize = 0;
       this.btnSalvar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnSalvar.Image = ((System.Drawing.Image)(resources.GetObject("btnSalvar.Image")));
-      this.btnSalvar.Location = new System.Drawing.Point(212, 426);
+      this.btnSalvar.Location = new System.Drawing.Point(212, 457);
       this.btnSalvar.Name = "btnSalvar";
       this.btnSalvar.Size = new System.Drawing.Size(347, 30);
       this.btnSalvar.TabIndex = 3;
@@ -602,93 +688,53 @@
       this.btnSalvar.UseVisualStyleBackColor = false;
       this.btnSalvar.Click += new System.EventHandler(this.BtnSalvar_Click);
       // 
-      // lmLabel8
+      // lmLabel2
       // 
-      this.lmLabel8.Location = new System.Drawing.Point(39, 23);
-      this.lmLabel8.Margin = new System.Windows.Forms.Padding(3);
-      this.lmLabel8.Name = "lmLabel8";
-      this.lmLabel8.Size = new System.Drawing.Size(165, 30);
-      this.lmLabel8.TabIndex = 34;
-      this.lmLabel8.Text = "Mascara Peca";
-      this.lmLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.lmLabel2.Location = new System.Drawing.Point(39, 95);
+      this.lmLabel2.Margin = new System.Windows.Forms.Padding(3);
+      this.lmLabel2.Name = "lmLabel2";
+      this.lmLabel2.Size = new System.Drawing.Size(165, 30);
+      this.lmLabel2.TabIndex = 39;
+      this.lmLabel2.Text = "Chave eDrawings";
+      this.lmLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
-      // lmTextBox1
+      // txtEDrawings
       // 
-      this.lmTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
-      this.lmTextBox1.BorderRadius = 15;
-      this.lmTextBox1.BorderSize = 2;
-      this.lmTextBox1.F7ToolTipText = null;
-      this.lmTextBox1.F8ToolTipText = null;
-      this.lmTextBox1.F9ToolTipText = null;
-      this.lmTextBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-      this.lmTextBox1.IconF7 = ((System.Drawing.Image)(resources.GetObject("lmTextBox1.IconF7")));
-      this.lmTextBox1.IconToolTipText = null;
-      this.lmTextBox1.Lines = new string[0];
-      this.lmTextBox1.Location = new System.Drawing.Point(210, 23);
-      this.lmTextBox1.MaxLength = 15;
-      this.lmTextBox1.Name = "lmTextBox1";
-      this.lmTextBox1.PasswordChar = '\0';
-      this.lmTextBox1.Propriedade = "mascara_peca";
-      this.lmTextBox1.ScrollBars = System.Windows.Forms.ScrollBars.None;
-      this.lmTextBox1.SelectedText = "";
-      this.lmTextBox1.SelectionLength = 0;
-      this.lmTextBox1.SelectionStart = 0;
-      this.lmTextBox1.ShortcutsEnabled = true;
-      this.lmTextBox1.Size = new System.Drawing.Size(347, 30);
-      this.lmTextBox1.TabIndex = 0;
-      this.lmTextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-      this.lmTextBox1.UnderlinedStyle = false;
-      this.lmTextBox1.UseSelectable = true;
-      this.lmTextBox1.Valor_Decimais = ((short)(0));
-      this.lmTextBox1.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
-      this.lmTextBox1.WaterMarkFont = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
-      // 
-      // lmLabel1
-      // 
-      this.lmLabel1.Location = new System.Drawing.Point(39, 59);
-      this.lmLabel1.Margin = new System.Windows.Forms.Padding(3);
-      this.lmLabel1.Name = "lmLabel1";
-      this.lmLabel1.Size = new System.Drawing.Size(165, 30);
-      this.lmLabel1.TabIndex = 36;
-      this.lmLabel1.Text = "Mascara Conjunto";
-      this.lmLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-      // 
-      // lmTextBox2
-      // 
-      this.lmTextBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
-      this.lmTextBox2.BorderRadius = 15;
-      this.lmTextBox2.BorderSize = 2;
-      this.lmTextBox2.F7ToolTipText = null;
-      this.lmTextBox2.F8ToolTipText = null;
-      this.lmTextBox2.F9ToolTipText = null;
-      this.lmTextBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-      this.lmTextBox2.IconF7 = ((System.Drawing.Image)(resources.GetObject("lmTextBox2.IconF7")));
-      this.lmTextBox2.IconToolTipText = null;
-      this.lmTextBox2.Lines = new string[0];
-      this.lmTextBox2.Location = new System.Drawing.Point(210, 59);
-      this.lmTextBox2.MaxLength = 15;
-      this.lmTextBox2.Name = "lmTextBox2";
-      this.lmTextBox2.PasswordChar = '\0';
-      this.lmTextBox2.Propriedade = "mascara_conjunto";
-      this.lmTextBox2.ScrollBars = System.Windows.Forms.ScrollBars.None;
-      this.lmTextBox2.SelectedText = "";
-      this.lmTextBox2.SelectionLength = 0;
-      this.lmTextBox2.SelectionStart = 0;
-      this.lmTextBox2.ShortcutsEnabled = true;
-      this.lmTextBox2.Size = new System.Drawing.Size(347, 30);
-      this.lmTextBox2.TabIndex = 1;
-      this.lmTextBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-      this.lmTextBox2.UnderlinedStyle = false;
-      this.lmTextBox2.UseSelectable = true;
-      this.lmTextBox2.Valor_Decimais = ((short)(0));
-      this.lmTextBox2.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
-      this.lmTextBox2.WaterMarkFont = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
+      this.txtEDrawings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtEDrawings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
+      this.txtEDrawings.BorderRadius = 15;
+      this.txtEDrawings.BorderSize = 2;
+      this.txtEDrawings.F7ToolTipText = null;
+      this.txtEDrawings.F8ToolTipText = null;
+      this.txtEDrawings.F9ToolTipText = null;
+      this.txtEDrawings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+      this.txtEDrawings.IconF7 = ((System.Drawing.Image)(resources.GetObject("txtEDrawings.IconF7")));
+      this.txtEDrawings.IconToolTipText = null;
+      this.txtEDrawings.Lines = new string[0];
+      this.txtEDrawings.Location = new System.Drawing.Point(210, 95);
+      this.txtEDrawings.MaxLength = 500;
+      this.txtEDrawings.Name = "txtEDrawings";
+      this.txtEDrawings.PasswordChar = '\0';
+      this.txtEDrawings.Propriedade = "chave_edrawings";
+      this.txtEDrawings.ScrollBars = System.Windows.Forms.ScrollBars.None;
+      this.txtEDrawings.SelectedText = "";
+      this.txtEDrawings.SelectionLength = 0;
+      this.txtEDrawings.SelectionStart = 0;
+      this.txtEDrawings.ShortcutsEnabled = true;
+      this.txtEDrawings.Size = new System.Drawing.Size(599, 30);
+      this.txtEDrawings.TabIndex = 3;
+      this.txtEDrawings.UnderlinedStyle = false;
+      this.txtEDrawings.UseSelectable = true;
+      this.txtEDrawings.Valor_Decimais = ((short)(0));
+      this.txtEDrawings.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
+      this.txtEDrawings.WaterMarkFont = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
       // 
       // FrmConfigIntegrador
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(851, 478);
+      this.ClientSize = new System.Drawing.Size(851, 510);
       this.Controls.Add(this.lmGroupBox2);
       this.Controls.Add(this.btnSalvar);
       this.Controls.Add(this.lmGroupBox1);
@@ -742,5 +788,7 @@
     private LmCorbieUI.Controls.LmTextBox lmTextBox2;
     private LmCorbieUI.Controls.LmLabel lmLabel8;
     private LmCorbieUI.Controls.LmTextBox lmTextBox1;
+    private LmCorbieUI.Controls.LmLabel lmLabel2;
+    private LmCorbieUI.Controls.LmTextBox txtEDrawings;
   }
 }

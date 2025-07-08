@@ -606,8 +606,8 @@ rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama
 del "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\LmCorbieUI.pdb"
 del "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\AddinArtama.pdb"
 
-xcopy "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\Instalador\Atualizador\AtualizarAddin.bat" "C:\Temp" /Y /A /V
-call  "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\Instalador\Atualizador\AttOnBuildAddin.exe"</PostBuildEvent>
+xcopy "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\Instalador\axion addin\Atualizador\AtualizarAddin.bat" "C:\Temp" /Y /A /V
+call  "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\Instalador\axion addin\Atualizador\AttOnBuildAddin.exe"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

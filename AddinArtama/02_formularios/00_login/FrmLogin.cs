@@ -125,6 +125,7 @@ namespace AddinArtama {
             var configAPI = configuracao_api.Selecionar();
 
             Api.token = configAPI.token;
+            Api.chave_edrawings = configAPI.chave_edrawings;
             Api.url = configAPI.endereco;
             Api.codigoEmpresa = configAPI.codigoEmpresa;
 

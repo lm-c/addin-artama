@@ -29,6 +29,10 @@ namespace AddinArtama {
     [Browsable(false)]
     [StringLength(500)]
     public string token { get; set; }
+    
+    [Browsable(false)]
+    [StringLength(250)]
+    public string chave_edrawings { get; set; } 
 
     [Browsable(false)]
     [StringLength(15)]
@@ -82,6 +86,7 @@ namespace AddinArtama {
             modelAlt.codigoEmpresa = configuracao.codigoEmpresa;
             modelAlt.endereco = configuracao.endereco;
             modelAlt.token = configuracao.token;
+            modelAlt.chave_edrawings = configuracao.chave_edrawings;
 
             modelAlt.mascara_peca = configuracao.mascara_peca;
             modelAlt.mascara_conjunto = configuracao.mascara_conjunto;

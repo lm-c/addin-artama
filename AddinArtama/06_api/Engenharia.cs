@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using Newtonsoft.Json.Linq;
 using LmCorbieUI;
+using static AddinArtama.Api;
 
 namespace AddinArtama {
   internal partial class Api {
@@ -14,6 +15,7 @@ namespace AddinArtama {
       public string codProduto { get; set; }
       public string descricaoProduto { get; set; } = "";
       public string tipoModulo { get; set; } = "E";
+      public string tipoEngenharia { get; set; }
       public int codClassificacao { get; set; }
       public string nomeArquivoDesenhoEng { get; set; }
       public bool engenhariaFantasma { get; set; }
@@ -108,7 +110,7 @@ namespace AddinArtama {
         if (response.IsSuccessful) {
           var responseData = response.Content;
           jsonObject = JObject.Parse(responseData);
-         
+
           return true;
         } else {
           var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
@@ -138,6 +140,7 @@ namespace AddinArtama {
             descricaoProduto = jsonObject["descricao"]?.ToString(),
             codClassificacao = jsonObject["codClassificacao"]?.ToObject<int>() ?? 0,
             statusEngenharia = jsonObject["statusEngenharia"]?.ToObject<int>() ?? 0,
+            tipoEngenharia = jsonObject["tipoEngenharia"]?.ToString(),
 
             componentes = jsonObject["componentes"]?.Select(c => new ComponenteEng {
               seqComponente = c["seqComponente"]?.ToObject<int>() ?? 0,
@@ -166,7 +169,7 @@ namespace AddinArtama {
 
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao carregar item genérico");
+        LmException.ShowException(ex, $"Erro ao retornar engenharia: {codigo}");
       }
 
       return _return;
@@ -183,7 +186,7 @@ namespace AddinArtama {
         var codigo = string.Empty;
         var mascara_ent = mascara;
         var mascara_sai = mascara;
-        var descricao = itemGenerico.nome?.Replace("\"", "\\\"") ?? string.Empty;
+        var descricao = itemGenerico.nome ?? string.Empty;
         var pesoBruto = itemGenerico.pesoBruto;
         var pesoLiquido = itemGenerico.pesoLiquido;
         var unidadeMedida = itemGenerico.unidadeMedida;
@@ -206,6 +209,7 @@ namespace AddinArtama {
              $"\"pesoLiquido\": {pesoLiquido.ToString().Replace(",", ".")}," +
              $"\"pesoBruto\": {pesoBruto.ToString().Replace(",", ".")}," +
              $"\"unidadeMedida\": \"{unidadeMedida}\"" +
+             $"\"refTecnica\": \"{itemGenerico.refTecnica}\"," +
            "}";
 
         request.AddJsonBody(bodyObject);
@@ -234,10 +238,10 @@ namespace AddinArtama {
         } else {
           var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
           var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro ao Duplicar Produto";
-          throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
+          throw new Exception($"Erro ao Cadastrar Item: {itemGenerico.refTecnica}\n\nErro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
-        Toast.Error($"Erro ao Duplicar Produto: {ex.Message}");
+        Toast.Error($"{ex.Message}");
         return string.Empty;
       }
 

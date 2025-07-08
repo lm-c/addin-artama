@@ -312,9 +312,9 @@ namespace AddinArtama {
       txtDescricao.Text = produtoErp.Denominacao;
       lblPeso.Text = produtoErp.PesoLiquido + " kg";
       if (produtoErp.ItemCorte != null || produtoErp.Referencia.StartsWith("Item da lista de corte")) {
-        var espess = produtoErp.ItemCorte.CxdEspess;
-        var largur = produtoErp.ItemCorte.CxdLarg;
-        var compri = produtoErp.ItemCorte.CxdCompr;
+        var espess = produtoErp.ItemCorte.Espessura;
+        var largur = produtoErp.ItemCorte.Largura;
+        var compri = produtoErp.ItemCorte.Comprimento;
         var descricMaterial = produtoErp.ItemCorte.Denominacao;
         var tipo = produtoErp.ItemCorte.Tipo;
         var codigo = produtoErp.ItemCorte.Codigo;
