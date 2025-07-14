@@ -41,7 +41,6 @@
       this.btnCarrProcess = new LmCorbieUI.Controls.LmButton();
       this.lblPecasProc = new LmCorbieUI.Controls.LmLabel();
       this.cmxToolTip1 = new System.Windows.Forms.ToolTip(this.components);
-      this.ckbAddDenom = new LmCorbieUI.Controls.LmCheckBox();
       this.pnlDados = new LmCorbieUI.Controls.LmPanel();
       this.lmLabel1 = new LmCorbieUI.Controls.LmLabel();
       this.lblMaterial = new LmCorbieUI.Controls.LmLabel();
@@ -99,12 +98,14 @@
       this.txtComponente.TabIndex = 1;
       this.txtComponente.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
       this.txtComponente.UnderlinedStyle = false;
+      this.txtComponente.UseCustomBackColor = true;
       this.txtComponente.UseSelectable = true;
       this.txtComponente.Valor_Decimais = ((short)(0));
       this.txtComponente.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
       this.txtComponente.WaterMarkFont = new System.Drawing.Font("Segoe UI", 8.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Pixel);
       this.txtComponente.ButtonClickF7 += new LmCorbieUI.Controls.LmTextBox.ButClick(this.TxtComponente_ButtonClickF7);
       this.txtComponente.ButtonClickF8 += new LmCorbieUI.Controls.LmTextBox.ButClick(this.TxtComponente_ButtonClickF8);
+      this.txtComponente.TextChanged += new System.EventHandler(this.TxtComponente_TextChanged);
       // 
       // cmxLabel5
       // 
@@ -249,23 +250,6 @@
       this.lblPecasProc.Text = "Peça 0 de 0 - %";
       this.lblPecasProc.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
-      // ckbAddDenom
-      // 
-      this.ckbAddDenom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.ckbAddDenom.AutoSize = true;
-      this.ckbAddDenom.BackColor = System.Drawing.Color.Transparent;
-      this.ckbAddDenom.Checked = true;
-      this.ckbAddDenom.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.ckbAddDenom.Location = new System.Drawing.Point(177, 222);
-      this.ckbAddDenom.Name = "ckbAddDenom";
-      this.ckbAddDenom.Propriedade = null;
-      this.ckbAddDenom.Size = new System.Drawing.Size(156, 19);
-      this.ckbAddDenom.TabIndex = 25;
-      this.ckbAddDenom.Text = "Add em Todas Config";
-      this.cmxToolTip1.SetToolTip(this.ckbAddDenom, "Adicionar descrição em todas as configurações");
-      this.ckbAddDenom.UseSelectable = true;
-      this.ckbAddDenom.CheckedChanged += new System.EventHandler(this.CkbAddDenom_CheckedChanged);
-      // 
       // pnlDados
       // 
       this.pnlDados.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
@@ -287,7 +271,6 @@
       this.pnlDados.Controls.Add(this.lblProcess);
       this.pnlDados.Controls.Add(this.lblEspess);
       this.pnlDados.Controls.Add(this.lmLabel8);
-      this.pnlDados.Controls.Add(this.ckbAddDenom);
       this.pnlDados.Dock = System.Windows.Forms.DockStyle.Top;
       this.pnlDados.IsPanelMenu = false;
       this.pnlDados.Location = new System.Drawing.Point(0, 30);
@@ -655,11 +638,10 @@
       this.Name = "FrmMateriaPrimaApl";
       this.Padding = new System.Windows.Forms.Padding(0, 30, 0, 0);
       this.Resizable = false;
-      this.Text = "Aplicação de Matéria Prima";
+      this.Text = "Aplicação de Processos/Matéria Prima";
       this.Loaded += new LmCorbieUI.LmForms.LmSingleForm.FormLoad(this.FrmProcesso_Loaded);
       this.pnlControl.ResumeLayout(false);
       this.pnlDados.ResumeLayout(false);
-      this.pnlDados.PerformLayout();
       this.tbcOperacoes.ResumeLayout(false);
       this.tbpOperacoes.ResumeLayout(false);
       this.tbpLista.ResumeLayout(false);
@@ -693,7 +675,6 @@
     private LmCorbieUI.Controls.LmLabel lblProcess;
     private LmCorbieUI.Controls.LmLabel lblEspess;
     private LmCorbieUI.Controls.LmLabel lmLabel8;
-    private LmCorbieUI.Controls.LmCheckBox ckbAddDenom;
     private LmCorbieUI.Controls.LmTabControl tbcOperacoes;
     private LmCorbieUI.Controls.LmTabPage tbpOperacoes;
     private LmCorbieUI.Controls.LmPanelFlow flpOperacoes;

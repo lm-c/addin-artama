@@ -12,6 +12,7 @@ namespace AddinArtama {
     public DbSet<materia_primas> materia_primas { get; set; }
     public DbSet<perfis> perfis { get; set; }
     public DbSet<processos> processos { get; set; }
+    public DbSet<processos_nao_seriado> processos_nao_seriado { get; set; }
     public DbSet<produto_erp> produto_erp { get; set; }
     public DbSet<produto_erp_operacao> produto_erp_operacao { get; set; }
     public DbSet<templates> templates { get; set; }

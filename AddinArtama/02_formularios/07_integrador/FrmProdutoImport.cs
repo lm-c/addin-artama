@@ -96,6 +96,9 @@ namespace AddinArtama {
 
             _montageGeralNome = Path.GetFileNameWithoutExtension(swModel.GetPathName());
 
+            if (_montageGeralNome.Length > 50)
+              _montageGeralNome = _montageGeralNome.Substring(0, 50);
+
             _arvoreCompleta.Nodes.Clear();
             trvProduto.Nodes.Clear();
             _produtos = new SortableBindingList<ProdutoErp>();
@@ -292,7 +295,7 @@ namespace AddinArtama {
         swModel.ClearSelection2(true);
         swModel.ShowConfiguration2(produtoErp.Configuracao);
 
-        if (produtoErp.ItemCorte != null && produtoErp.ItemCorte.Tipo == TipoListaMaterial.Chapa)
+        if (produtoErp.ItemCorte != null)
           ListaCorte.RefreshCutList(swModel, "", produtoErp.ItemCorte);
 
         if (produtoErp.Referencia.StartsWith("Item da lista de corte")) {
@@ -342,8 +345,8 @@ namespace AddinArtama {
 
       if (produtoErp.ItemCorte != null && produtoErp.TipoComponente == TipoComponente.Peca || produtoErp.Referencia.StartsWith("Item da lista de corte")) {
         var espess = produtoErp.ItemCorte.Espessura;
-        var largur = produtoErp.ItemCorte.Largura;
-        var compri = produtoErp.ItemCorte.Comprimento;
+        var largur = produtoErp.ItemCorte.Largura + produtoErp.SobremetalLarg;
+        var compri = produtoErp.ItemCorte.Comprimento + produtoErp.SobremetalCompr;
         var descricMaterial = produtoErp.ItemCorte.Denominacao;
         var tipo = produtoErp.ItemCorte.Tipo;
         var codigo = produtoErp.ItemCorte.Codigo;
@@ -450,7 +453,7 @@ namespace AddinArtama {
                   }
                 }
               } else {
-                if (produtoErp.TipoComponente != TipoComponente.ItemBiblioteca && produtoErp.TipoComponente != TipoComponente.ListaMaterial) {
+                if (produtoErp.TipoComponente != TipoComponente.ItemBiblioteca && produtoErp.TipoComponente != TipoComponente.ListaMaterial && !produtoErp.Name.StartsWith("4")) {
                   await Api.UpdateItemGenericoAsync(db, produtoErp);
                 }
 
@@ -613,8 +616,8 @@ namespace AddinArtama {
                     itemFilho.UnidadeMedida = produtoFilho.UnidadeMedida;
                     itemFilho.PesoBruto = produtoFilho.PesoBruto;
                     itemFilho.PesoLiquido = produtoFilho.PesoLiquido;
-                    //itemFilho.SobremetalCompr = produtoFilho.SobremetalCompr;
-                    //itemFilho.SobremetalLarg = produtoFilho.SobremetalLarg;
+                    itemFilho.SobremetalCompr = produtoFilho.SobremetalCompr;
+                    itemFilho.SobremetalLarg = produtoFilho.SobremetalLarg;
                     if (itemFilho.ItemCorte != null)
                       itemFilho.ItemCorte.unidadeMedida = produtoFilho.ItemCorte.unidadeMedida;
                   }
@@ -623,8 +626,8 @@ namespace AddinArtama {
 
                   double qtd = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.Quantidade : 1;
                   double espessura = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItemCorte.Espessura;
-                  double larg = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItemCorte.Largura;
-                  double compr = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.Comprimento : itemFilho.ItemCorte.Comprimento;
+                  double larg = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? 0 : itemFilho.ItemCorte.Largura + itemFilho.SobremetalLarg;
+                  double compr = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.Comprimento : itemFilho.ItemCorte.Comprimento + itemFilho.SobremetalCompr;
                   string um = itemFilho.TipoComponente != TipoComponente.ListaMaterial ? itemFilho.UnidadeMedida : itemFilho.ItemCorte.unidadeMedida;
 
                   if (itemFilho.TipoComponente == TipoComponente.ListaMaterial) {
@@ -710,8 +713,12 @@ namespace AddinArtama {
 
             var eng = await Api.GetEngenhariaAsync(engenharia.codProduto);
 
-            if (eng == null || eng.statusEngenharia == 1)
+            if (eng == null || eng.statusEngenharia == 1) {
+              if (eng != null && engenharia.codProduto.StartsWith("4"))
+                engenharia.descricaoProduto = eng.descricaoProduto;
+
               await Api.CadastrarEngenhariaAsync(db, engenharia);
+            }
           }
         }
       } catch (Exception ex) {
@@ -735,6 +742,7 @@ namespace AddinArtama {
         }
 
         var descricao = item.Denominacao.Length <= 70 ? item.Denominacao : item.Denominacao.Substring(0, 70);
+        var referencia = item.Referencia.Length <= 50 ? item.Referencia : item.Referencia.Substring(0, 50);
 
         var produtoERP = new produto_erp {
           codigo_produto = Convert.ToInt64(item.CodProduto),
@@ -743,10 +751,10 @@ namespace AddinArtama {
           name = item.Name,
           descricao = descricao,
           pathname = item.PathName,
-          referencia = item.Referencia,
+          referencia = referencia,
           configuracao = item.Configuracao,
-          //sobremetal_largura = item.SobremetalLarg,
-          //sobremetal_comprimento = item.SobremetalCompr,
+          sobremetal_largura = item.SobremetalLarg,
+          sobremetal_comprimento = item.SobremetalCompr,
           espessura = espessura,
           largura = largura,
           comprimento = comprimento,
@@ -790,7 +798,6 @@ namespace AddinArtama {
         }
 
         var descricao = item.Denominacao.Length <= 70 ? item.Denominacao : item.Denominacao.Substring(0, 70);
-        var descricao = item.Denominacao.Length <= 70 ? item.Denominacao : item.Denominacao.Substring(0, 70);
 
         // Atualiza os campos necessários
         produtoErp.name = item.Name;
@@ -798,8 +805,8 @@ namespace AddinArtama {
         produtoErp.pathname = item.PathName;
         produtoErp.referencia = item.Referencia;
         produtoErp.configuracao = item.Configuracao;
-        //produtoErp.sobremetal_largura = item.SobremetalLarg;
-        //produtoErp.sobremetal_comprimento = item.SobremetalCompr;
+        produtoErp.sobremetal_largura = item.SobremetalLarg;
+        produtoErp.sobremetal_comprimento = item.SobremetalCompr;
         produtoErp.espessura = espessura;
         produtoErp.largura = largura;
         produtoErp.comprimento = comprimento;
@@ -920,14 +927,12 @@ namespace AddinArtama {
         var produtoERP = dgv.Grid.CurrentRow.DataBoundItem as ProdutoErp;
 
         var swModel = (ModelDoc2)Sw.App.ActiveDoc;
-        ConfigurationManager swConfMgr = swModel.ConfigurationManager;
-        var configName = swConfMgr.ActiveConfiguration.Name;
-        var swModelDocExt = swModel.Extension;
+        string filename = swModel.GetPathName();
 
-        var swCustPropMngr = swModelDocExt.get_CustomPropertyManager(configName);
+        var swModelDocExt = swModel.Extension;
+        var swCustPropMngr = swModelDocExt.get_CustomPropertyManager("");
 
         swCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, produtoERP.Denominacao, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-        //var status = swModel.ShowConfiguration2(configName);
       } catch (Exception ex) {
         Toast.Warning("Falha ao Atualizar Denominação: \n" + ex.Message);
       }
@@ -1141,6 +1146,8 @@ namespace AddinArtama {
             cutList.Material = mat.DescricaoMaterial;
             ListaCorte.UpdateCutList(swModel, cutList);
             AtualizarInformacoes(produtoERP);
+
+            ProdutoErp.CalcularPeso(ref produtoERP);
 
             lblCodMat.Text = mat.CodigoChapa.ToString();
             lblDescMat.Text = mat.DescricaoChapa;

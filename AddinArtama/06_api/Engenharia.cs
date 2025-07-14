@@ -136,10 +136,14 @@ namespace AddinArtama {
           var responseData = response.Content;
           var jsonObject = JObject.Parse(responseData);
 
+
+          var codClassificacao = jsonObject["codClassificacao"]?.ToString();
+          var statusEngenharia = jsonObject["statusEngenharia"]?.ToString();
+
           _return = new Engenharia {
             descricaoProduto = jsonObject["descricao"]?.ToString(),
-            codClassificacao = jsonObject["codClassificacao"]?.ToObject<int>() ?? 0,
-            statusEngenharia = jsonObject["statusEngenharia"]?.ToObject<int>() ?? 0,
+            codClassificacao = !string.IsNullOrEmpty(codClassificacao) ? Convert.ToInt32(codClassificacao) : 0,
+            statusEngenharia = !string.IsNullOrEmpty(statusEngenharia) ? Convert.ToInt32(statusEngenharia) : 1,
             tipoEngenharia = jsonObject["tipoEngenharia"]?.ToString(),
 
             componentes = jsonObject["componentes"]?.Select(c => new ComponenteEng {
@@ -209,7 +213,7 @@ namespace AddinArtama {
              $"\"pesoLiquido\": {pesoLiquido.ToString().Replace(",", ".")}," +
              $"\"pesoBruto\": {pesoBruto.ToString().Replace(",", ".")}," +
              $"\"unidadeMedida\": \"{unidadeMedida}\"" +
-             $"\"refTecnica\": \"{itemGenerico.refTecnica}\"," +
+             
            "}";
 
         request.AddJsonBody(bodyObject);

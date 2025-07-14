@@ -12,7 +12,7 @@ namespace AddinArtama {
     [Description("Solução Completa")]
     Solucao = 1,
 
-    [Description("Aplicação de Matéria Prima"), PermissaoSistema(TipoPermissao.Formulario)]
+    [Description("Aplicação de Processos/Matéria Prima"), PermissaoSistema(TipoPermissao.Formulario)]
     AplicacaoProcesso = 101,
 
     [Description("Propriedades Personalizadas"), PermissaoSistema(TipoPermissao.Formulario)]

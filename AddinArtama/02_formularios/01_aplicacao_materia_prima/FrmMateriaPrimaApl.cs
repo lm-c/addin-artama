@@ -23,13 +23,15 @@ namespace AddinArtama {
       _produtos = new SortableBindingList<ProdutoErp>();
       dgv.MontarGrid<ProdutoErp>();
 
+      dgv.ColunasBloqueadasGrid = "ImgFantasma^Nivel^CodProduto^Referencia^Configuracao^Quantidade^UnidadeMedida";
+
       CarregarControlesProcessos();
     }
 
     private void FrmProcesso_Loaded(object sender, EventArgs e) {
       Invoke(new MethodInvoker(delegate () {
         //dadosMateriais.DataSource = ChapaDATA.Selecionar();
-        ckbAddDenom.Checked = InfoSetting.AddDenominacaoTodasConfig;
+        //ckbAddDenom.Checked = InfoSetting.AddDenominacaoTodasConfig;
       }));
     }
 
@@ -38,15 +40,15 @@ namespace AddinArtama {
         flpOperacoes.Controls.Clear();
         lblProcess.Text = string.Empty;
 
-        foreach (var proc in Processo.ListaProcessos) {
+        foreach (var proc in ProcessoNaoSeriado.ListaProcessos) {
           LmCheckBox ckb = new LmCheckBox {
             Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
             BackColor = Color.Transparent,
             Size = new Size(flpOperacoes.Width - 30, 19),
             Margin = new Padding(6, 1, 6, 1),
-            Name = $"ckb{proc.codOperacao}",
-            Tag = $"{proc.codOperacao}",
-            Text = $"{proc.codOperacao} - {proc.descrOperacao}",
+            Name = $"ckb{proc.Codigo}",
+            Tag = $"{proc.Codigo}",
+            Text = $"{proc.Codigo} - {proc.Descricao}",
             FontSize = LmCorbieUI.Design.LmCheckBoxSize.Small,
             UseCustomBackColor = true,
           };
@@ -81,7 +83,7 @@ namespace AddinArtama {
 
           _montageGeralNome = Path.GetFileNameWithoutExtension(swModel.GetPathName()).ToLower();
 
-          _produtos = await Processo.GetProdutos();
+          _produtos = await ProcessoNaoSeriado.GetProdutos();
           CarregarGrid();
         } else {
           Toast.Warning("Comando apenas para Peças e Montagens");
@@ -156,12 +158,11 @@ namespace AddinArtama {
 
         swModel.Save();
 
-        if (produtoERP.Pendencias.Count() > 0) {
+        if (produtoERP.Operacoes.Count() > 0) {
           produtoERP.Pendencias = new List<PendenciasEngenharia>();
           produtoERP.ImgPendencia = new Bitmap(20, 20);
           dgv.Grid.CurrentRow.DefaultCellStyle.ForeColor = Color.Black;
-        }
-        else {
+        } else {
           ProdutoErp.AdicionarPendencia(produtoERP, PendenciasEngenharia.OperacaoNaoPossui);
           produtoERP.ImgPendencia = Properties.Resources.error;
           dgv.Grid.CurrentRow.DefaultCellStyle.ForeColor = Color.Red;
@@ -291,7 +292,7 @@ namespace AddinArtama {
 
         swModel.ClearSelection2(true);
 
-        if (produtoERP.ItemCorte != null &&  produtoERP.ItemCorte.Tipo == TipoListaMaterial.Chapa)
+        if (produtoERP.ItemCorte != null && produtoERP.ItemCorte.Tipo == TipoListaMaterial.Chapa)
           ListaCorte.RefreshCutList(swModel, "", produtoERP.ItemCorte);
 
         if (produtoERP.Referencia.StartsWith("Item da lista de corte")) {
@@ -309,6 +310,7 @@ namespace AddinArtama {
     }
 
     private void AtualizarInformacoes(ProdutoErp produtoErp) {
+      txtComponente.Text = produtoErp.CodComponente;
       txtDescricao.Text = produtoErp.Denominacao;
       lblPeso.Text = produtoErp.PesoLiquido + " kg";
       if (produtoErp.ItemCorte != null || produtoErp.Referencia.StartsWith("Item da lista de corte")) {
@@ -396,7 +398,7 @@ namespace AddinArtama {
 
         produtoERP.CodComponente = produtoERP.Name;
         txtComponente.Text = produtoERP.Name;
-        txtComponente.BackColor = Color.White;
+        txtComponente.BackColor = Color.FromArgb(234, 238, 242);
 
         var swModelDocExt = swModel.Extension;
         var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
@@ -489,7 +491,7 @@ namespace AddinArtama {
             produtoERP.CodComponente = produtoERP.Name;
 
             txtComponente.Text = produtoERP.Name;
-            txtComponente.BackColor = Color.White;
+            txtComponente.BackColor = Color.FromArgb(234, 238, 242);
 
             dgv.Refresh();
 
@@ -507,6 +509,18 @@ namespace AddinArtama {
       } finally {
         MsgBox.CloseWaitMessage();
       }
+    }
+
+    private void TxtComponente_TextChanged(object sender, EventArgs e) {
+      if (dgv.Grid.CurrentRow == null) {
+        return;
+      }
+
+      var produtoERP = dgv.Grid.CurrentRow.DataBoundItem as ProdutoErp;
+      if (produtoERP != null && !produtoERP.Name.StartsWith(txtComponente.Text))
+        txtComponente.BackColor = Color.FromArgb(255, 118, 108);
+      else
+        txtComponente.BackColor = Color.FromArgb(234, 238, 242);
     }
 
     private void TxtDenominacao_Leave(object sender, EventArgs e) {
@@ -547,11 +561,6 @@ namespace AddinArtama {
 
         ((LmCheckBox)sender).BackColor = Color.Transparent;
       }
-    }
-
-    private void CkbAddDenom_CheckedChanged(object sender, EventArgs e) {
-      InfoSetting.AddDenominacaoTodasConfig = ckbAddDenom.Checked;
-      InfoSetting.Salvar();
     }
 
     private void TmrInicioLocalizar_Tick(object sender, EventArgs e) {
@@ -602,39 +611,13 @@ namespace AddinArtama {
 
         var produtoERP = dgv.Grid.CurrentRow.DataBoundItem as ProdutoErp;
 
-        object[] configNameArr = null;
-        string configName = null;
-        bool status = false;
-        int i = 0;
-        int h = 0;
-
         var swModel = (ModelDoc2)Sw.App.ActiveDoc;
-        ConfigurationManager swConfMgr = swModel.ConfigurationManager;
-        var swModelDocExt = swModel.Extension;
-        configNameArr = (object[])swModel.GetConfigurationNames();
-
         string filename = swModel.GetPathName();
 
-        configName = swConfMgr.ActiveConfiguration.Name;
-        string defConfig = configName;
+        var swModelDocExt = swModel.Extension;
+        var swCustPropMngr = swModelDocExt.get_CustomPropertyManager("");
 
-        if (ckbAddDenom.Checked) {
-          for (i = 0; i <= configNameArr.GetUpperBound(0); i++) {
-            configName = (string)configNameArr[i];
-            status = swModel.ShowConfiguration2(configName);
-
-            swModelDocExt = swModel.Extension;
-            var swCustPropMngr = swModelDocExt.get_CustomPropertyManager(configName);
-
-            swCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, produtoERP.Denominacao, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-          }
-        } else {
-          swModelDocExt = swModel.Extension;
-          var swCustPropMngr = swModelDocExt.get_CustomPropertyManager(defConfig);
-
-          swCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, produtoERP.Denominacao, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-        }
-        status = swModel.ShowConfiguration2(defConfig);
+        swCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, produtoERP.Denominacao, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
       } catch (Exception ex) {
         MessageBox.Show("Falha ao Atualizar Denominação: \n" + ex.Message);
       }
@@ -661,6 +644,5 @@ namespace AddinArtama {
         Toast.Error("Erro ao formatar cores grid. \r\n" + ex.Message);
       } finally { MsgBox.CloseWaitMessage(); }
     }
-
   }
 }

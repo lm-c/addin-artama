@@ -16,18 +16,19 @@ using System.Windows.Forms;
 using System.IO;
 using static AddinArtama.Api;
 using System.Globalization;
+using System.Data.Entity.Infrastructure;
 
 namespace AddinArtama {
-  internal class Processo {
+  internal class ProcessoNaoSeriado {
     [DisplayName("Código Axion")]
     [LarguraColunaGrid(120)]
-    public int codAxion { get; set; }
+    public int Id { get; set; }
 
     [DisplayName("Cód. Oper.")]
     [LarguraColunaGrid(120)]
     [DataObjectField(true, false)]
     [AlinhamentoColunaGrid(System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter)]
-    public int codOperacao { get; set; }
+    public int Codigo { get; set; }
 
     [Browsable(false)]
     [DisplayName("Abrev.")]
@@ -37,71 +38,46 @@ namespace AddinArtama {
     [DisplayName("Descrição Operação")]
     [LarguraColunaGrid(200)]
     [DataObjectField(false, true)]
-    public string descrOperacao { get; set; }
+    public string Descricao { get; set; }
 
-    [DisplayName("Cód. Máq.")]
+    [DisplayName("Tipo Sequência")]
     [LarguraColunaGrid(100)]
-    public int codMaquina { get; set; }
-
-    [DisplayName("Descrição Máquina")]
-    [LarguraColunaGrid(200)]
-    public string descrMaquina { get; set; }
-
-    [DisplayName("Másc. Máqu.")]
-    [LarguraColunaGrid(100)]
-    public string mascaraMaquina { get; set; }
-
-    [DisplayName("Tipo")]
-    [LarguraColunaGrid(100)]
-    public string tipo { get; set; }
-
-    [DisplayName("Centro de Custo")]
-    [LarguraColunaGrid(100)]
-    public string centroCusto { get; set; }
+    public TipoSequencia  TipoSequencia { get; set; }
 
     [Browsable(false)]
-    [DisplayName("Fase Prod.")]
-    [LarguraColunaGrid(100)]
-    public int faseProducao { get; set; }
+    public bool GerarDxf { get; set; }
+    
+    [Browsable(false)]
+    public bool ImprimirFilhos { get; set; } 
 
-    public static List<Processo> ListaProcessos { get; set; } = new List<Processo>();
-    public static List<Api.Operacao> ListaOperacoesERP { get; set; } = new List<Api.Operacao>();
-    public static List<Api.Maquina> ListaMaquinasERP { get; set; } = new List<Api.Maquina>();
+    public static List<ProcessoNaoSeriado> ListaProcessos { get; set; } = new List<ProcessoNaoSeriado>();
 
     public static async Task Carregar() {
       try {
-        ListaProcessos = new List<Processo>();
+        ListaProcessos = new List<ProcessoNaoSeriado>();
 
-        ListaOperacoesERP = await Api.GetOpsAsync();
-        ListaMaquinasERP = await Api.GetMaquinasAsync();
-
-        var procs = processos.SelecionarTodos();
+        using (ContextoDados db = new ContextoDados()) {
+        var procs = db.processos_nao_seriado.OrderBy(x=>x.tipo_sequencia).ThenBy(x => x.codigo).ToList();
 
         foreach (var processo in procs) {
-          var operacao = ListaOperacoesERP.FirstOrDefault(x => x.codOperacao == processo.codigo_operacao);
-          var maquina = ListaMaquinasERP.FirstOrDefault(x => x.codMaquina == processo.codigo_maquina);
 
-          ListaProcessos.Add(new Processo {
-            codAxion = processo.id,
-            codOperacao = operacao.codOperacao,
-            abreviatura = operacao.abreviatura,
-            descrOperacao = operacao.descricao.Replace("\\", "_").Replace("/", "_"),
-            descrMaquina = maquina.descricao.Replace("\\", "_").Replace("/", "_"),
-            mascaraMaquina = maquina.mascara,
-            codMaquina = maquina.codMaquina,
-            tipo = operacao.tipo,
-            centroCusto = maquina.centroCusto,
-            faseProducao = operacao.faseProducao ?? 0, // Default para 0 se for nulo
+          ListaProcessos.Add(new ProcessoNaoSeriado {
+          Id = processo.id,
+            Codigo = processo.codigo,
+            Descricao = processo.descricao,
+            TipoSequencia = (TipoSequencia)processo.tipo_sequencia,
+            GerarDxf = processo.gerar_dxf,
+            ImprimirFilhos = processo.imprimir_filhos,
           });
         }
-        ListaProcessos = ListaProcessos.OrderByDescending(x => x.tipo).ThenBy(x => x.codOperacao).ToList();
+        }
+
       } catch (Exception ex) {
         Toast.Error("Erro ao Selecionar Processos");
       }
     }
 
-    /*
-    public static async Task<SortableBindingList<ProdutoErp>> GetProdutos_old() {
+    public static async Task<SortableBindingList<ProdutoErp>> GetProdutos() {
       var _listaProduto = new List<ProdutoErp>();
 
       try {
@@ -220,18 +196,6 @@ namespace AddinArtama {
 
             var itensCorte = ListaCorte.GetCutList(swModel, produtoErp.PathName);
 
-            //if (changeCutList && itensCorte.Count > 1) {
-            //  var pathNameDesenho = produtoErp.PathName.Substring(0, produtoErp.PathName.Length - 6) + "SLDDRW";
-
-            //  Sw.App.OpenDoc6(pathNameDesenho, (int)swDocumentTypes_e.swDocDRAWING, (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
-            //  Sw.App.ActivateDoc2(pathNameDesenho, false, errors);
-            //  swModel = (ModelDoc2)Sw.App.ActiveDoc;
-
-            //  Desenho.InserirAtualizarListaMaterias(swModel);
-            //  swModel.Save();
-            //  Sw.App.CloseDoc(pathNameDesenho);
-            //}
-
             if (produtoErp.TipoComponente == TipoComponente.Peca) {
               for (int indiceLista = 0; indiceLista < itensCorte.Count; indiceLista++) {
                 ListaCorte itemCorte = itensCorte[indiceLista];
@@ -257,7 +221,7 @@ namespace AddinArtama {
                   ItemCorte = itemCorte,
                 };
 
-                // PegarOperacoes(_listaProduto, produtoErp, itemCorte.Operacao);
+                PegarOperacoes(_listaProduto, item, itemCorte.Operacao);
 
                 if (produtoErp.Name.Length + sufixo.Length > 50)
                   produtoErp.Name = produtoErp.Name.Substring(0, 50 - sufixo.Length) + sufixo;
@@ -306,7 +270,7 @@ namespace AddinArtama {
             string ptNm = vModelPathNames[0];
 
             produtoErp.PathName = ptNm;
-            produtoErp.Name = Path.GetFileNameWithoutExtension(produtoErp.PathName);
+            produtoErp.Name = nameShort = Path.GetFileNameWithoutExtension(produtoErp.PathName);
             if (produtoErp.Name.Length > 50)
               produtoErp.Name = produtoErp.Name.Substring(0, 50);
 
@@ -341,6 +305,9 @@ namespace AddinArtama {
               ? TipoComponente.ItemBiblioteca
               : ptNm.ToUpper().EndsWith("SLDPRT")
               ? TipoComponente.Peca : TipoComponente.Montagem;
+
+            if (produtoErp.TipoComponente == TipoComponente.ItemBiblioteca)
+              continue;
 
             int swTipo = ptNm.ToUpper().EndsWith("SLDPRT") ? (int)swDocumentTypes_e.swDocPART : (int)swDocumentTypes_e.swDocASSEMBLY;
 
@@ -385,7 +352,7 @@ namespace AddinArtama {
 
                 PegarOperacoes(_listaProduto, item, itemCorte.Operacao);
 
-                if (!_listaProduto.Any(x => x.Name == item.Name && x.Referencia == item.Referencia && x.Configuracao == item.Configuracao))
+                if (!_listaProduto.Any(x => x.Name == item.Name && x.Referencia == item.Referencia && x.Configuracao == item.Configuracao) )
                   _listaProduto.Add(item);
               }
             } else if (!_listaProduto.Any(x => x.Name == produtoErp.Name && x.Referencia == produtoErp.Referencia && x.Configuracao == produtoErp.Configuracao))
@@ -396,7 +363,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar dados da Lista\n\n{ex.Message}", "Addin LM Projetos",
+        MsgBox.Show($"Erro ao pegar dados da Lista\n\nItem: {nameShort}\n\n{ex.Message}", "Addin LM Projetos",
              MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
@@ -406,11 +373,14 @@ namespace AddinArtama {
         var splOps = ops.Split('/');
         foreach (var op in splOps) {
           if (int.TryParse(op, out int opId)) {
-            var processo = Processo.ListaProcessos.FirstOrDefault(x => x.codOperacao == opId);
+            var processo = ProcessoNaoSeriado.ListaProcessos.FirstOrDefault(x => x.Codigo == opId);
+
+            if (processo == null)
+              continue;
 
             produtoErp.Operacoes.Add(new produto_erp_operacao {
               qtd_operador = 1,
-              processo_id = processo.codOperacao,
+              processo_id = processo.Codigo,
               name = produtoErp.Name,
               referencia = produtoErp.Referencia,
               sequencia = _listaProduto.Count + 1
@@ -419,6 +389,5 @@ namespace AddinArtama {
         }
       }
     }
-    */
   }
 }

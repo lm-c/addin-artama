@@ -62,7 +62,7 @@ namespace AddinArtama {
         if (massProp != null)
           _return.Massa = Math.Round(massProp[5], 3);
 
-        _return.ItensCorte = ListaCorte.GetCutList(swModel, _return.LongName, out _);
+        _return.ItensCorte = ListaCorte.GetCutList(swModel, _return.LongName);
       } catch (Exception ex) {
         LmException.ShowException(ex, "Erro ao Caregar Componente");
       }

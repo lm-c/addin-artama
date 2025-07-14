@@ -130,6 +130,7 @@ namespace AddinArtama {
             Api.codigoEmpresa = configAPI.codigoEmpresa;
 
             Processo.Carregar();
+            ProcessoNaoSeriado.Carregar();
             templates.Carregar();
             InfoSetting.Carregar();
             this.Hide();

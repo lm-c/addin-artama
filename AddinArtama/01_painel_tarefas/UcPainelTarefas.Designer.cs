@@ -218,7 +218,7 @@
       this.msProcess.TabIndex = 1;
       this.msProcess.TabStop = false;
       this.msProcess.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.msProcess, "Aplicação de Matéria Prima");
+      this.cmxToolTip1.SetToolTip(this.msProcess, "Aplicação de Processos/Matéria Prima");
       this.msProcess.UseSelectable = true;
       this.msProcess.UseVisualStyleBackColor = false;
       this.msProcess.Click += new System.EventHandler(this.MsProcess_Click);

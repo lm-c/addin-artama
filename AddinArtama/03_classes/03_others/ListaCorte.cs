@@ -26,10 +26,10 @@ namespace AddinArtama {
     public string unidadeMedida { get; set; }
     public TipoListaMaterial Tipo { get; set; }
 
-    public static List<ListaCorte> GetCutList(ModelDoc2 swModel, string nomePeca, out bool changeCutListName) {
+    public static List<ListaCorte> GetCutList(ModelDoc2 swModel, string nomePeca/*, out bool changeCutListName*/) {
       List<ListaCorte> _return = new List<ListaCorte>();
       bool boolstatus;
-      changeCutListName = false;
+      //changeCutListName = false;
 
       try {
         FeatureManager swFeatMgr = default(FeatureManager);
@@ -53,8 +53,7 @@ namespace AddinArtama {
 
           FeatType = swFeat.Name;
           FeatTypeName = swFeat.GetTypeName2();
-
-
+                    
           if (FeatTypeName == "CutListFolder") {
             swBodyFolder = (BodyFolder)swFeat.GetSpecificFeature2();
             bodyCount = swBodyFolder.GetBodyCount();
@@ -73,7 +72,7 @@ namespace AddinArtama {
                 var nomeLista3 = $"Item da lista de corte  {_return.Count + 1}";
 
                 if (swFeat.Name != nomeLista && swFeat.Name != nomeLista2 && swFeat.Name != nomeLista3) {
-                  changeCutListName = true;
+                  // changeCutListName = true;
                   swFeat.Name = nomeLista;
                   if (swFeat.Name != nomeLista) {
                     swFeat.Name = nomeLista2;
@@ -90,19 +89,8 @@ namespace AddinArtama {
                 object[] custPropNames = (object[])swCustPropMngr.GetNames();
 
                 if (custPropNames != null) {
-                  object[] vBodies = (object[])swBodyFolder.GetBodies();
-
-                  if ((vBodies != null)) {
-                    for (int i = vBodies.GetLowerBound(0); i <= vBodies.GetUpperBound(0); i++) {
-                      Body2 Body = default(Body2);
-                      Body = (Body2)vBodies[i];
-
-                      if (Body.IsSheetMetal())
-                        listaCorte.Tipo = TipoListaMaterial.Chapa;
-                      else
-                        listaCorte.Tipo = TipoListaMaterial.Soldagem;
-                    }
-                  }
+                  // CORREÇÃO: Melhor determinação do tipo (Chapa ou Soldagem)
+                  listaCorte.Tipo = DeterminarTipoMaterial(swBodyFolder, swCustPropMngr);
 
                   swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
                   swCustPropMngr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Material\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
@@ -157,14 +145,6 @@ namespace AddinArtama {
                     listaCorte.Comprimento = Math.Round(comprim, 4);
                   }
 
-                  //swCustPropMngr.Get2("Largura da Caixa delimitadora", out sValue, out sResolvedvalue);
-                  //double.TryParse(sResolvedvalue.Replace(".", ","), out double larg);
-                  //listaCorte.Largura = Math.Round(larg, 4);
-
-                  //swCustPropMngr.Get2("Comprimento da Caixa delimitadora", out sValue, out sResolvedvalue);
-                  //double.TryParse(sResolvedvalue.Replace(".", ","), out double comp_cxd);
-                  //listaCorte.Comprimento = Math.Round(comp_cxd, 4);
-
                   swCustPropMngr.Get2("QUANTITY", out sValue, out sResolvedvalue);
                   listaCorte.Quantidade = !string.IsNullOrEmpty(sResolvedvalue) ? Convert.ToInt32(sResolvedvalue) : 0;
 
@@ -193,13 +173,17 @@ namespace AddinArtama {
                     Feature swFeat2 = (Feature)swSelMgr2.GetSelectedObject6(1, 0);
                     CustomPropertyManager swCustPropMgr = swFeat2.CustomPropertyManager;
 
-                    swCustPropMngr.Get2("COMPRIMENTO", out string sValue, out string sResolvedvalue);
+                    // swBodyFolder = (BodyFolder)swFeat2.GetSpecificFeature2();
+                    // swBodyFolder.UpdateCutList();
+
+                    swCustPropMgr.Get2("COMPRIMENTO", out string sValue, out string sResolvedvalue);
                     double.TryParse(sResolvedvalue.Replace(".", ","), out double comprim);
 
                     if (comprim > listaCorte.Comprimento && comprim - listaCorte.Comprimento < 10) {
                       listaCorte.Comprimento = Math.Round(comprim, 4);
                     }
                   }
+                  swModel.ShowConfiguration((string)configAtiva);
                 }
 
                 _return.Add(listaCorte);
@@ -209,13 +193,67 @@ namespace AddinArtama {
           swFeat = (Feature)swFeat.GetNextFeature();
         }
 
-        swModel.ShowConfiguration((string)configAtiva);
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao pegar lista corte\n\nItem: {nomePeca}\n\n{ex.Message}", "Addin LM Projetos",
             MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
       return _return;
+    }
+
+    // Método auxiliar para determinar o tipo de material de forma mais robusta
+    private static TipoListaMaterial DeterminarTipoMaterial(BodyFolder swBodyFolder, CustomPropertyManager swCustPropMngr) {
+      try {
+        // Primeiro, verificar se existe a propriedade "Espessura da Chapa metálica"
+        swCustPropMngr.Get2("Espessura da Chapa metálica", out string sValue, out string sResolvedvalue);
+        if (!string.IsNullOrEmpty(sResolvedvalue) && double.TryParse(sResolvedvalue.Replace(".", ","), out double espessura) && espessura > 0) {
+          return TipoListaMaterial.Chapa;
+        }
+        else
+          return TipoListaMaterial.Soldagem;
+
+        //// Verificar os corpos (bodies) para determinar se são sheet metal
+        //object[] vBodies = (object[])swBodyFolder.GetBodies();
+        //if (vBodies != null) {
+        //  bool temSheetMetal = false;
+        //  bool temSolido = false;
+
+        //  for (int i = vBodies.GetLowerBound(0); i <= vBodies.GetUpperBound(0); i++) {
+        //    Body2 body = (Body2)vBodies[i];
+
+        //    if (body != null) {
+        //      // Verificar se é sheet metal
+        //      if (body.IsSheetMetal()) {
+        //        temSheetMetal = true;
+        //      } else {
+        //        // Verificar o tipo do corpo
+        //        int bodyType = body.GetType();
+        //        // swBodyType_e.swSolidBody = 0, swSheetBody = 1, swWireBody = 2
+        //        if (bodyType == 0) // Corpo sólido
+        //        {
+        //          temSolido = true;
+        //        }
+        //      }
+        //    }
+        //  }
+
+        //  // Se tem sheet metal, é chapa
+        //  if (temSheetMetal) {
+        //    return TipoListaMaterial.Chapa;
+        //  }
+
+        //  // Se tem apenas corpos sólidos, é soldagem
+        //  if (temSolido) {
+        //    return TipoListaMaterial.Soldagem;
+        //  }
+        //}
+
+        //// Por padrão, assumir soldagem se não conseguir determinar
+        //return TipoListaMaterial.Soldagem;
+      } catch (Exception) {
+        // Em caso de erro, retornar soldagem como padrão
+        return TipoListaMaterial.Soldagem;
+      }
     }
 
     public static void RefreshCutList(ModelDoc2 swModel, string nomePeca, ListaCorte listaCorte) {
@@ -237,21 +275,15 @@ namespace AddinArtama {
             if (custPropNames != null) {
 
               swBodyFolder = (BodyFolder)swFeat.GetSpecificFeature2();
-              boolstatus = swBodyFolder.SetAutomaticCutList(true);
-              boolstatus = swBodyFolder.UpdateCutList();
+              //boolstatus = swBodyFolder.SetAutomaticCutList(true);
+              //boolstatus = swBodyFolder.UpdateCutList();
 
               object[] vBodies = (object[])swBodyFolder.GetBodies();
 
               if ((vBodies != null)) {
                 for (int i = vBodies.GetLowerBound(0); i <= vBodies.GetUpperBound(0); i++) {
-                  Body2 Body = default(Body2);
-                  Body = (Body2)vBodies[i];
-
-                  if (Body.IsSheetMetal())
-                    listaCorte.Tipo = TipoListaMaterial.Chapa;
-                  else
-                    listaCorte.Tipo = TipoListaMaterial.Soldagem;
-
+                  // CORREÇÃO: Melhor determinação do tipo (Chapa ou Soldagem)
+                  listaCorte.Tipo = DeterminarTipoMaterial(swBodyFolder, swCustPropMngr);
 
                   swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
                   swCustPropMngr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Material\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
@@ -299,14 +331,6 @@ namespace AddinArtama {
                     listaCorte.Comprimento = Math.Round(comprim, 4);
                   }
 
-                  //swCustPropMngr.Get2("Largura da Caixa delimitadora", out sValue, out sResolvedvalue);
-                  //double.TryParse(sResolvedvalue, NumberStyles.Any, CultureInfo.InvariantCulture, out double larg);
-                  //listaCorte.CxdLarg = Math.Round(larg, 4);
-
-                  //swCustPropMngr.Get2("Comprimento da Caixa delimitadora", out sValue, out sResolvedvalue);
-                  //double.TryParse(sResolvedvalue, NumberStyles.Any, CultureInfo.InvariantCulture, out double comp);
-                  //listaCorte.CxdCompr = comp > 0 ? Math.Round(comp, 4) : Math.Round(compr, 4);
-
                   swCustPropMngr.Get2("QUANTITY", out sValue, out sResolvedvalue);
                   listaCorte.Quantidade = !string.IsNullOrEmpty(sResolvedvalue) ? Convert.ToInt32(sResolvedvalue) : 0;
 
@@ -325,6 +349,8 @@ namespace AddinArtama {
                   // ver configs aqui para pegar sobremetal no comprimento
                   if (listaCorte.Tipo == TipoListaMaterial.Soldagem) {
                     var configs = (object[])swModel.GetConfigurationNames();
+                    var configAtiva = ((Configuration)swModel.GetActiveConfiguration()).Name;
+
                     foreach (var conf in configs) {
                       swModel.ShowConfiguration((string)conf);
                       boolstatus = swModel.Extension.SelectByID2(listaCorte.NomeLista, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
@@ -333,13 +359,15 @@ namespace AddinArtama {
                       Feature swFeat2 = (Feature)swSelMgr2.GetSelectedObject6(1, 0);
                       CustomPropertyManager swCustPropMgr = swFeat2.CustomPropertyManager;
 
-                      swCustPropMngr.Get2("COMPRIMENTO", out  sValue, out  sResolvedvalue);
+                      swCustPropMgr.Get2("COMPRIMENTO", out sValue, out sResolvedvalue);
                       double.TryParse(sResolvedvalue.Replace(".", ","), out double comprim);
 
                       if (comprim > listaCorte.Comprimento && comprim - listaCorte.Comprimento < 500) {
                         listaCorte.Comprimento = Math.Round(comprim, 4);
                       }
                     }
+
+                    swModel.ShowConfiguration((string)configAtiva);
                   }
                 }
               }

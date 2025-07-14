@@ -218,11 +218,9 @@ namespace AddinArtama {
         bool boolstatus;
         switch (format) {
           case SwDwgPaperSizes_e.A4R: {
-              //largura = 0.115;
-              //altura = 0.14;
-              largura = 0.297;
-              altura = 0.21;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a4p, largura, altura, "'", true);
+              largura = 0.42;
+              altura = 0.297;
+              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a3, largura, altura, "'", true);
 
               largura = 0.21;
               altura = 0.297;
@@ -230,21 +228,19 @@ namespace AddinArtama {
             }
             break;
           case SwDwgPaperSizes_e.A4P: {
-              largura = 0.21;
+              largura = 0.42;
               altura = 0.297;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a4r, largura, altura, "'", true);
+              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a3, largura, altura, "'", true);
 
-              //largura = 0.115;
-              //altura = 0.14;
               largura = 0.297;
               altura = 0.21;
               boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a4p, largura, altura, "'", true);
             }
             break;
           case SwDwgPaperSizes_e.A3: {
-              largura = 0.115;
-              altura = 0.14;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a4p, largura, altura, "'", true);
+              largura = 0.21;
+              altura = 0.297;
+              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a4r, largura, altura, "'", true);
 
               largura = 0.42;
               altura = 0.297;
@@ -274,7 +270,6 @@ namespace AddinArtama {
           default:
           break;
         }
-
 
         swModel.ClearSelection2(true);
 
