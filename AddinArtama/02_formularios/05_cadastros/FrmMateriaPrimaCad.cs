@@ -44,6 +44,7 @@ namespace AddinArtama {
         model.descricao = txtDescricao.Text;
         model.espessura = Convert.ToDouble(txtEspessura.Text);
         model.material_id = (int)txtMaterial.SelectedValue;
+        model.tipo_materia_prima = TipoMateriaPrima.Chapa;
         model.ativo = ckbSituacao.Checked;
 
         if (materia_primas.Salvar(model)) {

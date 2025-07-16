@@ -8,6 +8,7 @@ using LmCorbieUI;
 using LmCorbieUI.LmForms;
 using System.Diagnostics;
 using LmCorbieUI.Metodos;
+using System.Data.Entity.Infrastructure;
 
 namespace AddinArtama {
   public partial class FrmFormatosAtualizar : LmSingleForm {
@@ -20,7 +21,7 @@ namespace AddinArtama {
       dgv.MontarGrid<DesenhosAtualizar>();
 
       dgv.Grid.ReadOnly = false;
-      for (int i = 1; i < dgv.Grid.Columns.Count - 1; i++) {
+      for (int i = 1; i < dgv.Grid.Columns.Count ; i++) {
         dgv.Grid.Columns[i].ReadOnly = true;
       }
     }
@@ -30,34 +31,31 @@ namespace AddinArtama {
 
     private void BtnCarrDesenhos_Click(object sender, EventArgs e) {
       try {
-        Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog dialog = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog {
-          IsFolderPicker = true,
-          // InitialDirectory = ValPadrao.PastaArquivo,
-          RestoreDirectory = true,
-          Title = "Selecionar Diretório para atualizar desenhos"
-        };
-
-        if (dialog.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Ok) {
-          var listaDesenhos = new List<DesenhosAtualizar>();
-          int pos = 1;
-          var files = Directory.GetFiles(dialog.FileName);
-          foreach (string file in files) {
-            if (Path.GetExtension(file).ToUpper() == ".SLDDRW") {
-              var shorName = Path.GetFileNameWithoutExtension(file);
-              if (!shorName.StartsWith("~"))
-                listaDesenhos.Add(new DesenhosAtualizar { Atualizar = true, Id = pos, PathName = file, ShorName = shorName });
-              pos++;
-            }
-          }
-          _dadosDesenho = new SortableBindingList<DesenhosAtualizar>(listaDesenhos);
-          dgv.CarregarGrid(_dadosDesenho);
+        if (Sw.App.ActiveDoc == null) {
+          Toast.Warning("Sem documentos abertos");
+          return;
         }
+
+        var swModel = (ModelDoc2)Sw.App.ActiveDoc;
+
+        if (swModel.GetType() != (int)swDocumentTypes_e.swDocASSEMBLY) {
+          Toast.Warning("Comando apenas para Montagens");
+          return;
+        }
+
+        _dadosDesenho = DesenhosAtualizar.GetDesenhos();
+
+        CarregarGrid();
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao carregar desenhos\n\n{ex.Message}", "Addin LM Projetos",
            MessageBoxButtons.OK, MessageBoxIcon.Error);
       } finally {
 
       }
+    }
+
+    private void CarregarGrid() {
+      dgv.CarregarGrid(_dadosDesenho);
     }
 
     private void BtnAtualizar_Click(object sender, EventArgs e) {
@@ -205,114 +203,164 @@ namespace AddinArtama {
 
     public static void UpdateFormato(ModelDoc2 swModel) {
       try {
-        DrawingDoc swDraw;
-        swDraw = (DrawingDoc)swModel;
-        swDraw = (DrawingDoc)Sw.App.ActiveDoc;
-        Sheet swSheet = swDraw.GetCurrentSheet();
-        double[] vSheetProps = swSheet.GetProperties();
+        DrawingDoc swDraw = (DrawingDoc)swModel;
+        string[] sheetNames = swDraw.GetSheetNames();
 
-        var largura = Convert.ToDouble(vSheetProps[5]) * 1000;
-        var altura = Convert.ToDouble(vSheetProps[6]) * 1000;
+        if (sheetNames == null || sheetNames.Length == 0) return;
 
-        var format = Desenho.GetFormat(largura, altura);
-        bool boolstatus;
-        switch (format) {
-          case SwDwgPaperSizes_e.A4R: {
-              largura = 0.42;
-              altura = 0.297;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a3, largura, altura, "'", true);
+        // Processar todas as folhas
+        for (int i = 0; i < sheetNames.Length; i++) {
+          string sheetName = sheetNames[i];
 
-              largura = 0.21;
-              altura = 0.297;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a4r, largura, altura, "'", true);
-            }
-            break;
-          case SwDwgPaperSizes_e.A4P: {
-              largura = 0.42;
-              altura = 0.297;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a3, largura, altura, "'", true);
+          // Ativar a folha atual
+          bool sheetActivated = swDraw.ActivateSheet(sheetName);
+          if (!sheetActivated) continue;
 
-              largura = 0.297;
-              altura = 0.21;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a4p, largura, altura, "'", true);
-            }
-            break;
-          case SwDwgPaperSizes_e.A3: {
-              largura = 0.21;
-              altura = 0.297;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a4r, largura, altura, "'", true);
+          Sheet swSheet = swDraw.GetCurrentSheet();
+          if (swSheet == null) continue;
 
-              largura = 0.42;
-              altura = 0.297;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a3, largura, altura, "'", true);
-            }
-            break;
-          case SwDwgPaperSizes_e.A2: {
-              largura = 0.42;
-              altura = 0.297;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a3, largura, altura, "'", true);
+          // Atualizar formato da folha
+          UpdateSheetFormat(swDraw, swSheet);
 
-              largura = 0.594;
-              altura = 0.42;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a2, largura, altura, "'", true);
-            }
-            break;
-          case SwDwgPaperSizes_e.A1: {
-              largura = 0.594;
-              altura = 0.42;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a2, largura, altura, "'", true);
+          // Limpar tabelas existentes em todas as folhas
+          ClearExistingTables(swModel, out bool hasExistingTable);
 
-              largura = 0.840;
-              altura = 0.594;
-              boolstatus = swDraw.SetupSheet5(swSheet.GetName(), 12, 12, vSheetProps[2], vSheetProps[3], true, templates.model.template_a1, largura, altura, "'", true);
-            }
-            break;
-          default:
-          break;
-        }
-
-        swModel.ClearSelection2(true);
-
-        if (swModel.GetType() == (int)swDocumentTypes_e.swDocDRAWING) {
-          var swFeature = (Feature)swModel.FirstFeature();
-
-          while ((swFeature != null)) {
-            string nm = swFeature.GetTypeName2();
-            if (nm == "WeldmentTableFeat" || nm == "BomFeat") {
-              swFeature.Select(true);
-
-              swModel.EditDelete();
-            }
-
-            if (nm == "DrSheet") {
-              Feature subFeature = swFeature.GetFirstSubFeature();
-              while ((subFeature != null)) {
-                string nm2 = subFeature.GetTypeName2();
-                if (nm2 == "GeneralTableFeature") {
-                  subFeature.Select(true);
-
-                  swModel.EditDelete();
-                }
-
-                subFeature = (Feature)subFeature.GetNextSubFeature();
-              }
-            }
-
-            swFeature = (Feature)swFeature.GetNextFeature();
+          // Inserir lista de materiais apenas na primeira folha
+          if (i == 0 && hasExistingTable) {
+            InsertMaterialsList(swModel);
           }
-
-          if (File.Exists(swModel.GetPathName().ToLower().Replace("slddrw", "sldprt")))
-            InserirListasMateriais(swDocumentTypes_e.swDocPART);
-          else
-            InserirListasMateriais(swDocumentTypes_e.swDocASSEMBLY);
-
-          swModel.ViewZoomtofit2();
-
-          //bool boolstatus = swModel.Extension.SelectByID2("Tabela de revisão1", "DRAWINGVIEW", 0, 0, 0.0, false, 0, null, 0);
         }
+
+        swModel.ViewZoomtofit2();
+
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao alterar atualizar formato de folha do desenho\n\n{ex.Message}", "Addin LM Projetos",
+        MsgBox.Show($"Erro ao atualizar formato de folhas do desenho\n\n{ex.Message}", "Addin LM Projetos",
             MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+
+    private static void UpdateSheetFormat(DrawingDoc swDraw, Sheet swSheet) {
+      double[] vSheetProps = swSheet.GetProperties();
+      if (vSheetProps == null || vSheetProps.Length < 7) return;
+
+      var largura = Convert.ToDouble(vSheetProps[5]) * 1000;
+      var altura = Convert.ToDouble(vSheetProps[6]) * 1000;
+
+      var format = Desenho.GetFormat(largura, altura);
+      ApplySheetFormat(swDraw, swSheet, format, vSheetProps);
+    }
+
+    private static void ApplySheetFormat(DrawingDoc swDraw, Sheet swSheet, SwDwgPaperSizes_e format, double[] vSheetProps) {
+      string sheetName = swSheet.GetName();
+
+      switch (format) {
+        case SwDwgPaperSizes_e.A4R:
+        // Transição A3 -> A4R
+        SetupSheetTransition(swDraw, sheetName, vSheetProps,
+            0.42, 0.297, templates.model.template_a3,
+            0.21, 0.297, templates.model.template_a4r);
+        break;
+
+        case SwDwgPaperSizes_e.A4P:
+        // Transição A3 -> A4P
+        SetupSheetTransition(swDraw, sheetName, vSheetProps,
+            0.42, 0.297, templates.model.template_a3,
+            0.297, 0.21, templates.model.template_a4p);
+        break;
+
+        case SwDwgPaperSizes_e.A3:
+        // Transição A4R -> A3
+        SetupSheetTransition(swDraw, sheetName, vSheetProps,
+            0.21, 0.297, templates.model.template_a4r,
+            0.42, 0.297, templates.model.template_a3);
+        break;
+
+        case SwDwgPaperSizes_e.A2:
+        // Transição A3 -> A2
+        SetupSheetTransition(swDraw, sheetName, vSheetProps,
+            0.42, 0.297, templates.model.template_a3,
+            0.594, 0.42, templates.model.template_a2);
+        break;
+
+        case SwDwgPaperSizes_e.A1:
+        // Transição A2 -> A1
+        SetupSheetTransition(swDraw, sheetName, vSheetProps,
+            0.594, 0.42, templates.model.template_a2,
+            0.840, 0.594, templates.model.template_a1);
+        break;
+      }
+    }
+
+    private static void SetupSheetTransition(DrawingDoc swDraw, string sheetName, double[] vSheetProps,
+    double tempWidth, double tempHeight, string tempTemplate,
+    double finalWidth, double finalHeight, string finalTemplate) {
+
+      // Configuração temporária
+      bool boolstatus = swDraw.SetupSheet5(sheetName, 12, 12, vSheetProps[2], vSheetProps[3],
+          true, tempTemplate, tempWidth, tempHeight, "'", true);
+
+      // Configuração final
+      boolstatus = swDraw.SetupSheet5(sheetName, 12, 12, vSheetProps[2], vSheetProps[3],
+          true, finalTemplate, finalWidth, finalHeight, "'", true);
+    }
+
+    private static void ClearExistingTables(ModelDoc2 swModel, out bool hasExistingTable) {
+      swModel.ClearSelection2(true);
+      hasExistingTable = false;
+
+      if (swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING) {
+        return;
+      }
+
+      var swFeature = (Feature)swModel.FirstFeature();
+
+      while (swFeature != null) {
+        string featureType = swFeature.GetTypeName2();
+
+        // Verificar se existe tabela de soldagem ou BOM antes de remover
+        if (featureType == "WeldmentTableFeat" || featureType == "BomFeat") {
+          hasExistingTable = true;
+          swFeature.Select(true);
+          swModel.EditDelete();
+        }
+
+        // Processar sub-features de folhas
+        if (featureType == "DrSheet") {
+          if (ProcessSheetSubFeatures(swModel, swFeature)) {
+            hasExistingTable = true;
+          }
+        }
+
+        swFeature = (Feature)swFeature.GetNextFeature();
+      }
+    }
+
+    private static bool ProcessSheetSubFeatures(ModelDoc2 swModel, Feature sheetFeature) {
+      Feature subFeature = sheetFeature.GetFirstSubFeature();
+      bool foundTable = false;
+
+      while (subFeature != null) {
+        string subFeatureType = subFeature.GetTypeName2();
+
+        if (subFeatureType == "GeneralTableFeature") {
+          foundTable = true;
+          subFeature.Select(true);
+          swModel.EditDelete();
+        }
+
+        subFeature = (Feature)subFeature.GetNextSubFeature();
+      }
+
+      return foundTable;
+    }
+
+    private static void InsertMaterialsList(ModelDoc2 swModel) {
+      string modelPath = swModel.GetPathName().ToLower();
+
+      if (File.Exists(modelPath.Replace("slddrw", "sldprt"))) {
+        InserirListasMateriais(swDocumentTypes_e.swDocPART);
+      } else {
+        InserirListasMateriais(swDocumentTypes_e.swDocASSEMBLY);
       }
     }
 
@@ -346,8 +394,22 @@ namespace AddinArtama {
       }
     }
 
-    private void dgv_ProcurarTextChanged(object sender, EventArgs e) {
-      dgv.CarregarGrid(_dadosDesenho);
+    private void Dgv_ProcurarTextChanged(object sender, EventArgs e) {
+      CarregarGrid();
+    }
+
+    private void Dgv_CellClick(object sender, DataGridViewCellEventArgs e) {
+      //if (dgv.Grid.CurrentRow == null)
+      //  return;
+
+      //if (e.RowIndex != -1) {
+      //  var item = (DesenhosAtualizar)dgv.Grid.CurrentRow.DataBoundItem;
+
+      //  if (e.ColumnIndex == dgv.Grid.Columns["Atualizar"].Index)
+      //    item.Atualizar = !item.Atualizar;
+      //}
+
+      //dgv.Grid.Refresh();
     }
   }
 }

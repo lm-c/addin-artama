@@ -50,4 +50,23 @@ namespace AddinArtama {
     [Description("Erro Impedindo Geração de Código"), TipoPendencia(PendenciaCritica.Sim)]
     ErroAoCadastrarCod = 6,
   }
+
+  public enum StatusEngenharia {
+    [Description("Em Desenvolvimento")]
+    EmDesenvolvimento = 1,
+    [Description("Liberada Para Custo")]
+    LiberadaCusto = 2,
+    [Description("Liberada Para Produção")]
+    LiberadaProducao = 3,
+    [Description("Fora de Linha/Desativada")]
+    ForaLinhaDesativada = 4,
+    [Description("Não Seriada")]
+    NaoSeriada = 5,
+    [Description("Liberada Condicional")]
+    LiberadaCondicional = 6,
+    [Description("Não Seriada em Desenvolvimento")]
+    NaoSeriadaEmDesenvolvimento = 7,
+    [Description("Registro Fiscal")]
+    RegistroFiscal = 8,
+  }
 }

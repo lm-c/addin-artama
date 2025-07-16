@@ -244,6 +244,11 @@ namespace AddinArtama {
 
       string nomeParaErp = nomeAjustado + separador + codigo;
 
+      if(produtoErp.NaoAlterarNomeERP) {
+        nomeParaErp = denominacao.Length > maxComprimento ? denominacao.Substring(0, maxComprimento) : denominacao;
+        nomeParaErp = !string.IsNullOrEmpty(itemGenerico.nome) ? itemGenerico.nome : nomeParaErp;
+      }
+
       itemGenerico.refTecnica = produtoErp.Name;
       itemGenerico.nome = nomeParaErp?.Replace("\"", "\\\"") ?? string.Empty;
       itemGenerico.pesoBruto = produtoErp.PesoBruto;

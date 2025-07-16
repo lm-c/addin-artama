@@ -713,7 +713,7 @@ namespace AddinArtama {
 
             var eng = await Api.GetEngenhariaAsync(engenharia.codProduto);
 
-            if (eng == null || eng.statusEngenharia == 1) {
+            if (eng == null || eng.statusEngenharia == StatusEngenharia.EmDesenvolvimento) {
               if (eng != null && engenharia.codProduto.StartsWith("4"))
                 engenharia.descricaoProduto = eng.descricaoProduto;
 

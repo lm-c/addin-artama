@@ -31,6 +31,9 @@
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmFormatosAtualizar));
       this.lmPanel1 = new LmCorbieUI.Controls.LmPanel();
+      this.btnAtualizar = new LmCorbieUI.Controls.LmButton();
+      this.btnCancelar = new LmCorbieUI.Controls.LmButton();
+      this.btnCarregar = new LmCorbieUI.Controls.LmButton();
       this.cmsOpenFile = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.tsmSelectAll = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmUnselectAll = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,9 +41,6 @@
       this.tsmOpen3D = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmOpen2D = new System.Windows.Forms.ToolStripMenuItem();
       this.cmxToolTip1 = new System.Windows.Forms.ToolTip(this.components);
-      this.btnAtualizar = new LmCorbieUI.Controls.LmButton();
-      this.btnCancelar = new LmCorbieUI.Controls.LmButton();
-      this.btnCarregar = new LmCorbieUI.Controls.LmButton();
       this.dgv = new LmCorbieUI.Controls.LmDataGridView();
       this.lmPanel1.SuspendLayout();
       this.cmsOpenFile.SuspendLayout();
@@ -58,55 +58,6 @@
       this.lmPanel1.Name = "lmPanel1";
       this.lmPanel1.Size = new System.Drawing.Size(269, 113);
       this.lmPanel1.TabIndex = 0;
-      // 
-      // cmsOpenFile
-      // 
-      this.cmsOpenFile.Font = new System.Drawing.Font("Segoe UI", 12F);
-      this.cmsOpenFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmSelectAll,
-            this.tsmUnselectAll,
-            this.toolStripMenuItem2,
-            this.tsmOpen3D,
-            this.tsmOpen2D});
-      this.cmsOpenFile.Name = "cmsOpenFile";
-      this.cmsOpenFile.Size = new System.Drawing.Size(245, 114);
-      // 
-      // tsmSelectAll
-      // 
-      this.tsmSelectAll.Image = ((System.Drawing.Image)(resources.GetObject("tsmSelectAll.Image")));
-      this.tsmSelectAll.Name = "tsmSelectAll";
-      this.tsmSelectAll.Size = new System.Drawing.Size(244, 26);
-      this.tsmSelectAll.Text = "Selecionar Todos";
-      this.tsmSelectAll.Click += new System.EventHandler(this.TsmSelectAll_Click);
-      // 
-      // tsmUnselectAll
-      // 
-      this.tsmUnselectAll.Image = ((System.Drawing.Image)(resources.GetObject("tsmUnselectAll.Image")));
-      this.tsmUnselectAll.Name = "tsmUnselectAll";
-      this.tsmUnselectAll.Size = new System.Drawing.Size(244, 26);
-      this.tsmUnselectAll.Text = "Remover Seleção Todos";
-      this.tsmUnselectAll.Click += new System.EventHandler(this.TsmUnselectAll_Click);
-      // 
-      // toolStripMenuItem2
-      // 
-      this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-      this.toolStripMenuItem2.Size = new System.Drawing.Size(241, 6);
-      // 
-      // tsmOpen3D
-      // 
-      this.tsmOpen3D.Image = ((System.Drawing.Image)(resources.GetObject("tsmOpen3D.Image")));
-      this.tsmOpen3D.Name = "tsmOpen3D";
-      this.tsmOpen3D.Size = new System.Drawing.Size(244, 26);
-      this.tsmOpen3D.Text = "Abrir 3D";
-      this.tsmOpen3D.Click += new System.EventHandler(this.TsmOpen3D_Click);
-      // 
-      // tsmOpen2D
-      // 
-      this.tsmOpen2D.Image = ((System.Drawing.Image)(resources.GetObject("tsmOpen2D.Image")));
-      this.tsmOpen2D.Name = "tsmOpen2D";
-      this.tsmOpen2D.Size = new System.Drawing.Size(244, 26);
-      this.tsmOpen2D.Text = "Abrir 2D";
-      this.tsmOpen2D.Click += new System.EventHandler(this.TsmOpen2D_Click);
       // 
       // btnAtualizar
       // 
@@ -168,10 +119,59 @@
       this.btnCarregar.Name = "btnCarregar";
       this.btnCarregar.Size = new System.Drawing.Size(259, 26);
       this.btnCarregar.TabIndex = 0;
-      this.btnCarregar.Text = " Selecionar Diretório";
+      this.btnCarregar.Text = " Carregar Desenhos";
       this.btnCarregar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.btnCarregar.UseVisualStyleBackColor = false;
       this.btnCarregar.Click += new System.EventHandler(this.BtnCarrDesenhos_Click);
+      // 
+      // cmsOpenFile
+      // 
+      this.cmsOpenFile.Font = new System.Drawing.Font("Segoe UI", 12F);
+      this.cmsOpenFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmSelectAll,
+            this.tsmUnselectAll,
+            this.toolStripMenuItem2,
+            this.tsmOpen3D,
+            this.tsmOpen2D});
+      this.cmsOpenFile.Name = "cmsOpenFile";
+      this.cmsOpenFile.Size = new System.Drawing.Size(245, 114);
+      // 
+      // tsmSelectAll
+      // 
+      this.tsmSelectAll.Image = ((System.Drawing.Image)(resources.GetObject("tsmSelectAll.Image")));
+      this.tsmSelectAll.Name = "tsmSelectAll";
+      this.tsmSelectAll.Size = new System.Drawing.Size(244, 26);
+      this.tsmSelectAll.Text = "Selecionar Todos";
+      this.tsmSelectAll.Click += new System.EventHandler(this.TsmSelectAll_Click);
+      // 
+      // tsmUnselectAll
+      // 
+      this.tsmUnselectAll.Image = ((System.Drawing.Image)(resources.GetObject("tsmUnselectAll.Image")));
+      this.tsmUnselectAll.Name = "tsmUnselectAll";
+      this.tsmUnselectAll.Size = new System.Drawing.Size(244, 26);
+      this.tsmUnselectAll.Text = "Remover Seleção Todos";
+      this.tsmUnselectAll.Click += new System.EventHandler(this.TsmUnselectAll_Click);
+      // 
+      // toolStripMenuItem2
+      // 
+      this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+      this.toolStripMenuItem2.Size = new System.Drawing.Size(241, 6);
+      // 
+      // tsmOpen3D
+      // 
+      this.tsmOpen3D.Image = ((System.Drawing.Image)(resources.GetObject("tsmOpen3D.Image")));
+      this.tsmOpen3D.Name = "tsmOpen3D";
+      this.tsmOpen3D.Size = new System.Drawing.Size(244, 26);
+      this.tsmOpen3D.Text = "Abrir 3D";
+      this.tsmOpen3D.Click += new System.EventHandler(this.TsmOpen3D_Click);
+      // 
+      // tsmOpen2D
+      // 
+      this.tsmOpen2D.Image = ((System.Drawing.Image)(resources.GetObject("tsmOpen2D.Image")));
+      this.tsmOpen2D.Name = "tsmOpen2D";
+      this.tsmOpen2D.Size = new System.Drawing.Size(244, 26);
+      this.tsmOpen2D.Text = "Abrir 2D";
+      this.tsmOpen2D.Click += new System.EventHandler(this.TsmOpen2D_Click);
       // 
       // dgv
       // 
@@ -209,7 +209,8 @@
       this.dgv.Texto = "";
       this.dgv.TituloRelatorio = "";
       this.dgv.UseSelectable = true;
-      this.dgv.ProcurarTextChanged += new LmCorbieUI.Controls.LmDataGridView.TxtChange(this.dgv_ProcurarTextChanged);
+      this.dgv.ProcurarTextChanged += new LmCorbieUI.Controls.LmDataGridView.TxtChange(this.Dgv_ProcurarTextChanged);
+      this.dgv.CellClick += new LmCorbieUI.Controls.LmDataGridView.CellEvent(this.Dgv_CellClick);
       // 
       // FrmFormatosAtualizar
       // 
@@ -218,7 +219,6 @@
       this.ClientSize = new System.Drawing.Size(269, 450);
       this.Controls.Add(this.dgv);
       this.Controls.Add(this.lmPanel1);
-      this.HelpButton = true;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Location = new System.Drawing.Point(0, 0);
       this.MaximizeBox = false;

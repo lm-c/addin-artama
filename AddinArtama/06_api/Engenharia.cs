@@ -20,7 +20,7 @@ namespace AddinArtama {
       public string nomeArquivoDesenhoEng { get; set; }
       public bool engenhariaFantasma { get; set; }
       public string descEngenhariaFantasma { get; set; }
-      public int statusEngenharia { get; set; }
+      public StatusEngenharia statusEngenharia { get; set; }
       public List<ComponenteEng> componentes = new List<ComponenteEng>();
       public List<OperacaoEng> operacoes = new List<OperacaoEng>();
     }
@@ -143,7 +143,7 @@ namespace AddinArtama {
           _return = new Engenharia {
             descricaoProduto = jsonObject["descricao"]?.ToString(),
             codClassificacao = !string.IsNullOrEmpty(codClassificacao) ? Convert.ToInt32(codClassificacao) : 0,
-            statusEngenharia = !string.IsNullOrEmpty(statusEngenharia) ? Convert.ToInt32(statusEngenharia) : 1,
+            statusEngenharia = !string.IsNullOrEmpty(statusEngenharia) ? (StatusEngenharia)Convert.ToInt32(statusEngenharia) : StatusEngenharia.EmDesenvolvimento ,
             tipoEngenharia = jsonObject["tipoEngenharia"]?.ToString(),
 
             componentes = jsonObject["componentes"]?.Select(c => new ComponenteEng {
