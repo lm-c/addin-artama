@@ -6,6 +6,7 @@ using SolidWorks.Interop.swconst;
 using System.IO;
 using LmCorbieUI;
 using LmCorbieUI.LmForms;
+using System.Threading.Tasks;
 
 namespace AddinArtama {
   public partial class FrmFileProperties : LmSingleForm {
@@ -29,7 +30,10 @@ namespace AddinArtama {
     }
 
     private void BtnSalvar_Click(object sender, EventArgs e) {
-      MsgBox.ShowWaitMessage("Inserindo Propriedades Personalizadas...");
+      SalvarClickAsync();
+    }
+
+    private async Task SalvarClickAsync() {
       try {
         if (Sw.App.ActiveDoc == null) {
           Toast.Info($"Sem documentos abertos");
@@ -43,9 +47,14 @@ namespace AddinArtama {
         pastaProjeto = Path.GetDirectoryName(pathName);
 
         if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY) {
-          AddPropriedades(swModel);
+          await Loader.ShowDuringOperation((progress) => {
+            progress.Report("Iniciando operação...");
 
-          AtualizarPropriedades();
+            AddPropriedades(swModel);
+
+            AtualizarPropriedades(progress);
+            return Task.CompletedTask;
+          });
           lista.Clear();
 
           if (rdbPasta.Checked)
@@ -69,7 +78,7 @@ namespace AddinArtama {
       this.Close();
     }
 
-    private void AtualizarPropriedades() {
+    private void AtualizarPropriedades(IProgress<string> progress) {
       try {
         var swModel = (ModelDoc2)Sw.App.ActiveDoc;
 
@@ -82,7 +91,7 @@ namespace AddinArtama {
         swRootComp = swConf.GetRootComponent3(true);
 
         if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY) {
-          TraverseComponent(swRootComp, 1);
+          TraverseComponent(swRootComp, 1, progress);
         }
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao atualizar propriedades\n\n{ex.Message}", "Addin LM Projetos",
@@ -90,7 +99,7 @@ namespace AddinArtama {
       }
     }
 
-    private void TraverseComponent(Component2 swComp, long nLevel) {
+    private void TraverseComponent(Component2 swComp, long nLevel, IProgress<string> progress) {
       try {
         object[] vChildComp;
 
@@ -110,7 +119,7 @@ namespace AddinArtama {
           string pathName = swModel.GetPathName();
 
           nameShort = Path.GetFileNameWithoutExtension(pathName);
-
+          progress.Report($"Adicionando propriedades.\r\n\r\n{nLevel} - {nameShort} - {pathName}");
           bool readOnly = swModel.IsOpenedReadOnly();
 
           if (supress == false && exclude == false /*&& !pathName.Contains(@"PROJETOS\COMPRADOS\ELEMENTOS DE FIXACAO")*/) {
@@ -135,7 +144,7 @@ namespace AddinArtama {
               }
             }
 
-            TraverseComponent(swChildComp, nLevel + 1);
+            TraverseComponent(swChildComp, nLevel + 1, progress);
           }
         }
       } catch (Exception ex) {

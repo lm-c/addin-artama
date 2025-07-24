@@ -69,7 +69,6 @@ namespace AddinArtama {
     }
 
     private async Task CarregarProdutos() {
-      MsgBox.ShowWaitMessage("Lendo componentes da montagem...");
       try {
         if (Sw.App.ActiveDoc == null) {
           Toast.Warning("Sem documentos abertos");
@@ -81,9 +80,16 @@ namespace AddinArtama {
         if (swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING) {
           _produtos = new SortableBindingList<ProdutoErp>();
 
-          _montageGeralNome = Path.GetFileNameWithoutExtension(swModel.GetPathName()).ToLower();
+          _montageGeralNome = Path.GetFileNameWithoutExtension(swModel.GetPathName());
 
-          _produtos = await ProcessoNaoSeriado.GetProdutos();
+          if (_montageGeralNome.Length > 50)
+            _montageGeralNome = _montageGeralNome.Substring(0, 50);
+
+          await Loader.ShowDuringOperation(async (progress) => {
+            progress.Report("Iniciando leitura...");
+            _produtos = await ProcessoNaoSeriado.GetProdutos();
+          });
+
           CarregarGrid();
         } else {
           Toast.Warning("Comando apenas para Peças e Montagens");
@@ -115,8 +121,6 @@ namespace AddinArtama {
 
         var ops = lblProcess.Text;
 
-        MsgBox.ShowWaitMessage("Salvando. Aguarde...");
-
         var swModel = (ModelDoc2)Sw.App.ActiveDoc;
 
         AdicionarDescricaoTodasConfiguracoes();
@@ -143,7 +147,6 @@ namespace AddinArtama {
         } else {
           swCustPropMgr.Add3("Operação", (int)swCustomInfoType_e.swCustomInfoText, ops, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
         }
-
 
         var spl = ops.Split('/');
         produtoERP.Operacoes = new List<produto_erp_operacao>();
@@ -411,6 +414,10 @@ namespace AddinArtama {
     }
 
     private void TxtComponente_ButtonClickF8(object sender, EventArgs e) {
+      SalvarComponenteAsync();
+    }
+
+    private async Task SalvarComponenteAsync() {
       try {
         if (Sw.App.ActiveDoc == null) {
           Toast.Info($"Sem documentos abertos");
@@ -451,8 +458,6 @@ namespace AddinArtama {
           drawingAtual = partAtual.Replace(".SLDASM", ".SLDDRW");
         }
         if (sfd.ShowDialog() == DialogResult.OK) {
-          MsgBox.ShowWaitMessage("Salvando Aguarde..");
-
           if (!string.IsNullOrEmpty(sfd.FileName)) {
             string drawingNew;
             string partNew = sfd.FileName;
@@ -464,26 +469,29 @@ namespace AddinArtama {
             int warnings = 0;
 
             swModel.Extension.RunCommand(2732, "");
+            await Loader.ShowDuringOperation(async (progress) => {
+              progress.Report("Salvando Aguarde...");
 
-            if (File.Exists(drawingAtual)) {
-              Sw.App.OpenDoc6(drawingAtual, (int)swDocumentTypes_e.swDocDRAWING,
-                  (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
+              if (File.Exists(drawingAtual)) {
+                Sw.App.OpenDoc6(drawingAtual, (int)swDocumentTypes_e.swDocDRAWING,
+                    (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
 
-              Sw.App.ActivateDoc2(drawingAtual, false, 0);
+                Sw.App.ActivateDoc2(drawingAtual, false, 0);
 
-              Sw.App.ActivateDoc2(partAtual, false, 0);
-              swModel = (ModelDoc2)Sw.App.ActiveDoc;
+                Sw.App.ActivateDoc2(partAtual, false, 0);
+                swModel = (ModelDoc2)Sw.App.ActiveDoc;
 
-              swModel.SaveAs4(partNew, (int)swSaveAsVersion_e.swSaveAsCurrentVersion, (int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
-              //if(swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
-              //  swModel.Extension.RunCommand(2732, "");
+                swModel.SaveAs4(partNew, (int)swSaveAsVersion_e.swSaveAsCurrentVersion, (int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
+                //if(swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
+                //  swModel.Extension.RunCommand(2732, "");
 
-              Sw.App.ActivateDoc2(drawingAtual, false, 0);
-              swModel = (ModelDoc2)Sw.App.ActiveDoc;
-              swModel.SaveAs(drawingNew);
+                Sw.App.ActivateDoc2(drawingAtual, false, 0);
+                swModel = (ModelDoc2)Sw.App.ActiveDoc;
+                swModel.SaveAs(drawingNew);
 
-              Sw.App.CloseDoc(drawingNew);
-            } else swModel.SaveAs4(partNew, (int)swSaveAsVersion_e.swSaveAsCurrentVersion, (int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
+                Sw.App.CloseDoc(drawingNew);
+              } else swModel.SaveAs4(partNew, (int)swSaveAsVersion_e.swSaveAsCurrentVersion, (int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
+            });
 
             produtoERP.PathName = partNew;
 

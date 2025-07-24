@@ -7,6 +7,7 @@ using System.IO;
 using LmCorbieUI;
 using LmCorbieUI.LmForms;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace AddinArtama {
   public partial class FrmDesenho : LmSingleForm {
@@ -36,7 +37,6 @@ namespace AddinArtama {
     }
 
     private void BtnLoadDesenho_Click(object sender, EventArgs e) {
-      MsgBox.ShowWaitMessage("Lendo componentes da montagem...");
       try {
         if (Sw.App.ActiveDoc == null) {
           Toast.Warning("Sem documentos abertos");
@@ -266,92 +266,45 @@ namespace AddinArtama {
         var swModel = (ModelDoc2)Sw.App.ActiveDoc;
         swModel.ClearSelection2(true);
 
-        var str = swModel.GetPathName();
+        DrawingDoc swDraw = (DrawingDoc)swModel;
+        string[] sheetNames = swDraw.GetSheetNames();
+        var activeSheetName = string.Empty;
 
-        if (swModel.GetType() == (int)swDocumentTypes_e.swDocDRAWING) {
-          var swFeature = (Feature)swModel.FirstFeature();
+        if (sheetNames == null || sheetNames.Length == 0) return;
 
-          while ((swFeature != null)) {
-            string nm = swFeature.Name;
-            if (swFeature.GetTypeName() == "WeldmentTableFeat" || swFeature.GetTypeName() == "BomFeat") {
-              swFeature.Select(true);
+        // Processar todas as folhas
+        for (int i = 0; i < sheetNames.Length; i++) {
+          string sheetName = sheetNames[i];
 
-              swModel.EditDelete();
+          if (string.IsNullOrEmpty(activeSheetName))
+            activeSheetName = sheetName;
+
+          // Ativar a folha atual
+          bool sheetActivated = swDraw.ActivateSheet(sheetName);
+          if (!sheetActivated) continue;
+
+          Sheet swSheet = swDraw.GetCurrentSheet();
+          if (swSheet == null) continue;
+
+          // Limpar tabelas existentes em todas as folhas
+          Desenho.ClearExistingTables(swModel, out bool hasExistingTable);
+
+          // Inserir lista de materiais apenas na primeira folha
+          if (i == 0) {
+            Desenho.InsertMaterialsList(swModel);
+          } else if (i > 0) {
+            string nomeFolha = sheetName.ToUpper();
+
+            if (nomeFolha.StartsWith("P") && int.TryParse(nomeFolha.Substring(1), out int posicaoDesejada)) {
+              Desenho.InsertMaterialsList(swModel, posicaoDesejada);
             }
-            swFeature = (Feature)swFeature.GetNextFeature();
           }
-
-          if (File.Exists(swModel.GetPathName().ToLower().Replace("slddrw", "sldprt")))
-            InserirListasMateriais(swDocumentTypes_e.swDocPART);
-          else
-            InserirListasMateriais(swDocumentTypes_e.swDocASSEMBLY);
-
-          //bool boolstatus = swModel.Extension.SelectByID2("Tabela de revisão1", "DRAWINGVIEW", 0, 0, 0.0, false, 0, null, 0);
         }
+        if (!string.IsNullOrEmpty(activeSheetName))
+          swDraw.ActivateSheet(activeSheetName);
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao inserir lista de soldagem\n\n{ex.Message}", "Addin LM Projetos",
                MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
-    }
-
-    private void InserirListasMateriais(swDocumentTypes_e swDocumentTypes_E) {
-      try {
-        DrawingDoc swDraw = default(DrawingDoc);
-        swDraw = (DrawingDoc)Sw.App.ActiveDoc;
-
-        BomTableAnnotation swBOMAnnotation = default(BomTableAnnotation);
-        WeldmentCutListAnnotation WMTable = default(WeldmentCutListAnnotation);
-
-        SolidWorks.Interop.sldworks.View swView = (SolidWorks.Interop.sldworks.View)swDraw.GetFirstView();
-        swView = (SolidWorks.Interop.sldworks.View)swView.GetNextView();
-        swDraw.ActivateView(swView.GetName2());
-
-        // Obtém a configuração ativa
-        var swModel = (ModelDoc2)swView.ReferencedDocument;
-        string activeConfiguration = swModel.GetActiveConfiguration().Name;
-
-        int AnchorType = (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_BottomRight;
-        int BomType = (int)swBomType_e.swBomType_TopLevelOnly;
-
-        if (swDocumentTypes_E == swDocumentTypes_e.swDocPART) {
-          WMTable = swView.InsertWeldmentTable(true, 0, 0, AnchorType, "", templates.model.lista_soldagem);
-          int i = 1;
-        } else {
-          if (ckbPromov.Checked) {
-            BomType = (int)swBomType_e.swBomType_Indented;
-            int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
-
-            swBOMAnnotation = swView.InsertBomTable4(true, 0, 0, AnchorType, BomType, activeConfiguration, templates.model.lista_montagem, false, NumberingType, true);
-
-            object Names = swBOMAnnotation.BomFeature.GetConfigurations(false, Visible),
-            boolstatus = swBOMAnnotation.BomFeature.SetConfigurations(true, true, Names);
-            var swTableAnnotation = (TableAnnotation)swBOMAnnotation;
-
-            int lStartRow = 1;
-
-            if (!(swTableAnnotation.TitleVisible == false)) {
-              lStartRow = 2;
-            }
-
-            var swBOMFeature = swBOMAnnotation.BomFeature;
-            System.Collections.Generic.List<int> indiceExcluir = new System.Collections.Generic.List<int>();
-
-            for (int i = lStartRow; i < swTableAnnotation.TotalRowCount; i++) {
-              var componente = swTableAnnotation.get_Text(i, 2);
-
-              if (string.IsNullOrEmpty(componente))
-                indiceExcluir.Add(i);
-            }
-
-            foreach (var indx in indiceExcluir)
-              swTableAnnotation.DeleteRow(Index: indx);
-          } else {
-            swBOMAnnotation = swView.InsertBomTable3(true, 0, 0, AnchorType, BomType, activeConfiguration, templates.model.lista_montagem, false);
-          }
-        }
-      } catch (Exception ex) {
-        MsgBox.Show($"Erro ao inserir Lista\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -457,7 +410,7 @@ namespace AddinArtama {
                 boolstatus = swDrawing.ActivateSheet("Folha1");
                 boolstatus = swDrawing.ActivateView("Vista de desenho1");
 
-                InserirListasMateriais(tipoArquivo);
+                Desenho.InserirListasMateriais(tipoArquivo);
                 break;
               }
             }
@@ -503,7 +456,7 @@ namespace AddinArtama {
                 //WMTable = swView.InsertWeldmentTable(true, 0, 0, (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_BottomRight, activeConfig, Configuracao.ListaSoldagem);
 
                 // addCotasBlank();
-                InserirListasMateriais(tipoArquivo);
+                Desenho.InserirListasMateriais(tipoArquivo);
                 break;
               }
             }

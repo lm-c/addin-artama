@@ -9,11 +9,12 @@ using LmCorbieUI.LmForms;
 using System.Diagnostics;
 using LmCorbieUI.Metodos;
 using System.Data.Entity.Infrastructure;
+using System.Threading.Tasks;
+using System.Globalization;
 
 namespace AddinArtama {
   public partial class FrmFormatosAtualizar : LmSingleForm {
     SortableBindingList<DesenhosAtualizar> _dadosDesenho = new SortableBindingList<DesenhosAtualizar>();
-    bool imprimindo = false;
 
     public FrmFormatosAtualizar() {
       InitializeComponent();
@@ -21,7 +22,7 @@ namespace AddinArtama {
       dgv.MontarGrid<DesenhosAtualizar>();
 
       dgv.Grid.ReadOnly = false;
-      for (int i = 1; i < dgv.Grid.Columns.Count ; i++) {
+      for (int i = 1; i < dgv.Grid.Columns.Count; i++) {
         dgv.Grid.Columns[i].ReadOnly = true;
       }
     }
@@ -30,6 +31,10 @@ namespace AddinArtama {
     }
 
     private void BtnCarrDesenhos_Click(object sender, EventArgs e) {
+      CarregarDesenhosAsync();
+    }
+
+    private async Task CarregarDesenhosAsync() {
       try {
         if (Sw.App.ActiveDoc == null) {
           Toast.Warning("Sem documentos abertos");
@@ -43,14 +48,23 @@ namespace AddinArtama {
           return;
         }
 
-        _dadosDesenho = DesenhosAtualizar.GetDesenhos();
+        btnCarregar.Enabled = btnAtualizar.Enabled = false;
 
-        CarregarGrid();
+        await Loader.ShowDuringOperation(async (progress) => {
+          progress.Report("Iniciando leitura Componentes");
+          _dadosDesenho = await DesenhosAtualizar.GetDesenhosAsync();
+        });
+
+        await Loader.ShowDuringOperation((progress) => {
+          progress.Report("Carregando Grid...");
+          CarregarGrid();
+          return Task.CompletedTask;
+        });
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao carregar desenhos\n\n{ex.Message}", "Addin LM Projetos",
            MessageBoxButtons.OK, MessageBoxIcon.Error);
       } finally {
-
+        btnCarregar.Enabled = btnAtualizar.Enabled = true;
       }
     }
 
@@ -64,86 +78,81 @@ namespace AddinArtama {
         return;
       }
 
-      System.Threading.Thread t = new System.Threading.Thread(() => { Atualizar(); }) { IsBackground = true };
-      t.Start();
+      AtualizarAsync();
     }
 
-    private void Atualizar() {
+    private async Task AtualizarAsync() {
       try {
-        Invoke(new MethodInvoker(() => {
-          btnCancelar.Enabled = true;
-          btnCarregar.Enabled = false;
-          btnAtualizar.Enabled = false;
+        btnCarregar.Enabled =
+        btnAtualizar.Enabled = false;
 
-          imprimindo = true;
+        var swModel = default(ModelDoc2);
+        var swModelTemplate = default(ModelDoc2);
 
-          var swModel = default(ModelDoc2);
-          var swModelTemplate = default(ModelDoc2);
+        templates.Carregar();
 
-          templates.Carregar();
+        int status = 0;
+        int warnings = 0;
 
-          int status = 0;
-          int warnings = 0;
+        Sw.App.OpenDoc6(templates.model.formato_a4r, (int)swDocumentTypes_e.swDocDRAWING,
+            (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
 
-          Sw.App.OpenDoc6(templates.model.formato_a4r, (int)swDocumentTypes_e.swDocDRAWING,
-              (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
+        Sw.App.ActivateDoc2(templates.model.formato_a4r, false, 0);
+        swModelTemplate = (ModelDoc2)Sw.App.ActiveDoc;
 
-          Sw.App.ActivateDoc2(templates.model.formato_a4r, false, 0);
-          swModelTemplate = (ModelDoc2)Sw.App.ActiveDoc;
+        FormatoPadrao.GetDefaultFileProps(swModelTemplate);
+        Sw.App.CloseDoc(templates.model.formato_a4r);
 
-          FormatoPadrao.GetDefaultFileProps(swModelTemplate);
-          Sw.App.CloseDoc(templates.model.formato_a4r);
+        await Loader.ShowDuringOperation(
+            "Iniciando leitura da tabela...",
+            (progress2) => {
+              var total = _dadosDesenho.Count;
+              for (int i = dgv.Grid.CurrentRow.Index; i <= _dadosDesenho.Count - 1; i++) {
+                if (!Loader._isWorking) {
+                  MsgBox.Show("Operação cancelada pelo usuário.", "Cancelado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                  return Task.FromResult("Cancelado");
+                }
 
-          for (int i = dgv.Grid.CurrentRow.Index; i <= _dadosDesenho.Count - 1; i++) {
-            if (!imprimindo)
-              break;
+                UIThreadHelper.Invoke(dgv.Grid, () => {
+                  dgv.Grid.Rows[i].Cells[1].Selected = true;
+                });
 
-            dgv.Grid.Rows[i].Cells[1].Selected = true;
+                var file = (DesenhosAtualizar)dgv.Grid.CurrentRow.DataBoundItem;
 
-            var file = (DesenhosAtualizar)dgv.Grid.CurrentRow.DataBoundItem;
+                if (file.Atualizar) {
+                  progress2.Report(($"Atualizando {file.ShortName}", i + 1, total));
+                  try {
+                    Sw.App.OpenDoc6(file.PathName, (int)swDocumentTypes_e.swDocDRAWING,
+                                           (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
+                  } catch (Exception ex) {
+                    Toast.Error($"Erro ao abrir arquivo \"{file.PathName}\"\n\n{ex.Message}");
+                  }
 
-            if (file.Atualizar) {
-              try {
-                Sw.App.OpenDoc6(file.PathName, (int)swDocumentTypes_e.swDocDRAWING,
-                                       (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
-              } catch (Exception ex) {
-                Toast.Error($"Erro ao abrir arquivo \"{file.PathName}\"\n\n{ex.Message}");
+                  Sw.App.ActivateDoc2(file.PathName, false, 0);
+                  swModel = (ModelDoc2)Sw.App.ActiveDoc;
+
+                  FormatoPadrao.ChangeFileProps(swModel);
+                  UpdateFormato(swModel);
+
+                  swModel.Save();
+                  Sw.App.CloseDoc(file.PathName);
+                }
               }
+              return Task.FromResult("concluído");
+            },
+            100
+        );
 
-              Sw.App.ActivateDoc2(file.PathName, false, 0);
-              swModel = (ModelDoc2)Sw.App.ActiveDoc;
+        MsgBox.Show($"Formatos de folha atualizados com sucesso!\n",
+        "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-              UpdateFormato(swModel);
-              FormatoPadrao.ChangeFileProps(swModel);
-
-              swModel.Save();
-              Sw.App.CloseDoc(file.PathName);
-            }
-          }
-
-          Sw.App.CloseDoc(templates.model.formato_a4r);
-
-          if (imprimindo) {
-            MsgBox.Show($"Formatos de folha atualizados com sucesso!\n",
-            "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            BtnCancelar_Click(btnCancelar, new EventArgs());
-          } else {
-            Toast.Success("Rotina cancelada pelo usuário antes do término!");
-          }
-        }));
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao atualizar template\n\n{ex.Message}", "Addin LM Projetos",
              MessageBoxButtons.OK, MessageBoxIcon.Error);
+      } finally {
+        btnCarregar.Enabled =
+        btnAtualizar.Enabled = true;
       }
-    }
-
-    private void BtnCancelar_Click(object sender, EventArgs e) {
-      btnCancelar.Enabled = false;
-      btnCarregar.Enabled = true;
-      btnAtualizar.Enabled = true;
-
-      imprimindo = false;
     }
 
     private void TsmSelectAll_Click(object sender, EventArgs e) {
@@ -220,14 +229,21 @@ namespace AddinArtama {
           if (swSheet == null) continue;
 
           // Atualizar formato da folha
+
           UpdateSheetFormat(swDraw, swSheet);
 
           // Limpar tabelas existentes em todas as folhas
-          ClearExistingTables(swModel, out bool hasExistingTable);
+          Desenho.ClearExistingTables(swModel, out bool hasExistingTable);
 
           // Inserir lista de materiais apenas na primeira folha
           if (i == 0 && hasExistingTable) {
-            InsertMaterialsList(swModel);
+            Desenho.InsertMaterialsList(swModel);
+          } else if (i > 0 && hasExistingTable) {
+            string nomeFolha = sheetName.ToUpper();
+
+            if (nomeFolha.StartsWith("P") && int.TryParse(nomeFolha.Substring(1), out int posicaoDesejada)) {
+              Desenho.InsertMaterialsList(swModel, posicaoDesejada);
+            }
           }
         }
 
@@ -304,112 +320,8 @@ namespace AddinArtama {
           true, finalTemplate, finalWidth, finalHeight, "'", true);
     }
 
-    private static void ClearExistingTables(ModelDoc2 swModel, out bool hasExistingTable) {
-      swModel.ClearSelection2(true);
-      hasExistingTable = false;
-
-      if (swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING) {
-        return;
-      }
-
-      var swFeature = (Feature)swModel.FirstFeature();
-
-      while (swFeature != null) {
-        string featureType = swFeature.GetTypeName2();
-
-        // Verificar se existe tabela de soldagem ou BOM antes de remover
-        if (featureType == "WeldmentTableFeat" || featureType == "BomFeat") {
-          hasExistingTable = true;
-          swFeature.Select(true);
-          swModel.EditDelete();
-        }
-
-        // Processar sub-features de folhas
-        if (featureType == "DrSheet") {
-          if (ProcessSheetSubFeatures(swModel, swFeature)) {
-            hasExistingTable = true;
-          }
-        }
-
-        swFeature = (Feature)swFeature.GetNextFeature();
-      }
-    }
-
-    private static bool ProcessSheetSubFeatures(ModelDoc2 swModel, Feature sheetFeature) {
-      Feature subFeature = sheetFeature.GetFirstSubFeature();
-      bool foundTable = false;
-
-      while (subFeature != null) {
-        string subFeatureType = subFeature.GetTypeName2();
-
-        if (subFeatureType == "GeneralTableFeature") {
-          foundTable = true;
-          subFeature.Select(true);
-          swModel.EditDelete();
-        }
-
-        subFeature = (Feature)subFeature.GetNextSubFeature();
-      }
-
-      return foundTable;
-    }
-
-    private static void InsertMaterialsList(ModelDoc2 swModel) {
-      string modelPath = swModel.GetPathName().ToLower();
-
-      if (File.Exists(modelPath.Replace("slddrw", "sldprt"))) {
-        InserirListasMateriais(swDocumentTypes_e.swDocPART);
-      } else {
-        InserirListasMateriais(swDocumentTypes_e.swDocASSEMBLY);
-      }
-    }
-
-    private static void InserirListasMateriais(swDocumentTypes_e swDocumentTypes_E) {
-      try {
-        DrawingDoc swDraw = default(DrawingDoc);
-        swDraw = (DrawingDoc)Sw.App.ActiveDoc;
-
-        BomTableAnnotation swBOMAnnotation = default(BomTableAnnotation);
-        WeldmentCutListAnnotation WMTable = default(WeldmentCutListAnnotation);
-
-        SolidWorks.Interop.sldworks.View swView = (SolidWorks.Interop.sldworks.View)swDraw.GetFirstView();
-        swView = (SolidWorks.Interop.sldworks.View)swView.GetNextView();
-        swDraw.ActivateView(swView.GetName2());
-
-        // Obtém a configuração ativa
-        ModelDoc2 swModel2 = (ModelDoc2)swView.ReferencedDocument;
-        string activeConfiguration = swModel2.GetActiveConfiguration().Name;
-
-        int AnchorType = (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_BottomRight;
-        int BomType = (int)swBomType_e.swBomType_TopLevelOnly;
-
-        if (swDocumentTypes_E == swDocumentTypes_e.swDocPART) {
-          WMTable = swView.InsertWeldmentTable(true, 0, 0, AnchorType, "", templates.model.lista_soldagem);
-        } else {
-          swBOMAnnotation = swView.InsertBomTable3(true, 0, 0, AnchorType, BomType, activeConfiguration, templates.model.lista_montagem, false);
-        }
-      } catch (Exception ex) {
-        //MsgBox.Show($"Erro ao inserir Lista\n\n{ex.Message}", "Addin LM Projetos",
-        //     MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
-    }
-
     private void Dgv_ProcurarTextChanged(object sender, EventArgs e) {
       CarregarGrid();
-    }
-
-    private void Dgv_CellClick(object sender, DataGridViewCellEventArgs e) {
-      //if (dgv.Grid.CurrentRow == null)
-      //  return;
-
-      //if (e.RowIndex != -1) {
-      //  var item = (DesenhosAtualizar)dgv.Grid.CurrentRow.DataBoundItem;
-
-      //  if (e.ColumnIndex == dgv.Grid.Columns["Atualizar"].Index)
-      //    item.Atualizar = !item.Atualizar;
-      //}
-
-      //dgv.Grid.Refresh();
     }
   }
 }

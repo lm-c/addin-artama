@@ -33,7 +33,7 @@ namespace AddinArtama {
     [Browsable(false)]
     public string PathName { get; set; }
 
-    public static SortableBindingList<DesenhosAtualizar> GetDesenhos() {
+    public static async Task<SortableBindingList<DesenhosAtualizar>> GetDesenhosAsync() {
       List<DesenhosAtualizar> listaDesenhos = new List<DesenhosAtualizar>();
 
       try {
@@ -69,7 +69,7 @@ namespace AddinArtama {
         int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
         bool DetailedCutList = true;
         var swBOMAnnotationGeral = swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList);
-        PegaDadosListaGeral(swBOMAnnotationGeral, listaDesenhos);
+        await PegaDadosListaGeralAsync(swBOMAnnotationGeral, listaDesenhos);
         ListaCorte.ExcluirLista(swModel);
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao pegar desenhos\n\n{ex.Message}", "Addin LM Projetos",
@@ -79,7 +79,7 @@ namespace AddinArtama {
       return new SortableBindingList<DesenhosAtualizar>(listaDesenhos);
     }
 
-    private static void PegaDadosListaGeral(BomTableAnnotation swBOMAnnotation, List<DesenhosAtualizar> listaDesenhos) {
+    private static async Task PegaDadosListaGeralAsync(BomTableAnnotation swBOMAnnotation, List<DesenhosAtualizar> listaDesenhos) {
       string nameShort = "";
       try {
         string[] vModelPathNames = null;
@@ -95,26 +95,39 @@ namespace AddinArtama {
 
         var swBOMFeature = swBOMAnnotation.BomFeature;
 
-        for (int i = lStartRow; i < swTableAnnotation.TotalRowCount; i++) {
-          vModelPathNames = (string[])swBOMAnnotation.GetModelPathNames(i, out strItemNumber, out strPartNumber);
+        await Loader.ShowDuringOperation(
+            "Iniciando leitura da tabela...",
+            (progress2) => {
+              var total = swTableAnnotation.TotalRowCount;
+              for (int i = lStartRow; i < swTableAnnotation.TotalRowCount; i++) {
+                if (!Loader._isWorking) {
+                  listaDesenhos = new List<DesenhosAtualizar>();
+                  MsgBox.Show("Operação cancelada pelo usuário.", "Cancelado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                  return Task.FromResult("Cancelado");
+                }
+                vModelPathNames = (string[])swBOMAnnotation.GetModelPathNames(i, out strItemNumber, out strPartNumber);
 
-          if (vModelPathNames != null) {
+                if (vModelPathNames != null) {
 
-            var pathName = vModelPathNames[0];
-            string pathNameDraw = pathName.Substring(0, pathName.Length - 6) + "SLDDRW";
-            nameShort = Path.GetFileNameWithoutExtension(pathName);
+                  var pathName = vModelPathNames[0];
+                  string pathNameDraw = pathName.Substring(0, pathName.Length - 6) + "SLDDRW";
+                  nameShort = Path.GetFileNameWithoutExtension(pathName);
 
-            if (File.Exists(pathNameDraw) && !listaDesenhos.Any(x => x.ShortName == nameShort)) {
-              var desenho = new DesenhosAtualizar();
-              desenho.Atualizar = true;
-              desenho.Denominacao = swTableAnnotation.get_Text(i, 6).Trim();
-              desenho.PathName = pathNameDraw;
-              desenho.ShortName = nameShort;
+                  if (File.Exists(pathNameDraw) && !listaDesenhos.Any(x => x.ShortName == nameShort)) {
+                    var desenho = new DesenhosAtualizar();
+                    desenho.Atualizar = true;
+                    desenho.Denominacao = swTableAnnotation.get_Text(i, 6).Trim();
+                    desenho.PathName = pathNameDraw;
+                    desenho.ShortName = nameShort;
 
-              listaDesenhos.Add(desenho);
-            }
-          }
-        }
+                    listaDesenhos.Add(desenho);
+                  }
+                }
+              }
+              return Task.FromResult("concluído");
+            },
+            100
+        );
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao pegar dados da Lista Pack List\n\n{ex.Message}", "Addin LM Projetos",
              MessageBoxButtons.OK, MessageBoxIcon.Error);

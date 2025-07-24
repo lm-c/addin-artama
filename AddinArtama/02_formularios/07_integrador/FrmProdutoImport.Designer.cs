@@ -63,7 +63,6 @@
       this.tbcOperacoes = new LmCorbieUI.Controls.LmTabControl();
       this.tbpLista = new LmCorbieUI.Controls.LmTabPage();
       this.dgv = new LmCorbieUI.Controls.LmDataGridView();
-      this.lblProgress = new LmCorbieUI.Controls.LmLabel();
       this.tbpOperacoes = new LmCorbieUI.Controls.LmTabPage();
       this.lmPanelOP = new LmCorbieUI.Controls.LmPanel();
       this.lmLabel3 = new LmCorbieUI.Controls.LmLabel();
@@ -619,7 +618,6 @@
       // 
       this.tbpLista.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.tbpLista.Controls.Add(this.dgv);
-      this.tbpLista.Controls.Add(this.lblProgress);
       this.tbpLista.Location = new System.Drawing.Point(4, 38);
       this.tbpLista.Name = "tbpLista";
       this.tbpLista.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
@@ -657,7 +655,7 @@
       this.dgv.PermiteQuebrarLinhaCabecalho = false;
       this.dgv.PermiteSelecaoMultipla = false;
       this.dgv.PosColunasGrid = "";
-      this.dgv.Size = new System.Drawing.Size(295, 197);
+      this.dgv.Size = new System.Drawing.Size(295, 220);
       this.dgv.TabIndex = 98;
       this.dgv.Texto = "";
       this.dgv.TituloRelatorio = "";
@@ -665,20 +663,6 @@
       this.dgv.ProcurarTextChanged += new LmCorbieUI.Controls.LmDataGridView.TxtChange(this.Dgv_ProcurarTextChanged);
       this.dgv.Sorted += new LmCorbieUI.Controls.LmDataGridView.GridEvent(this.Dgv_Sorted);
       this.dgv.RowIndexChanged += new LmCorbieUI.Controls.LmDataGridView.RowEvent(this.Dgv_RowIndexChanged);
-      // 
-      // lblProgress
-      // 
-      this.lblProgress.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.lblProgress.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
-      this.lblProgress.FontWeight = LmCorbieUI.Design.LmLabelWeight.Bold;
-      this.lblProgress.Location = new System.Drawing.Point(0, 206);
-      this.lblProgress.Margin = new System.Windows.Forms.Padding(3);
-      this.lblProgress.Name = "lblProgress";
-      this.lblProgress.Size = new System.Drawing.Size(295, 23);
-      this.lblProgress.TabIndex = 99;
-      this.lblProgress.Text = "0 de 0 - 0%";
-      this.lblProgress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-      this.lblProgress.Visible = false;
       // 
       // tbpOperacoes
       // 
@@ -885,7 +869,6 @@
     private System.Windows.Forms.PictureBox ptbMaterialError;
     private LmCorbieUI.Controls.LmLabel lblCodigoProduto;
     private LmCorbieUI.Controls.LmLabel lmLabel10;
-    private LmCorbieUI.Controls.LmLabel lblProgress;
     private LmCorbieUI.Controls.LmButton btnSalvar;
     private LmCorbieUI.Controls.LmButton btnCarrProcess;
     private LmCorbieUI.Controls.LmLabel lblPesoNbr;

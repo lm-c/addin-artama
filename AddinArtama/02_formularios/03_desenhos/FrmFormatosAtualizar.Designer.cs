@@ -32,7 +32,6 @@
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmFormatosAtualizar));
       this.lmPanel1 = new LmCorbieUI.Controls.LmPanel();
       this.btnAtualizar = new LmCorbieUI.Controls.LmButton();
-      this.btnCancelar = new LmCorbieUI.Controls.LmButton();
       this.btnCarregar = new LmCorbieUI.Controls.LmButton();
       this.cmsOpenFile = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.tsmSelectAll = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,13 +49,12 @@
       // 
       this.lmPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
       this.lmPanel1.Controls.Add(this.btnAtualizar);
-      this.lmPanel1.Controls.Add(this.btnCancelar);
       this.lmPanel1.Controls.Add(this.btnCarregar);
       this.lmPanel1.Dock = System.Windows.Forms.DockStyle.Top;
       this.lmPanel1.IsPanelMenu = false;
       this.lmPanel1.Location = new System.Drawing.Point(0, 30);
       this.lmPanel1.Name = "lmPanel1";
-      this.lmPanel1.Size = new System.Drawing.Size(269, 113);
+      this.lmPanel1.Size = new System.Drawing.Size(269, 77);
       this.lmPanel1.TabIndex = 0;
       // 
       // btnAtualizar
@@ -79,29 +77,6 @@
       this.btnAtualizar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.btnAtualizar.UseVisualStyleBackColor = false;
       this.btnAtualizar.Click += new System.EventHandler(this.BtnAtualizar_Click);
-      // 
-      // btnCancelar
-      // 
-      this.btnCancelar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnCancelar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnCancelar.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnCancelar.BorderRadius = 13;
-      this.btnCancelar.BorderSize = 0;
-      this.btnCancelar.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnCancelar.Enabled = false;
-      this.btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnCancelar.Image = ((System.Drawing.Image)(resources.GetObject("btnCancelar.Image")));
-      this.btnCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.btnCancelar.Location = new System.Drawing.Point(3, 73);
-      this.btnCancelar.Name = "btnCancelar";
-      this.btnCancelar.Size = new System.Drawing.Size(259, 26);
-      this.btnCancelar.TabIndex = 2;
-      this.btnCancelar.Tag = "Avançar";
-      this.btnCancelar.Text = " Cancelar";
-      this.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.btnCancelar.UseVisualStyleBackColor = false;
-      this.btnCancelar.Click += new System.EventHandler(this.BtnCancelar_Click);
       // 
       // btnCarregar
       // 
@@ -192,7 +167,7 @@
       this.dgv.EnabledPdfButton = false;
       this.dgv.EnabledRefreshButton = false;
       this.dgv.LimparSelecaoAposCarregar = false;
-      this.dgv.Location = new System.Drawing.Point(0, 143);
+      this.dgv.Location = new System.Drawing.Point(0, 107);
       this.dgv.Margin = new System.Windows.Forms.Padding(0);
       this.dgv.MostrarRodapeBotoes = true;
       this.dgv.MostrarTotalizador = false;
@@ -204,13 +179,12 @@
       this.dgv.PermiteQuebrarLinhaCabecalho = false;
       this.dgv.PermiteSelecaoMultipla = false;
       this.dgv.PosColunasGrid = "";
-      this.dgv.Size = new System.Drawing.Size(269, 307);
+      this.dgv.Size = new System.Drawing.Size(269, 343);
       this.dgv.TabIndex = 1;
       this.dgv.Texto = "";
       this.dgv.TituloRelatorio = "";
       this.dgv.UseSelectable = true;
       this.dgv.ProcurarTextChanged += new LmCorbieUI.Controls.LmDataGridView.TxtChange(this.Dgv_ProcurarTextChanged);
-      this.dgv.CellClick += new LmCorbieUI.Controls.LmDataGridView.CellEvent(this.Dgv_CellClick);
       // 
       // FrmFormatosAtualizar
       // 
@@ -245,7 +219,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsmOpen3D;
         private System.Windows.Forms.ToolStripMenuItem tsmOpen2D;
     private LmCorbieUI.Controls.LmButton btnAtualizar;
-    private LmCorbieUI.Controls.LmButton btnCancelar;
     private LmCorbieUI.Controls.LmButton btnCarregar;
     private LmCorbieUI.Controls.LmDataGridView dgv;
   }

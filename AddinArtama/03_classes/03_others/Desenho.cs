@@ -57,7 +57,7 @@ namespace AddinArtama {
             MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
-      return listaDesenhos.OrderBy(x=>x.Tipo3D).ThenBy(x=>x.CompCodigo).ToList();
+      return listaDesenhos.OrderBy(x => x.Tipo3D).ThenBy(x => x.CompCodigo).ToList();
     }
 
     private static void PegaDadosListaGeral(BomTableAnnotation swBOMAnnotation, List<Desenho> listaDesenhos) {
@@ -112,53 +112,18 @@ namespace AddinArtama {
       }
     }
 
-    public static void InserirAtualizarListaMaterias(ModelDoc2 swModel) {
-      try {
-        swModel.ClearSelection2(true);
+    public static void InsertMaterialsList(ModelDoc2 swModel, int? posicaoListaDesejada = null) {
+      string modelPath = swModel.GetPathName().ToLower();
 
-        if (swModel.GetType() == (int)swDocumentTypes_e.swDocDRAWING) {
-          var pathName = swModel.GetPathName();
-          swDocumentTypes_e tipo = File.Exists(pathName.ToLower().Replace("slddrw", "sldprt")) ? swDocumentTypes_e.swDocPART : swDocumentTypes_e.swDocASSEMBLY;
-
-          var swFeature = (Feature)swModel.FirstFeature();
-          while ((swFeature != null)) {
-            string nm = swFeature.GetTypeName2();
-
-            if ((nm == "WeldmentTableFeat" && tipo == swDocumentTypes_e.swDocPART) || (nm == "BomFeat" && tipo == swDocumentTypes_e.swDocASSEMBLY)) {
-              swFeature.Select(true);
-
-              swModel.EditDelete();
-            }
-
-            if (nm == "DrSheet") {
-              Feature subFeature = swFeature.GetFirstSubFeature();
-              while ((subFeature != null)) {
-                string nm2 = subFeature.GetTypeName2();
-                if (nm2 == "GeneralTableFeature") {
-                  subFeature.Select(true);
-
-                  swModel.EditDelete();
-                }
-
-                subFeature = (Feature)subFeature.GetNextSubFeature();
-              }
-            }
-
-            swFeature = (Feature)swFeature.GetNextFeature();
-          }
-
-          Desenho.InserirListasMateriais(tipo);
-        }
-      } catch (Exception ex) {
-        MsgBox.Show($"Erro ao inserir lista de soldagem\n\n{ex.Message}", "Addin LM Projetos",
-               MessageBoxButtons.OK, MessageBoxIcon.Error);
+      if (File.Exists(modelPath.Replace("slddrw", "sldprt"))) {
+        InserirListasMateriais(swDocumentTypes_e.swDocPART, posicaoListaDesejada);
+      } else {
+        InserirListasMateriais(swDocumentTypes_e.swDocASSEMBLY);
       }
     }
 
-    public static void InserirListasMateriais(swDocumentTypes_e swDocumentTypes_E) {
+    public static void InserirListasMateriais(swDocumentTypes_e swDocumentTypes_E, int? posicaoListaDesejada = null) {
       try {
-        templates.Carregar();
-
         DrawingDoc swDraw = default(DrawingDoc);
         swDraw = (DrawingDoc)Sw.App.ActiveDoc;
 
@@ -170,21 +135,95 @@ namespace AddinArtama {
         swDraw.ActivateView(swView.GetName2());
 
         // Obtém a configuração ativa
-        ModelDoc2 swModel = (ModelDoc2)swView.ReferencedDocument;
-        string activeConfiguration = swModel.GetActiveConfiguration().Name;
+        ModelDoc2 swModel2 = (ModelDoc2)swView.ReferencedDocument;
+        string activeConfiguration = swModel2.GetActiveConfiguration().Name;
 
         int AnchorType = (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_BottomRight;
         int BomType = (int)swBomType_e.swBomType_TopLevelOnly;
 
         if (swDocumentTypes_E == swDocumentTypes_e.swDocPART) {
           WMTable = swView.InsertWeldmentTable(true, 0, 0, AnchorType, "", templates.model.lista_soldagem);
-          int i = 1;
+          if (posicaoListaDesejada.HasValue && WMTable != null) {
+            // ocultar linhas diferentes da posicao desejada
+            var table = (TableAnnotation)WMTable;
+            int rowCount = table.RowCount;
+
+            for (int row = 1; row < rowCount; row++) {
+              string cellValue = table.get_Text(row, 0); // Posição geralmente na coluna 0
+              if (!int.TryParse(cellValue, out int posicaoAtual) || posicaoAtual != posicaoListaDesejada.Value) {
+                table.set_RowHidden(row, true);
+              }
+            }
+          }
+        } else {
           swBOMAnnotation = swView.InsertBomTable3(true, 0, 0, AnchorType, BomType, activeConfiguration, templates.model.lista_montagem, false);
+
+          if (posicaoListaDesejada.HasValue && swBOMAnnotation != null) {
+            var table = (TableAnnotation)swBOMAnnotation;
+            int rowCount = table.RowCount;
+
+            for (int row = 1; row < rowCount; row++) {
+              string cellValue = table.get_Text(row, 0); // Coluna de posição
+              if (!int.TryParse(cellValue, out int posicaoAtual) || posicaoAtual != posicaoListaDesejada.Value) {
+                table.set_RowHidden(row, true);
+              }
+            }
+          }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao inserir Lista\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //MsgBox.Show($"Erro ao inserir Lista\n\n{ex.Message}", "Addin LM Projetos",
+        //     MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+    }
+
+    public static void ClearExistingTables(ModelDoc2 swModel, out bool hasExistingTable) {
+      swModel.ClearSelection2(true);
+      hasExistingTable = false;
+
+      if (swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING) {
+        return;
+      }
+
+      var swFeature = (Feature)swModel.FirstFeature();
+
+      while (swFeature != null) {
+        string featureType = swFeature.GetTypeName2();
+
+        // Verificar se existe tabela de soldagem ou BOM antes de remover
+        if (featureType == "WeldmentTableFeat" || featureType == "BomFeat") {
+          hasExistingTable = true;
+          swFeature.Select(true);
+          swModel.EditDelete();
+        }
+
+        // Processar sub-features de folhas
+        if (featureType == "DrSheet") {
+          if (ProcessSheetSubFeatures(swModel, swFeature)) {
+            hasExistingTable = true;
+          }
+        }
+
+        swFeature = (Feature)swFeature.GetNextFeature();
+      }
+    }
+
+    private static bool ProcessSheetSubFeatures(ModelDoc2 swModel, Feature sheetFeature) {
+      Feature subFeature = sheetFeature.GetFirstSubFeature();
+      bool foundTable = false;
+
+      while (subFeature != null) {
+        string subFeatureType = subFeature.GetTypeName2();
+
+        if (subFeatureType == "GeneralTableFeature") {
+          foundTable = true;
+          subFeature.Select(true);
+          swModel.EditDelete();
+        }
+
+        subFeature = (Feature)subFeature.GetNextSubFeature();
+      }
+
+      return foundTable;
     }
 
     public static SwDwgPaperSizes_e GetFormat(double largura, double altura) {

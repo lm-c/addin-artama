@@ -34,7 +34,7 @@
       this.lmLabel1 = new LmCorbieUI.Controls.LmLabel();
       this.txtOperacao = new LmCorbieUI.Controls.LmTextBox();
       this.txtMaquina = new LmCorbieUI.Controls.LmTextBox();
-      this.lmLabel2 = new LmCorbieUI.Controls.LmLabel();
+      this.lblMaquina = new LmCorbieUI.Controls.LmLabel();
       this.btnExcluir = new LmCorbieUI.Controls.LmButton();
       this.SuspendLayout();
       // 
@@ -199,6 +199,7 @@
       this.txtOperacao.Valor_Decimais = ((short)(4));
       this.txtOperacao.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
       this.txtOperacao.WaterMarkFont = new System.Drawing.Font("Segoe UI", 8.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Pixel);
+      this.txtOperacao.SelectedValueChanched += new LmCorbieUI.Controls.LmTextBox.ValChange(this.TxtOperacao_SelectedValueChanched);
       // 
       // txtMaquina
       // 
@@ -236,17 +237,17 @@
       this.txtMaquina.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
       this.txtMaquina.WaterMarkFont = new System.Drawing.Font("Segoe UI", 8.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Pixel);
       // 
-      // lmLabel2
+      // lblMaquina
       // 
-      this.lmLabel2.AutoSize = true;
-      this.lmLabel2.BackColor = System.Drawing.Color.Transparent;
-      this.lmLabel2.Location = new System.Drawing.Point(10, 153);
-      this.lmLabel2.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
-      this.lmLabel2.Name = "lmLabel2";
-      this.lmLabel2.Size = new System.Drawing.Size(73, 19);
-      this.lmLabel2.TabIndex = 358;
-      this.lmLabel2.Text = "Máquina *";
-      this.lmLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.lblMaquina.AutoSize = true;
+      this.lblMaquina.BackColor = System.Drawing.Color.Transparent;
+      this.lblMaquina.Location = new System.Drawing.Point(10, 153);
+      this.lblMaquina.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+      this.lblMaquina.Name = "lblMaquina";
+      this.lblMaquina.Size = new System.Drawing.Size(73, 19);
+      this.lblMaquina.TabIndex = 358;
+      this.lblMaquina.Text = "Máquina *";
+      this.lblMaquina.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
       // btnExcluir
       // 
@@ -276,7 +277,7 @@
       this.ClientSize = new System.Drawing.Size(276, 530);
       this.Controls.Add(this.btnExcluir);
       this.Controls.Add(this.txtMaquina);
-      this.Controls.Add(this.lmLabel2);
+      this.Controls.Add(this.lblMaquina);
       this.Controls.Add(this.lmLabel1);
       this.Controls.Add(this.txtOperacao);
       this.Controls.Add(this.btnSalvar);
@@ -313,7 +314,7 @@
     private LmCorbieUI.Controls.LmLabel lmLabel1;
     private LmCorbieUI.Controls.LmTextBox txtOperacao;
     private LmCorbieUI.Controls.LmTextBox txtMaquina;
-    private LmCorbieUI.Controls.LmLabel lmLabel2;
+    private LmCorbieUI.Controls.LmLabel lblMaquina;
     private LmCorbieUI.Controls.LmButton btnExcluir;
   }
 }

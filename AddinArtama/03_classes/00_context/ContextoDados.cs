@@ -14,7 +14,7 @@ namespace AddinArtama {
     public DbSet<processos> processos { get; set; }
     public DbSet<processos_nao_seriado> processos_nao_seriado { get; set; }
     public DbSet<produto_erp> produto_erp { get; set; }
-    public DbSet<produto_erp_operacao> produto_erp_operacao { get; set; }
+    //public DbSet<produto_erp_operacao> produto_erp_operacao { get; set; }
     public DbSet<templates> templates { get; set; }
     public DbSet<usuarios> usuarios { get; set; }
     public DbSet<usuario_alocados> usuario_alocados { get; set; }

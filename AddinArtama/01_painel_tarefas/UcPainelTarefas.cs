@@ -336,7 +336,7 @@ namespace AddinArtama {
 
       if (cld.ShowDialog() == DialogResult.OK) {
 
-        MsgBox.ShowWaitMessage("Aplicando Tema, Aguarde...");
+        // MsgBox.ShowWaitMessage("Aplicando Tema, Aguarde...");
         LmCor.CorPrimaria = cld.Color;
         // ValorPredefinido.model.CorPrimaria = cld.Color.ColorToString();
 

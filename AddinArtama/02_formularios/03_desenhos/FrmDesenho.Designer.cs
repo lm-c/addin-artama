@@ -41,7 +41,6 @@
       this.btnA4 = new LmCorbieUI.Controls.LmButton();
       this.btnA4R = new LmCorbieUI.Controls.LmButton();
       this.btnInserirListaSoldagem = new LmCorbieUI.Controls.LmButton();
-      this.ckbPromov = new LmCorbieUI.Controls.LmCheckBox();
       this.txtName = new LmCorbieUI.Controls.LmTextBox();
       this.btnLoadDesenho = new LmCorbieUI.Controls.LmButton();
       this.dgv = new LmCorbieUI.Controls.LmDataGridView();
@@ -77,7 +76,6 @@
       this.lmPanel1.Controls.Add(this.btnA4);
       this.lmPanel1.Controls.Add(this.btnA4R);
       this.lmPanel1.Controls.Add(this.btnInserirListaSoldagem);
-      this.lmPanel1.Controls.Add(this.ckbPromov);
       this.lmPanel1.Controls.Add(this.txtName);
       this.lmPanel1.Controls.Add(this.btnLoadDesenho);
       this.lmPanel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -96,7 +94,7 @@
       this.btnUpDes.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnUpDes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnUpDes.Image = ((System.Drawing.Image)(resources.GetObject("btnUpDes.Image")));
-      this.btnUpDes.Location = new System.Drawing.Point(192, 85);
+      this.btnUpDes.Location = new System.Drawing.Point(86, 46);
       this.btnUpDes.Margin = new System.Windows.Forms.Padding(1);
       this.btnUpDes.Name = "btnUpDes";
       this.btnUpDes.Size = new System.Drawing.Size(31, 31);
@@ -116,7 +114,7 @@
       this.btnDownDes.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnDownDes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnDownDes.Image = ((System.Drawing.Image)(resources.GetObject("btnDownDes.Image")));
-      this.btnDownDes.Location = new System.Drawing.Point(159, 85);
+      this.btnDownDes.Location = new System.Drawing.Point(53, 46);
       this.btnDownDes.Margin = new System.Windows.Forms.Padding(1);
       this.btnDownDes.Name = "btnDownDes";
       this.btnDownDes.Size = new System.Drawing.Size(31, 31);
@@ -155,7 +153,7 @@
       this.btnA1.BorderSize = 0;
       this.btnA1.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnA1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnA1.Location = new System.Drawing.Point(192, 46);
+      this.btnA1.Location = new System.Drawing.Point(185, 85);
       this.btnA1.Margin = new System.Windows.Forms.Padding(1);
       this.btnA1.Name = "btnA1";
       this.btnA1.Size = new System.Drawing.Size(31, 31);
@@ -172,7 +170,7 @@
       this.btnA2.BorderSize = 0;
       this.btnA2.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnA2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnA2.Location = new System.Drawing.Point(159, 46);
+      this.btnA2.Location = new System.Drawing.Point(152, 85);
       this.btnA2.Margin = new System.Windows.Forms.Padding(1);
       this.btnA2.Name = "btnA2";
       this.btnA2.Size = new System.Drawing.Size(31, 31);
@@ -189,7 +187,7 @@
       this.btnA3.BorderSize = 0;
       this.btnA3.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnA3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnA3.Location = new System.Drawing.Point(126, 46);
+      this.btnA3.Location = new System.Drawing.Point(119, 85);
       this.btnA3.Margin = new System.Windows.Forms.Padding(1);
       this.btnA3.Name = "btnA3";
       this.btnA3.Size = new System.Drawing.Size(31, 31);
@@ -206,7 +204,7 @@
       this.btnA4.BorderSize = 0;
       this.btnA4.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnA4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnA4.Location = new System.Drawing.Point(93, 46);
+      this.btnA4.Location = new System.Drawing.Point(86, 85);
       this.btnA4.Margin = new System.Windows.Forms.Padding(1);
       this.btnA4.Name = "btnA4";
       this.btnA4.Size = new System.Drawing.Size(31, 31);
@@ -224,7 +222,7 @@
       this.btnA4R.BorderSize = 0;
       this.btnA4R.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnA4R.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnA4R.Location = new System.Drawing.Point(60, 46);
+      this.btnA4R.Location = new System.Drawing.Point(53, 85);
       this.btnA4R.Margin = new System.Windows.Forms.Padding(1);
       this.btnA4R.Name = "btnA4R";
       this.btnA4R.Size = new System.Drawing.Size(31, 31);
@@ -252,17 +250,6 @@
       this.cmxToolTip1.SetToolTip(this.btnInserirListaSoldagem, "Inserir Lista");
       this.btnInserirListaSoldagem.UseVisualStyleBackColor = false;
       this.btnInserirListaSoldagem.Click += new System.EventHandler(this.BtnInserirListaSoldagem_Click);
-      // 
-      // ckbPromov
-      // 
-      this.ckbPromov.AutoSize = true;
-      this.ckbPromov.Location = new System.Drawing.Point(38, 97);
-      this.ckbPromov.Name = "ckbPromov";
-      this.ckbPromov.Propriedade = null;
-      this.ckbPromov.Size = new System.Drawing.Size(117, 19);
-      this.ckbPromov.TabIndex = 9;
-      this.ckbPromov.Text = "Promover Lista";
-      this.ckbPromov.UseSelectable = true;
       // 
       // txtName
       // 
@@ -407,7 +394,6 @@
       this.Loaded += new LmCorbieUI.LmForms.LmSingleForm.FormLoad(this.FrmDesenho_Loaded);
       this.ClickHelp += new LmCorbieUI.LmForms.LmSingleForm.ButClick(this.FrmDesenho_ClickHelp);
       this.lmPanel1.ResumeLayout(false);
-      this.lmPanel1.PerformLayout();
       this.cmsOpenFile.ResumeLayout(false);
       this.ResumeLayout(false);
 
@@ -419,7 +405,6 @@
         private LmCorbieUI.Controls.LmPanel lmPanel1;
         private LmCorbieUI.Controls.LmDataGridView dgv;
         private LmCorbieUI.Controls.LmButton btnLoadDesenho;
-        private LmCorbieUI.Controls.LmCheckBox ckbPromov;
         private LmCorbieUI.Controls.LmTextBox txtName;
         private LmCorbieUI.Controls.LmButton btnA1;
         private LmCorbieUI.Controls.LmButton btnA2;

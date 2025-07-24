@@ -50,6 +50,7 @@ namespace AddinArtama {
       public double tempoPadraoOperacao { get; set; }
       public double tempoPreparacaoOperacao { get; set; }
       public string centroCusto { get; set; }
+      public TipoOperacao tipoOperacao { get; set; }
     }
 
     internal static async Task<bool> CadastrarEngenhariaAsync(ContextoDados db, Engenharia engenharia) {
@@ -58,14 +59,17 @@ namespace AddinArtama {
 
         var client = Api.GetClient(modulo: "ppcppadrao", endpoint: $"pendenciaEngenharia");
         var request = Api.CreateRequest(Method.PUT);
-
+        var centroCusto = engenharia.operacoes.Count > 0 ? engenharia.operacoes[0].centroCusto : string.Empty;        
+        
         var bodyObject = "" +
+
           "{" +
              $"\"codEmpresa\": {engenharia.codEmpresa}," +
              $"\"tipoModulo\": \"{engenharia.tipoModulo}\"," +
              $"\"codClassificacao\": {engenharia.codClassificacao}," +
              $"\"nomeArquivoDesenhoEng\": \"{engenharia.nomeArquivoDesenhoEng}\"," +
              $"\"codProduto\": \"{engenharia.codProduto}\"," +
+             $"\"centroCusto\": \"{centroCusto}\"," +
              $"\"engenhariaFantasma\": {engenharia.engenhariaFantasma.ToString().ToLower()}," +
              $"\"descEngenhariaFantasma\": \"{engenharia.descEngenhariaFantasma}\"," +
 
@@ -81,6 +85,7 @@ namespace AddinArtama {
               $"\"espessura\": {componente.espessura.ToString().Replace(",", ".")}," +
               $"\"percQuebra\": {componente.percQuebra.ToString().Replace(",", ".")}," +
               $"\"codClassificacaoInsumo\": {componente.codClassificacaoInsumo}," +
+              $"\"centroCusto\": \"{centroCusto}\"," +
               $"\"itemKanban\": {componente.itemKanban}" +
               "},";
         }
@@ -95,7 +100,11 @@ namespace AddinArtama {
               $"\"codOperacao\": {operacao.codOperacao}," +
               $"\"numOperadores\": {operacao.numOperadores}," +
               $"\"codFaseOperacao\": {operacao.codFaseOperacao}," +
-              $"\"codMascaraMaquina\": \"{operacao.codMascaraMaquina}\"," +
+
+              (operacao.tipoOperacao == TipoOperacao.Externa
+              ? $"\"maquina\": \"{operacao.codMascaraMaquina}\","                 // utiliza tela de configuação de processo/máquina (Customizada)
+              : $"\"codMascaraMaquina\": \"{operacao.codMascaraMaquina}\",") +
+
               $"\"tempoPadraoOperacao\": {operacao.tempoPadraoOperacao.ToString().Replace(",", ".")}," +
               $"\"tempoPreparacaoOperacao\": {operacao.tempoPreparacaoOperacao.ToString().Replace(",", ".")}" +
               "},";

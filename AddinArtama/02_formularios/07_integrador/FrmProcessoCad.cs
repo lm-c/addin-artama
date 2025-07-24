@@ -48,8 +48,9 @@ namespace AddinArtama {
     private async Task SalvarAsync() {
       try {
         model.ativo = ckbSituacao.Checked;
-        model.codigo_maquina = (int)txtMaquina.SelectedValue;
+        model.codigo_maquina = (int?)txtMaquina.SelectedValue;
         model.codigo_operacao = (int)txtOperacao.SelectedValue;
+        model.tipoOperacao = (txtOperacao.SelectedItem as Api.Operacao).tipo == "Interno" ? TipoOperacao.Interna : TipoOperacao.Externa;
 
         if (processos.Salvar(model)) {
           //txtID.Text = model.id.ToString();
@@ -129,6 +130,33 @@ namespace AddinArtama {
 
     private void FrmProcessoCad_ClickHelp(object sender, EventArgs e) {
       //Process.Start("https://youtu.be/B_oJWzABF_A");
+    }
+
+    private void TxtOperacao_SelectedValueChanched(object sender, EventArgs e) {
+      try {
+        //txtMaquina.SelectedValue = null;
+
+        if (txtOperacao.SelectedValue != null) {
+          var idOp = (int)txtOperacao.SelectedValue;
+          var op = txtOperacao.SelectedItem as Api.Operacao;
+
+          if (op.tipo == "Externo") {
+            txtMaquina.SelectedValue = null;
+            txtMaquina.Enabled = false;
+            txtMaquina.CampoObrigatorio = false;
+          } else {
+            lblMaquina.Text = lblMaquina.Text.Replace(" *", "");
+            txtMaquina.CampoObrigatorio = true;
+            txtMaquina.Enabled = true;
+          }
+        } else {
+          lblMaquina.Text = lblMaquina.Text.Replace(" *", "") + " *";
+          txtMaquina.CampoObrigatorio = true;
+          txtMaquina.Enabled = true;
+        }
+      } catch (Exception ex) {
+        LmException.ShowException(ex, "Erro ao selecionar Máquinas");
+      }
     }
   }
 }
