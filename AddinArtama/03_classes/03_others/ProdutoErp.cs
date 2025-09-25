@@ -742,7 +742,8 @@ namespace AddinArtama {
             produtoErp.PesoLiquido = produtoErp.ItemCorte.Massa;
             produtoErp.PesoPadraoNBR = material.pesoPadraoNBR;
             // analisar material
-            if (produtoErp.ItemCorte.Tipo == TipoListaMaterial.Chapa && produtoErp.ItemCorte.Espessura > 0) {
+            if (produtoErp.ItemCorte.Tipo == TipoListaMaterial.Chapa && produtoErp.ItemCorte.Espessura > 0 &&
+              produtoErp.ItemCorte.unidadeMedida != "PC") {
               var chapas = materia_primas.Selecionar(ativo: true, produtoErp.ItemCorte.Espessura);
               if (!chapas.Any(x => x.CodigoChapa == produtoErp.ItemCorte.Codigo))
                 AdicionarPendencia(produtoErp, PendenciasEngenharia.MateriaErrado);

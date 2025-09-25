@@ -144,29 +144,54 @@ namespace AddinArtama {
         if (swDocumentTypes_E == swDocumentTypes_e.swDocPART) {
           WMTable = swView.InsertWeldmentTable(true, 0, 0, AnchorType, "", templates.model.lista_soldagem);
           if (posicaoListaDesejada.HasValue && WMTable != null) {
-            // ocultar linhas diferentes da posicao desejada
             var table = (TableAnnotation)WMTable;
             int rowCount = table.RowCount;
 
-            for (int row = 1; row < rowCount; row++) {
-              string cellValue = table.get_Text(row, 0); // Posição geralmente na coluna 0
-              if (!int.TryParse(cellValue, out int posicaoAtual) || posicaoAtual != posicaoListaDesejada.Value) {
-                table.set_RowHidden(row, true);
+            List<int> linhasParaExcluir = new List<int>();
+
+            for (int row = 0; row < rowCount; row++) {
+              string cellValue = table.get_Text(row, 0); // Coluna 0 = posição
+
+              if (int.TryParse(cellValue, out int posicaoAtual) && posicaoAtual != posicaoListaDesejada.Value) {
+                linhasParaExcluir.Add(row);
               }
+            }
+
+            // 🔥 Ordem decrescente evita o shift dos índices!
+            foreach (var row in linhasParaExcluir.OrderByDescending(r => r)) {
+              table.DeleteRow(row);
+            }
+
+            // Após exclusões, atualiza a célula [0,0] com a posição correta
+            if (table.RowCount > 0) {
+              table.set_Text(0, 0, posicaoListaDesejada.Value.ToString());
             }
           }
         } else {
           swBOMAnnotation = swView.InsertBomTable3(true, 0, 0, AnchorType, BomType, activeConfiguration, templates.model.lista_montagem, false);
 
-          if (posicaoListaDesejada.HasValue && swBOMAnnotation != null) {
-            var table = (TableAnnotation)swBOMAnnotation;
+          if(posicaoListaDesejada.HasValue && WMTable != null) {
+            var table = (TableAnnotation)WMTable;
             int rowCount = table.RowCount;
 
-            for (int row = 1; row < rowCount; row++) {
-              string cellValue = table.get_Text(row, 0); // Coluna de posição
-              if (!int.TryParse(cellValue, out int posicaoAtual) || posicaoAtual != posicaoListaDesejada.Value) {
-                table.set_RowHidden(row, true);
+            List<int> linhasParaExcluir = new List<int>();
+
+            for (int row = 0; row < rowCount; row++) {
+              string cellValue = table.get_Text(row, 0); // Coluna 0 = posição
+
+              if (int.TryParse(cellValue, out int posicaoAtual) && posicaoAtual != posicaoListaDesejada.Value) {
+                linhasParaExcluir.Add(row);
               }
+            }
+
+            // 🔥 Ordem decrescente evita o shift dos índices!
+            foreach (var row in linhasParaExcluir.OrderByDescending(r => r)) {
+              table.DeleteRow(row);
+            }
+
+            // Após exclusões, atualiza a célula [0,0] com a posição correta
+            if (table.RowCount > 0) {
+              table.set_Text(0, 0, posicaoListaDesejada.Value.ToString());
             }
           }
         }
@@ -180,31 +205,49 @@ namespace AddinArtama {
       swModel.ClearSelection2(true);
       hasExistingTable = false;
 
-      if (swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING) {
+      if (swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING)
         return;
-      }
 
-      var swFeature = (Feature)swModel.FirstFeature();
+      List<Feature> featuresToDelete = new List<Feature>();
+
+      Feature swFeature = (Feature)swModel.FirstFeature();
 
       while (swFeature != null) {
         string featureType = swFeature.GetTypeName2();
 
-        // Verificar se existe tabela de soldagem ou BOM antes de remover
-        if (featureType == "WeldmentTableFeat" || featureType == "BomFeat") {
-          hasExistingTable = true;
-          swFeature.Select(true);
-          swModel.EditDelete();
+        if (featureType == "BomFeat" || featureType == "WeldmentTableFeat") {
+          featuresToDelete.Add(swFeature);
         }
 
-        // Processar sub-features de folhas
         if (featureType == "DrSheet") {
-          if (ProcessSheetSubFeatures(swModel, swFeature)) {
-            hasExistingTable = true;
-          }
+          featuresToDelete.AddRange(GetSheetTables(swFeature));
         }
 
-        swFeature = (Feature)swFeature.GetNextFeature();
+        swFeature = swFeature.GetNextFeature();
       }
+
+      foreach (var feat in featuresToDelete) {
+        hasExistingTable = true;
+        feat.Select2(false, -1);
+        swModel.EditDelete();
+      }
+    }
+
+
+    private static List<Feature> GetSheetTables(Feature sheetFeature) {
+      var list = new List<Feature>();
+      Feature subFeature = sheetFeature.GetFirstSubFeature();
+
+      while (subFeature != null) {
+        string subType = subFeature.GetTypeName2();
+        if (subType == "GeneralTableFeature") {
+          list.Add(subFeature);
+        }
+
+        subFeature = subFeature.GetNextSubFeature();
+      }
+
+      return list;
     }
 
     private static bool ProcessSheetSubFeatures(ModelDoc2 swModel, Feature sheetFeature) {

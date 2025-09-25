@@ -268,9 +268,13 @@ namespace AddinArtama {
 
         DrawingDoc swDraw = (DrawingDoc)swModel;
         string[] sheetNames = swDraw.GetSheetNames();
-        var activeSheetName = string.Empty;
 
         if (sheetNames == null || sheetNames.Length == 0) return;
+
+        // Limpar tabelas existentes em todas as folhas
+        Desenho.ClearExistingTables(swModel, out bool hasExistingTable);
+
+        var activeSheetName = string.Empty;
 
         // Processar todas as folhas
         for (int i = 0; i < sheetNames.Length; i++) {
@@ -285,9 +289,6 @@ namespace AddinArtama {
 
           Sheet swSheet = swDraw.GetCurrentSheet();
           if (swSheet == null) continue;
-
-          // Limpar tabelas existentes em todas as folhas
-          Desenho.ClearExistingTables(swModel, out bool hasExistingTable);
 
           // Inserir lista de materiais apenas na primeira folha
           if (i == 0) {

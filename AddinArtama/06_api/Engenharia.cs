@@ -69,7 +69,6 @@ namespace AddinArtama {
              $"\"codClassificacao\": {engenharia.codClassificacao}," +
              $"\"nomeArquivoDesenhoEng\": \"{engenharia.nomeArquivoDesenhoEng}\"," +
              $"\"codProduto\": \"{engenharia.codProduto}\"," +
-             $"\"centroCusto\": \"{centroCusto}\"," +
              $"\"engenhariaFantasma\": {engenharia.engenhariaFantasma.ToString().ToLower()}," +
              $"\"descEngenhariaFantasma\": \"{engenharia.descEngenhariaFantasma}\"," +
 
@@ -85,7 +84,6 @@ namespace AddinArtama {
               $"\"espessura\": {componente.espessura.ToString().Replace(",", ".")}," +
               $"\"percQuebra\": {componente.percQuebra.ToString().Replace(",", ".")}," +
               $"\"codClassificacaoInsumo\": {componente.codClassificacaoInsumo}," +
-              $"\"centroCusto\": \"{centroCusto}\"," +
               $"\"itemKanban\": {componente.itemKanban}" +
               "},";
         }

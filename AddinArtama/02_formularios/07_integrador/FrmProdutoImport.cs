@@ -122,7 +122,6 @@ namespace AddinArtama {
           } else {
             Toast.Warning("Comando apenas para Peças e Montagens");
           }
-
         } catch (Exception ex) {
           MsgBox.Show($"Erro ao Carregar Componentes..\n\n{ex.Message}", "Addin LM Projetos",
               MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -538,6 +537,11 @@ namespace AddinArtama {
             }
           });
 
+          UIThreadHelper.Invoke(dgv.Grid, () => {
+            lblCodigoProduto.Text = produtoErp.CodProduto;
+
+          });
+
           if (!_canceladoComErro)
             MsgBox.Show("Cadastro de produtos e engenharia finalizado com sucesso", "Addin LM Projetos",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -635,13 +639,13 @@ namespace AddinArtama {
                   if (itemFilho.TipoComponente == TipoComponente.ListaMaterial) {
                     switch (um) {
                       case "M":
-                      qtd = (compr / 1000) * qtd; // para cabo de aço
+                      qtd = (compr / 1000); // para cabo de aço
                       break;
                       case "M2":
                       qtd = (larg / 1000) * (compr / 1000);
                       break;
                       case "KG":
-                      qtd = produtoErp.PesoBruto; // pego do pai pois lista de corte sempre terá um produto apenas
+                      qtd = produtoErp.PesoBruto;
                       break;
                       default:
                       break;
@@ -658,6 +662,7 @@ namespace AddinArtama {
                       qtd = produtoErp.PesoBruto;
                       break;
                       case "L":
+                      case "LT":
                       qtd = compr;
                       break;
                       default:

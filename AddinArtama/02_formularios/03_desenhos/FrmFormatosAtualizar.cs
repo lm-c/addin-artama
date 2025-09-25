@@ -217,9 +217,19 @@ namespace AddinArtama {
 
         if (sheetNames == null || sheetNames.Length == 0) return;
 
+        // Limpar tabelas existentes em todas as folhas
+        Desenho.ClearExistingTables(swModel, out bool hasExistingTable);
+
+        if (!hasExistingTable) return;
+
+        var activeSheetName = string.Empty;
+
         // Processar todas as folhas
         for (int i = 0; i < sheetNames.Length; i++) {
           string sheetName = sheetNames[i];
+
+          if (string.IsNullOrEmpty(activeSheetName))
+            activeSheetName = sheetName;
 
           // Ativar a folha atual
           bool sheetActivated = swDraw.ActivateSheet(sheetName);
@@ -229,16 +239,12 @@ namespace AddinArtama {
           if (swSheet == null) continue;
 
           // Atualizar formato da folha
-
           UpdateSheetFormat(swDraw, swSheet);
 
-          // Limpar tabelas existentes em todas as folhas
-          Desenho.ClearExistingTables(swModel, out bool hasExistingTable);
-
           // Inserir lista de materiais apenas na primeira folha
-          if (i == 0 && hasExistingTable) {
+          if (i == 0) {
             Desenho.InsertMaterialsList(swModel);
-          } else if (i > 0 && hasExistingTable) {
+          } else if (i > 0) {
             string nomeFolha = sheetName.ToUpper();
 
             if (nomeFolha.StartsWith("P") && int.TryParse(nomeFolha.Substring(1), out int posicaoDesejada)) {
@@ -246,6 +252,8 @@ namespace AddinArtama {
             }
           }
         }
+        if (!string.IsNullOrEmpty(activeSheetName))
+          swDraw.ActivateSheet(activeSheetName);
 
         swModel.ViewZoomtofit2();
 
