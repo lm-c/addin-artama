@@ -27,7 +27,6 @@ namespace AddinArtama {
       InitializeComponent();
 
       tbcOperacoes.SelectedIndex = 0;
-      tbcOperacoes.HideTab(tbpOperacoes);
 
       ImageList il = new ImageList();
       il.Images.Add(0.ToString(), Properties.Resources.assembly);
@@ -45,20 +44,7 @@ namespace AddinArtama {
     }
 
     private void FrmProcessoAplicacao_Load(object sender, EventArgs e) {
-      try {
-        var lists = Processo.ListaProcessos
-            .GroupBy(x => x.codOperacao)
-            .Select(g => new Z_Padrao {
-              Codigo = g.Key,
-              Descricao = g.Key + " - " + g.First().descrOperacao
-            })
-            .ToList()
-            .OrderBy(x => x.Codigo);
 
-        txtOperacao.CarregarComboBox(lists);
-      } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao carregar tela");
-      }
     }
 
     private void FrmProcessoAplicacao_Loaded(object sender, EventArgs e) {
@@ -88,6 +74,13 @@ namespace AddinArtama {
             return;
           }
 
+          if (dgv.Grid.RowCount > 0) {
+            var result = MsgBox.Show("Já existem componentes carregados. Deseja substituir os dados atuais?",
+              "Addin LM Projetos", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.No)
+              return;
+          }
+
           var swModel = (ModelDoc2)Sw.App.ActiveDoc;
 
           if (swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING) {
@@ -105,15 +98,23 @@ namespace AddinArtama {
                 _montageGeralNome = _montageGeralNome.Substring(0, 50);
 
               _produtos = new SortableBindingList<ProdutoErp>();
-              dgv.CarregarGrid(_produtos);
+              UIThreadHelper.Invoke(dgv, () => {
+                dgv.CarregarGrid(_produtos);
+              });
             });
 
-            btnCarrProcess.Enabled = btnSalvar.Enabled = false;
+            UIThreadHelper.Invoke(btnCarrProcess, () => {
+              btnCarrProcess.Enabled = btnSalvar.Enabled = false;
+            });
+
             await Loader.ShowDuringOperation(async (progress) => {
               progress.Report("Iniciando leitura Componentes");
               _produtos = await ProdutoErp.GetComponentsAsync(_arvoreCompleta, _montageGeralNome);
             });
-            btnCarrProcess.Enabled = btnSalvar.Enabled = true;
+
+            UIThreadHelper.Invoke(btnCarrProcess, () => {
+              btnCarrProcess.Enabled = btnSalvar.Enabled = true;
+            });
 
             await Loader.ShowDuringOperation(async (progress) => {
               progress.Report("Carregando Grid...");
@@ -234,10 +235,6 @@ namespace AddinArtama {
       }
     }
 
-    private void BtnAtualizarProcesso_Click(object sender, EventArgs e) {
-      AtualizarProcessos();
-    }
-
     private void Dgv_RowIndexChanged(object sender, EventArgs e) {
       try {
         if (sender == null) return;
@@ -283,7 +280,6 @@ namespace AddinArtama {
         lblCodigoProduto.Text =
         lblDescMat.Text = string.Empty;
 
-        ClearControls();
         var produtoErp = dgv.Grid.CurrentRow.DataBoundItem as ProdutoErp;
 
         if (produtoErp.PathName.ToUpper().EndsWith(".SLDPRT"))
@@ -307,26 +303,9 @@ namespace AddinArtama {
           bool boolstatus = swModel.Extension.SelectByID2(produtoErp.Referencia, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
         }
 
-        if (produtoErp.Pendencias.Where(y => y.EhPendenciaCritica()).ToList().Count > 0) {
-          var msgPend = string.Empty;
-          produtoErp.Pendencias.Where(y => y.EhPendenciaCritica()).ToList().ForEach(y => {
-            msgPend += $"- {y.ObterDescricaoEnum()}\r\n";
-          });
-
-          Toast.Warning($"{produtoErp.Name} [{produtoErp.Nivel}]\r\n{msgPend}");
-        }
-
-        if (produtoErp.Pendencias.Where(y => !y.EhPendenciaCritica()).ToList().Count > 0) {
-          var msgPend = string.Empty;
-          produtoErp.Pendencias.Where(y => !y.EhPendenciaCritica()).ToList().ForEach(y => {
-            msgPend += $"- {y.ObterDescricaoEnum()}\r\n";
-          });
-
-          Toast.Info($"{produtoErp.Name} [{produtoErp.Nivel}]\r\n{msgPend}");
-        }
+        AtualizarInfoAlerta(produtoErp);
 
         AtualizarInformacoes(produtoErp);
-        GetProcess(produtoErp);
         TreeNode node = GetNodeByLevelPath(_arvoreCompleta, produtoErp.Nivel);
         TreeNode clonedNode = (TreeNode)node.Clone();
         trvProduto.Nodes.Clear();
@@ -335,6 +314,38 @@ namespace AddinArtama {
       } catch (Exception ex) {
         MsgBox.Show($"Erro ao Atualizar Dados\n\n{ex.Message}", "Addin LM Projetos",
                  MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+
+    private void AtualizarInfoAlerta(ProdutoErp produtoErp) {
+      if (produtoErp.Pendencias.Where(y => y.EhPendenciaCritica()).ToList().Count > 0) {
+        var msgPend = string.Empty;
+        produtoErp.Pendencias.Where(y => y.EhPendenciaCritica()).ToList().ForEach(y => {
+          msgPend += $"- {y.ObterDescricaoEnum()}\r\n";
+        });
+
+        UIThreadHelper.Invoke(lblWarning, () => {
+          lblWarning.Visible = true;
+          lblWarning.Text = msgPend.Trim();
+          lblWarning.ForeColor = Color.Red;
+          lblWarning.Refresh();
+        });
+      } else if (produtoErp.Pendencias.Where(y => !y.EhPendenciaCritica()).ToList().Count > 0) {
+        var msgPend = string.Empty;
+        produtoErp.Pendencias.Where(y => !y.EhPendenciaCritica()).ToList().ForEach(y => {
+          msgPend += $"- {y.ObterDescricaoEnum()}\r\n";
+        });
+
+        UIThreadHelper.Invoke(lblWarning, () => {
+          lblWarning.Visible = true;
+          lblWarning.Text = msgPend.Trim();
+          lblWarning.ForeColor = Color.DarkGoldenrod;
+          lblWarning.Refresh();
+        });
+      } else {
+        UIThreadHelper.Invoke(lblWarning, () => {
+          lblWarning.Visible = false;
+        });
       }
     }
 
@@ -359,26 +370,6 @@ namespace AddinArtama {
         lblCodMat.Text = codigo.ToString();
 
         ptbMaterialError.Visible = produtoErp.Pendencias.Contains(PendenciasEngenharia.MateriaErrado);
-      }
-    }
-
-    private void GetProcess(ProdutoErp produtoErp) {
-      try {
-        ClearControls();
-
-        if (produtoErp.Operacoes != null && produtoErp.Operacoes.Count > 0) {
-          foreach (var prc in produtoErp.Operacoes) {
-            CardInsert(prc);
-
-            txtOperacao.SelectedValue = null;
-            //txtTempoOperacao.Text = tempoPadro;
-            //txtNumeroOperadores.Text = numOperadorPadrao.ToString();
-            txtOperacao.Focus();
-          }
-        }
-      } catch (Exception ex) {
-        MsgBox.Show($"Erro ao retornar Processos\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -502,6 +493,8 @@ namespace AddinArtama {
                   produtoErp.Pendencias.Add(PendenciasEngenharia.ErroAoCadastrarCod);
                   dgv.Grid.Rows[startIndex].DefaultCellStyle.ForeColor = dgv.Grid.Rows[startIndex].DefaultCellStyle.SelectionForeColor = corErro;
                 }
+
+                AtualizarInfoAlerta(produtoErp);
 
                 produtoErp.CadastrarProdutoErp = produtoErp.CadastrarAddin = false;
 
@@ -663,7 +656,7 @@ namespace AddinArtama {
                       break;
                       case "L":
                       case "LT":
-                      qtd = compr;
+                      qtd = compr * qtd;
                       break;
                       default:
                       break;
@@ -883,45 +876,10 @@ namespace AddinArtama {
       AtualizarInformacoes(produtoErp);
     }
 
-    private void ClearControls() {
-      flpOperacoes.Controls.Clear();//.OfType<CardOperacao>().Where(x => x.Checked).ToList().ForEach(x => x.Checked = false);
-    }
-
-    private void FlpProcess_SizeChanged(object sender, EventArgs e) {
-      try {
-        flpOperacoes.Controls.OfType<CardOperacao>().ToList()
-        .ForEach(x => {
-          x.Size = new Size(flpOperacoes.Width - 9, x.Height);
-        });
-      } catch (Exception) {
-
-      }
-    }
-
     private void CarregarGrid() {
       dgv.CarregarGrid(_produtos);
 
       //VerCoresGrid();
-    }
-
-    private void VerCoresGrid() {
-      try {
-        if (string.IsNullOrEmpty(dgv.txtProcurar.Text)) {
-          System.Collections.IList list = dgv.Grid.Rows;
-          for (int i = 0; i < list.Count; i++) {
-            DataGridViewRow row = (DataGridViewRow)list[i];
-            var item = row.DataBoundItem as ProdutoErp;
-
-            row.DefaultCellStyle.ForeColor = item.CadastrarProdutoErp
-              ? row.DefaultCellStyle.ForeColor = row.DefaultCellStyle.SelectionForeColor = corErro
-              : !item.CadastrarProdutoErp && item.CadastrarAddin
-              ? row.DefaultCellStyle.ForeColor = row.DefaultCellStyle.SelectionForeColor = corAlerta
-              : row.DefaultCellStyle.SelectionForeColor = corSucesso;
-          }
-        }
-      } catch (Exception ex) {
-        Toast.Error("Erro ao formatar cores grid. \r\n" + ex.Message);
-      } finally { MsgBox.CloseWaitMessage(); }
     }
 
     private void AdicionarDescricaoTodasConfiguracoes() {
@@ -942,155 +900,6 @@ namespace AddinArtama {
         swCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, produtoERP.Denominacao, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
       } catch (Exception ex) {
         Toast.Warning("Falha ao Atualizar Denominação: \n" + ex.Message);
-      }
-    }
-
-    private void BtnInserir_Click(object sender, EventArgs e) {
-      try {
-        if (dgv.Grid.CurrentRow == null) {
-          Toast.Info($"Nenhum produto selecionado");
-          return;
-        }
-
-        txtOperacao.CampoObrigatorio = true;
-
-        if (Controles.PossuiCamposInvalidos(lmPanelOP)) {
-          txtOperacao.CampoObrigatorio = false;
-          return;
-        }
-
-        var idOp = (int)txtOperacao.SelectedValue;
-
-        var proc = Processo.ListaProcessos.FirstOrDefault(x => x.codOperacao == idOp);
-
-        if (flpOperacoes.Controls.OfType<CardOperacao>().Any(x => ((produto_erp_operacao)x.Tag).processo_id == proc.codAxion)) {
-          Toast.Warning("Esta Operação com esta Máquina já foi inserida");
-          return;
-        }
-
-        var produtoERP = dgv.Grid.CurrentRow.DataBoundItem as ProdutoErp;
-
-        var processo = new produto_erp_operacao {
-          //processo_id = proc.codAxion,
-          //name = produtoERP.Name,
-          //referencia = produtoERP.Referencia,
-          //sequencia = flpOperacoes.Controls.OfType<CardOperacao>().Count() + 1,
-          //qtd_operador = !string.IsNullOrEmpty(txtNumeroOperadores.Text) ? Convert.ToInt32(txtNumeroOperadores.Text) : 1,
-          //tempo = !string.IsNullOrEmpty(txtTempoOperacao.Text) ? txtTempoOperacao.Text.FormatarHora() : "00:01",
-        };
-
-        //produto_erp_operacao.Salvar(processo);
-
-        CardInsert(processo);
-
-        AtualizarProcessos();
-
-        AdicionarDescricaoTodasConfiguracoes();
-
-        txtOperacao.CampoObrigatorio = false;
-        txtOperacao.SelectedValue = null;
-        //txtTempoOperacao.Text = tempoPadro;
-        //txtNumeroOperadores.Text = numOperadorPadrao.ToString();
-        txtOperacao.Focus();
-      } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao inserir Operação ao Componente");
-      }
-    }
-
-    private void AtualizarProcessos() {
-      var produtoERP = dgv.Grid.CurrentRow.DataBoundItem as ProdutoErp;
-
-      //produto_erp_operacao.ExcluirProcessoProduto(produtoERP);
-
-      var operacoes = flpOperacoes.Controls
-          .OfType<CardOperacao>()
-          .Select(a => (produto_erp_operacao)a.Tag).ToList();
-
-      if (operacoes != null && operacoes.Count() > 0) {
-        for (int i = 1; i <= operacoes.Count; i++) {
-          produto_erp_operacao operacao = operacoes[i - 1];
-          operacao.sequencia = i;
-
-        //  produto_erp_operacao.Salvar(operacao);
-        }
-        produtoERP.Operacoes = operacoes;
-
-        ProdutoErp.RemoverPendencia(produtoERP, PendenciasEngenharia.OperacaoRevisar);
-        ProdutoErp.RemoverPendencia(produtoERP, PendenciasEngenharia.OperacaoNaoPossui);
-      }
-      //else if(produtoERP.TipoComponente == TipoComponente.ItemBiblioteca) {
-      //  ProdutoErp.AdicionarPendencia(produtoERP, PendenciasEngenharia.OperacaoNaoPossui);
-      //}
-
-      var swModel = (ModelDoc2)Sw.App.ActiveDoc;
-
-      var swModelDocExt = swModel.Extension;
-      var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
-
-      if (swModel.GetType() == (int)swDocumentTypes_e.swDocPART) {
-        swCustPropMgr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Material\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-      } else
-        swCustPropMgr.Delete("Material");
-
-      swModel.Save();
-
-      Toast.Success("Processo atualizado com sucesso!");
-    }
-
-    private void CardInsert(produto_erp_operacao proc) {
-      CardOperacao card = new CardOperacao {
-        Tag = proc,
-        Width = flpOperacoes.Width - 9
-      };
-
-      card.SetText();
-
-      card.CardExclude += Card_CardExclude;
-      card.MouseDownCtrl += Card_MouseDownCtrl;
-
-      flpOperacoes.Controls.Add(card);
-    }
-
-    private void Card_CardExclude(object sender, EventArgs e) {
-      this.flpOperacoes.Controls.Remove((CardOperacao)sender);
-      AtualizarProcessos();
-    }
-
-    private void Card_MouseDownCtrl(object sender, MouseEventArgs e) {
-      ((CardOperacao)sender).DoDragDrop((CardOperacao)sender, DragDropEffects.Move);
-    }
-
-    private void FlpOperacoes_DragEnter(object sender, DragEventArgs e) {
-      if (e.Data.GetDataPresent(typeof(CardOperacao)))
-        e.Effect = DragDropEffects.Move;
-      else
-        e.Effect = DragDropEffects.None;
-    }
-
-    private void FlpOperacoes_DragDrop(object sender, DragEventArgs e) {
-      try {
-        var pt = new Point(e.X, e.Y);
-
-        var control = (CardOperacao)e.Data.GetData(typeof(CardOperacao));
-
-        Point mousePosition = flpOperacoes.PointToClient(pt);
-        Control destination = flpOperacoes.GetChildAtPoint(mousePosition);
-
-        if (destination == null) {
-          pt = new Point(pt.X, pt.Y + 10);
-          mousePosition = flpOperacoes.PointToClient(pt);
-          destination = flpOperacoes.GetChildAtPoint(mousePosition);
-        }
-
-        int indexDestination = flpOperacoes.Controls.IndexOf(destination);
-        if (flpOperacoes.Controls.IndexOf(control) < indexDestination)
-          indexDestination--;
-
-        flpOperacoes.Controls.SetChildIndex(control, indexDestination);
-
-        AtualizarProcessos();
-      } catch (Exception ex) {
-        Toast.Error(ex.Message);
       }
     }
 
@@ -1132,8 +941,8 @@ namespace AddinArtama {
 
     private void PtbMaterialError_Click(object sender, EventArgs e) {
       try {
-        var produtoERP = dgv.Grid.CurrentRow.DataBoundItem as ProdutoErp;
-        var espMat = produtoERP.ItemCorte.Espessura;
+        var produtoErp = dgv.Grid.CurrentRow.DataBoundItem as ProdutoErp;
+        var espMat = produtoErp.ItemCorte.Espessura;
         var list = materia_primas.Selecionar(ativo: true, espMat);
         var defatlList = list.ToList().Select(x => new DefaultObject { Codigo = x.CodigoChapa, Descricao = x.DescricaoChapa }).ToList();
         var chapaDesc = MsgBox.InputBox("Selecione a chapa correta", lmValueType: LmCorbieUI.Design.LmValueType.ComboBox, itens: defatlList);
@@ -1147,14 +956,17 @@ namespace AddinArtama {
           var swCustPropMngr = swModelDocExt.get_CustomPropertyManager("");
 
           if (swModel.GetType() == (int)swDocumentTypes_e.swDocPART) {
-            var cutList = produtoERP.ItemCorte;
+            var cutList = produtoErp.ItemCorte;
             cutList.Codigo = mat.CodigoChapa;
             cutList.Denominacao = mat.DescricaoChapa;
             cutList.Material = mat.DescricaoMaterial;
             ListaCorte.UpdateCutList(swModel, cutList);
-            AtualizarInformacoes(produtoERP);
 
-            ProdutoErp.CalcularPeso(ref produtoERP);
+            AtualizarInfoAlerta(produtoErp);
+
+            AtualizarInformacoes(produtoErp);
+
+            ProdutoErp.CalcularPeso(ref produtoErp);
 
             lblCodMat.Text = mat.CodigoChapa.ToString();
             lblDescMat.Text = mat.DescricaoChapa;
@@ -1164,7 +976,7 @@ namespace AddinArtama {
 
           swModel.Save();
 
-          ProdutoErp.RemoverPendencia(produtoERP, PendenciasEngenharia.MateriaErrado);
+          ProdutoErp.RemoverPendencia(produtoErp, PendenciasEngenharia.MateriaErrado);
 
           Toast.Success("Atualizado com sucesso!");
         }

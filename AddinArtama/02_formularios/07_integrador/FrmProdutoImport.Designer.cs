@@ -34,9 +34,6 @@
       this.cmxLabel2 = new LmCorbieUI.Controls.LmLabel();
       this.cmxToolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.lblCodigoProduto = new LmCorbieUI.Controls.LmLabel();
-      this.btnAtualizarProcesso = new LmCorbieUI.Controls.LmButton();
-      this.btnProximo = new LmCorbieUI.Controls.LmButton();
-      this.btnVoltar = new LmCorbieUI.Controls.LmButton();
       this.ptbMaterialError = new System.Windows.Forms.PictureBox();
       this.btnCarrProcess = new LmCorbieUI.Controls.LmButton();
       this.btnSalvar = new LmCorbieUI.Controls.LmButton();
@@ -63,15 +60,10 @@
       this.tbcOperacoes = new LmCorbieUI.Controls.LmTabControl();
       this.tbpLista = new LmCorbieUI.Controls.LmTabPage();
       this.dgv = new LmCorbieUI.Controls.LmDataGridView();
-      this.tbpOperacoes = new LmCorbieUI.Controls.LmTabPage();
-      this.lmPanelOP = new LmCorbieUI.Controls.LmPanel();
-      this.lmLabel3 = new LmCorbieUI.Controls.LmLabel();
-      this.btnInserir = new LmCorbieUI.Controls.LmButton();
-      this.txtOperacao = new LmCorbieUI.Controls.LmTextBox();
-      this.flpOperacoes = new LmCorbieUI.Controls.LmPanelFlow();
       this.tbpEngenharia = new LmCorbieUI.Controls.LmTabPage();
       this.trvProduto = new System.Windows.Forms.TreeView();
       this.tmr = new System.Windows.Forms.Timer(this.components);
+      this.lblWarning = new LmCorbieUI.Controls.LmLabel();
       ((System.ComponentModel.ISupportInitialize)(this.ptbMaterialError)).BeginInit();
       this.pnlDados.SuspendLayout();
       this.tableLayoutPanel1.SuspendLayout();
@@ -80,8 +72,6 @@
       this.lmPanel1.SuspendLayout();
       this.tbcOperacoes.SuspendLayout();
       this.tbpLista.SuspendLayout();
-      this.tbpOperacoes.SuspendLayout();
-      this.lmPanelOP.SuspendLayout();
       this.tbpEngenharia.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -128,69 +118,6 @@
       this.lblCodigoProduto.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.cmxToolTip1.SetToolTip(this.lblCodigoProduto, "Clique para Copiar");
       this.lblCodigoProduto.Click += new System.EventHandler(this.LblCodigoProduto_Click);
-      // 
-      // btnAtualizarProcesso
-      // 
-      this.btnAtualizarProcesso.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnAtualizarProcesso.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnAtualizarProcesso.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnAtualizarProcesso.BorderRadius = 13;
-      this.btnAtualizarProcesso.BorderSize = 0;
-      this.btnAtualizarProcesso.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnAtualizarProcesso.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnAtualizarProcesso.Image = ((System.Drawing.Image)(resources.GetObject("btnAtualizarProcesso.Image")));
-      this.btnAtualizarProcesso.Location = new System.Drawing.Point(265, 62);
-      this.btnAtualizarProcesso.Margin = new System.Windows.Forms.Padding(1);
-      this.btnAtualizarProcesso.Name = "btnAtualizarProcesso";
-      this.btnAtualizarProcesso.Size = new System.Drawing.Size(26, 26);
-      this.btnAtualizarProcesso.TabIndex = 5;
-      this.btnAtualizarProcesso.Tag = "";
-      this.btnAtualizarProcesso.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnAtualizarProcesso, "Atualizar Processos");
-      this.btnAtualizarProcesso.UseVisualStyleBackColor = false;
-      this.btnAtualizarProcesso.Click += new System.EventHandler(this.BtnAtualizarProcesso_Click);
-      // 
-      // btnProximo
-      // 
-      this.btnProximo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnProximo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnProximo.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnProximo.BorderRadius = 13;
-      this.btnProximo.BorderSize = 0;
-      this.btnProximo.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnProximo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnProximo.Image = ((System.Drawing.Image)(resources.GetObject("btnProximo.Image")));
-      this.btnProximo.Location = new System.Drawing.Point(237, 62);
-      this.btnProximo.Margin = new System.Windows.Forms.Padding(1);
-      this.btnProximo.Name = "btnProximo";
-      this.btnProximo.Size = new System.Drawing.Size(26, 26);
-      this.btnProximo.TabIndex = 4;
-      this.btnProximo.Tag = "Avançar";
-      this.btnProximo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnProximo, "Próxima peça");
-      this.btnProximo.UseVisualStyleBackColor = false;
-      this.btnProximo.Click += new System.EventHandler(this.BtnProximo_Click);
-      // 
-      // btnVoltar
-      // 
-      this.btnVoltar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnVoltar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-      this.btnVoltar.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnVoltar.BorderRadius = 13;
-      this.btnVoltar.BorderSize = 0;
-      this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnVoltar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
-      this.btnVoltar.Location = new System.Drawing.Point(209, 62);
-      this.btnVoltar.Margin = new System.Windows.Forms.Padding(1);
-      this.btnVoltar.Name = "btnVoltar";
-      this.btnVoltar.Size = new System.Drawing.Size(26, 26);
-      this.btnVoltar.TabIndex = 3;
-      this.btnVoltar.Tag = "Voltar";
-      this.btnVoltar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.cmxToolTip1.SetToolTip(this.btnVoltar, "Peça anterior");
-      this.btnVoltar.UseVisualStyleBackColor = false;
-      this.btnVoltar.Click += new System.EventHandler(this.BtnVoltar_Click);
       // 
       // ptbMaterialError
       // 
@@ -604,13 +531,12 @@
       // tbcOperacoes
       // 
       this.tbcOperacoes.Controls.Add(this.tbpLista);
-      this.tbcOperacoes.Controls.Add(this.tbpOperacoes);
       this.tbcOperacoes.Controls.Add(this.tbpEngenharia);
       this.tbcOperacoes.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tbcOperacoes.Location = new System.Drawing.Point(0, 319);
+      this.tbcOperacoes.Location = new System.Drawing.Point(0, 352);
       this.tbcOperacoes.Name = "tbcOperacoes";
       this.tbcOperacoes.SelectedIndex = 0;
-      this.tbcOperacoes.Size = new System.Drawing.Size(305, 273);
+      this.tbcOperacoes.Size = new System.Drawing.Size(305, 240);
       this.tbcOperacoes.TabIndex = 1;
       this.tbcOperacoes.UseSelectable = true;
       // 
@@ -621,7 +547,7 @@
       this.tbpLista.Location = new System.Drawing.Point(4, 38);
       this.tbpLista.Name = "tbpLista";
       this.tbpLista.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
-      this.tbpLista.Size = new System.Drawing.Size(297, 231);
+      this.tbpLista.Size = new System.Drawing.Size(297, 198);
       this.tbpLista.TabIndex = 1;
       this.tbpLista.Text = "Componentes";
       // 
@@ -655,7 +581,7 @@
       this.dgv.PermiteQuebrarLinhaCabecalho = false;
       this.dgv.PermiteSelecaoMultipla = false;
       this.dgv.PosColunasGrid = "";
-      this.dgv.Size = new System.Drawing.Size(295, 220);
+      this.dgv.Size = new System.Drawing.Size(295, 187);
       this.dgv.TabIndex = 98;
       this.dgv.Texto = "";
       this.dgv.TituloRelatorio = "";
@@ -663,119 +589,6 @@
       this.dgv.ProcurarTextChanged += new LmCorbieUI.Controls.LmDataGridView.TxtChange(this.Dgv_ProcurarTextChanged);
       this.dgv.Sorted += new LmCorbieUI.Controls.LmDataGridView.GridEvent(this.Dgv_Sorted);
       this.dgv.RowIndexChanged += new LmCorbieUI.Controls.LmDataGridView.RowEvent(this.Dgv_RowIndexChanged);
-      // 
-      // tbpOperacoes
-      // 
-      this.tbpOperacoes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.tbpOperacoes.Controls.Add(this.lmPanelOP);
-      this.tbpOperacoes.Controls.Add(this.flpOperacoes);
-      this.tbpOperacoes.Location = new System.Drawing.Point(4, 38);
-      this.tbpOperacoes.Name = "tbpOperacoes";
-      this.tbpOperacoes.Padding = new System.Windows.Forms.Padding(3, 96, 3, 3);
-      this.tbpOperacoes.Size = new System.Drawing.Size(297, 231);
-      this.tbpOperacoes.TabIndex = 0;
-      this.tbpOperacoes.Text = "Operações";
-      // 
-      // lmPanelOP
-      // 
-      this.lmPanelOP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.lmPanelOP.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
-      this.lmPanelOP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.lmPanelOP.Controls.Add(this.btnAtualizarProcesso);
-      this.lmPanelOP.Controls.Add(this.btnProximo);
-      this.lmPanelOP.Controls.Add(this.btnVoltar);
-      this.lmPanelOP.Controls.Add(this.lmLabel3);
-      this.lmPanelOP.Controls.Add(this.btnInserir);
-      this.lmPanelOP.Controls.Add(this.txtOperacao);
-      this.lmPanelOP.IsPanelMenu = false;
-      this.lmPanelOP.Location = new System.Drawing.Point(-1, -1);
-      this.lmPanelOP.Name = "lmPanelOP";
-      this.lmPanelOP.Size = new System.Drawing.Size(297, 96);
-      this.lmPanelOP.TabIndex = 362;
-      // 
-      // lmLabel3
-      // 
-      this.lmLabel3.AutoSize = true;
-      this.lmLabel3.BackColor = System.Drawing.Color.Transparent;
-      this.lmLabel3.Location = new System.Drawing.Point(3, 3);
-      this.lmLabel3.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
-      this.lmLabel3.Name = "lmLabel3";
-      this.lmLabel3.Size = new System.Drawing.Size(78, 19);
-      this.lmLabel3.TabIndex = 360;
-      this.lmLabel3.Text = "Operação *";
-      this.lmLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-      // 
-      // btnInserir
-      // 
-      this.btnInserir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnInserir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-      this.btnInserir.BorderColor = System.Drawing.Color.PaleVioletRed;
-      this.btnInserir.BorderRadius = 13;
-      this.btnInserir.BorderSize = 0;
-      this.btnInserir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnInserir.Image = ((System.Drawing.Image)(resources.GetObject("btnInserir.Image")));
-      this.btnInserir.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.btnInserir.Location = new System.Drawing.Point(3, 62);
-      this.btnInserir.Name = "btnInserir";
-      this.btnInserir.Size = new System.Drawing.Size(202, 26);
-      this.btnInserir.TabIndex = 2;
-      this.btnInserir.Text = " Inserir Processo";
-      this.btnInserir.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.btnInserir.UseVisualStyleBackColor = false;
-      this.btnInserir.Click += new System.EventHandler(this.BtnInserir_Click);
-      // 
-      // txtOperacao
-      // 
-      this.txtOperacao.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.txtOperacao.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
-      this.txtOperacao.BorderRadius = 15;
-      this.txtOperacao.BorderSize = 2;
-      this.txtOperacao.F7ToolTipText = null;
-      this.txtOperacao.F8ToolTipText = null;
-      this.txtOperacao.F9ToolTipText = null;
-      this.txtOperacao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-      this.txtOperacao.IconF7 = ((System.Drawing.Image)(resources.GetObject("txtOperacao.IconF7")));
-      this.txtOperacao.IconF8 = ((System.Drawing.Image)(resources.GetObject("txtOperacao.IconF8")));
-      this.txtOperacao.IconToolTipText = null;
-      this.txtOperacao.Lines = new string[0];
-      this.txtOperacao.Location = new System.Drawing.Point(3, 26);
-      this.txtOperacao.MaxLength = 250;
-      this.txtOperacao.Name = "txtOperacao";
-      this.txtOperacao.PasswordChar = '\0';
-      this.txtOperacao.Propriedade = null;
-      this.txtOperacao.ScrollBars = System.Windows.Forms.ScrollBars.None;
-      this.txtOperacao.SelectedText = "";
-      this.txtOperacao.SelectionLength = 0;
-      this.txtOperacao.SelectionStart = 0;
-      this.txtOperacao.ShortcutsEnabled = true;
-      this.txtOperacao.ShowButtonF7 = true;
-      this.txtOperacao.ShowClearButton = true;
-      this.txtOperacao.Size = new System.Drawing.Size(290, 30);
-      this.txtOperacao.TabIndex = 0;
-      this.txtOperacao.UnderlinedStyle = false;
-      this.txtOperacao.UseSelectable = true;
-      this.txtOperacao.Valor = LmCorbieUI.Design.LmValueType.ComboBox;
-      this.txtOperacao.Valor_Decimais = ((short)(4));
-      this.txtOperacao.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
-      this.txtOperacao.WaterMarkFont = new System.Drawing.Font("Segoe UI", 8.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Pixel);
-      // 
-      // flpOperacoes
-      // 
-      this.flpOperacoes.AllowDrop = true;
-      this.flpOperacoes.AutoScroll = true;
-      this.flpOperacoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(228)))), ((int)(((byte)(233)))));
-      this.flpOperacoes.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.flpOperacoes.Location = new System.Drawing.Point(3, 96);
-      this.flpOperacoes.Name = "flpOperacoes";
-      this.flpOperacoes.Padding = new System.Windows.Forms.Padding(0, 5, 0, 9);
-      this.flpOperacoes.Size = new System.Drawing.Size(289, 130);
-      this.flpOperacoes.TabIndex = 6;
-      this.flpOperacoes.SizeChanged += new System.EventHandler(this.FlpProcess_SizeChanged);
-      this.flpOperacoes.DragDrop += new System.Windows.Forms.DragEventHandler(this.FlpOperacoes_DragDrop);
-      this.flpOperacoes.DragEnter += new System.Windows.Forms.DragEventHandler(this.FlpOperacoes_DragEnter);
       // 
       // tbpEngenharia
       // 
@@ -802,12 +615,31 @@
       this.tmr.Interval = 1000;
       this.tmr.Tick += new System.EventHandler(this.Tmr_Tick);
       // 
+      // lblWarning
+      // 
+      this.lblWarning.BackColor = System.Drawing.Color.Transparent;
+      this.lblWarning.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+      this.lblWarning.Dock = System.Windows.Forms.DockStyle.Top;
+      this.lblWarning.FontSize = LmCorbieUI.Design.LmLabelSize.Small;
+      this.lblWarning.FontWeight = LmCorbieUI.Design.LmLabelWeight.Bold;
+      this.lblWarning.ForeColor = System.Drawing.Color.DarkGoldenrod;
+      this.lblWarning.Location = new System.Drawing.Point(0, 319);
+      this.lblWarning.Margin = new System.Windows.Forms.Padding(3);
+      this.lblWarning.Name = "lblWarning";
+      this.lblWarning.Size = new System.Drawing.Size(305, 33);
+      this.lblWarning.TabIndex = 100;
+      this.lblWarning.Text = "Alerta\r\nInformação";
+      this.lblWarning.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.lblWarning.UseCustomColor = true;
+      this.lblWarning.Visible = false;
+      // 
       // FrmProdutoImport
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(305, 592);
       this.Controls.Add(this.tbcOperacoes);
+      this.Controls.Add(this.lblWarning);
       this.Controls.Add(this.pnlDados);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.KeyPreview = true;
@@ -830,9 +662,6 @@
       this.lmPanel1.ResumeLayout(false);
       this.tbcOperacoes.ResumeLayout(false);
       this.tbpLista.ResumeLayout(false);
-      this.tbpOperacoes.ResumeLayout(false);
-      this.lmPanelOP.ResumeLayout(false);
-      this.lmPanelOP.PerformLayout();
       this.tbpEngenharia.ResumeLayout(false);
       this.ResumeLayout(false);
 
@@ -841,8 +670,6 @@
         #endregion
         private LmCorbieUI.Controls.LmLabel lblCodMat;
         private LmCorbieUI.Controls.LmLabel cmxLabel2;
-        private LmCorbieUI.Controls.LmButton btnProximo;
-        private LmCorbieUI.Controls.LmButton btnVoltar;
         private System.Windows.Forms.ToolTip cmxToolTip1;
     private LmCorbieUI.Controls.LmPanel pnlDados;
     private LmCorbieUI.Controls.LmLabel lmLabel1;
@@ -852,19 +679,12 @@
     private LmCorbieUI.Controls.LmLabel lblEspess;
     private LmCorbieUI.Controls.LmLabel lmLabel8;
     private LmCorbieUI.Controls.LmTabControl tbcOperacoes;
-    private LmCorbieUI.Controls.LmTabPage tbpOperacoes;
-    private LmCorbieUI.Controls.LmPanelFlow flpOperacoes;
     private LmCorbieUI.Controls.LmTabPage tbpLista;
     private LmCorbieUI.Controls.LmDataGridView dgv;
-    private LmCorbieUI.Controls.LmLabel lmLabel3;
-    private LmCorbieUI.Controls.LmTextBox txtOperacao;
-    private LmCorbieUI.Controls.LmButton btnInserir;
-    private LmCorbieUI.Controls.LmPanel lmPanelOP;
     private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     private LmCorbieUI.Controls.LmPanel lmPanel1;
     private LmCorbieUI.Controls.LmTabPage tbpEngenharia;
     private System.Windows.Forms.TreeView trvProduto;
-    private LmCorbieUI.Controls.LmButton btnAtualizarProcesso;
     private System.Windows.Forms.Timer tmr;
     private System.Windows.Forms.PictureBox ptbMaterialError;
     private LmCorbieUI.Controls.LmLabel lblCodigoProduto;
@@ -881,5 +701,6 @@
     private LmCorbieUI.Controls.LmPanel lmPanel2;
     private LmCorbieUI.Controls.LmTextBox txtSmLarg;
     private LmCorbieUI.Controls.LmLabel lmLabel4;
+    private LmCorbieUI.Controls.LmLabel lblWarning;
   }
 }

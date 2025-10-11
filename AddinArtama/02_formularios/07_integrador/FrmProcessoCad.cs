@@ -119,10 +119,15 @@ namespace AddinArtama {
 
           maqs.ForEach(x => { x.descricao = $"{x.codMaquina} - {x.descricao} [{x.mascara}]"; });
           ops.ForEach(x => { x.descricao = $"{x.codOperacao} - {x.descricao} [{x.abreviatura}]"; });
-          txtMaquina.CarregarComboBox(maqs);
-          txtOperacao.CarregarComboBox(ops);
+
+          UIThreadHelper.Invoke(txtOperacao, () => {
+            txtMaquina.CarregarComboBox(maqs);
+          });
+          UIThreadHelper.Invoke(txtOperacao, () => {
+            txtOperacao.CarregarComboBox(ops);
+          });
         } catch (Exception ex) {
-          //Toast.Warning(ex.ToString());
+          Toast.Warning(ex.ToString());
           // LmException.ShowException(ex, "Erro ao carregar lista Maquina");
         }
       }));

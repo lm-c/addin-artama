@@ -1,11 +1,12 @@
-﻿using System;
+﻿using LmCorbieUI;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using RestSharp;
-using Newtonsoft.Json.Linq;
-using LmCorbieUI;
 using static AddinArtama.Api;
 
 namespace AddinArtama {
@@ -120,8 +121,7 @@ namespace AddinArtama {
 
           return true;
         } else {
-          var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
-          var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro ao Cadastrar Engenharia";
+          var errorMessage = ApiError.Parse(response.Content);
           throw new Exception($"{response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
@@ -148,36 +148,40 @@ namespace AddinArtama {
           var statusEngenharia = jsonObject["statusEngenharia"]?.ToString();
 
           _return = new Engenharia {
-            descricaoProduto = jsonObject["descricao"]?.ToString(),
-            codClassificacao = !string.IsNullOrEmpty(codClassificacao) ? Convert.ToInt32(codClassificacao) : 0,
-            statusEngenharia = !string.IsNullOrEmpty(statusEngenharia) ? (StatusEngenharia)Convert.ToInt32(statusEngenharia) : StatusEngenharia.EmDesenvolvimento ,
-            tipoEngenharia = jsonObject["tipoEngenharia"]?.ToString(),
+            descricaoProduto = SafeToString(jsonObject["descricao"]),
+            codClassificacao = SafeToInt(jsonObject["codClassificacao"]),
+            statusEngenharia = (StatusEngenharia)(SafeToInt(jsonObject["statusEngenharia"]) == 0
+                            ? (int)StatusEngenharia.EmDesenvolvimento
+                            : SafeToInt(jsonObject["statusEngenharia"])),
+            tipoEngenharia = SafeToString(jsonObject["tipoEngenharia"]),
 
             componentes = jsonObject["componentes"]?.Select(c => new ComponenteEng {
-              seqComponente = c["seqComponente"]?.ToObject<int>() ?? 0,
-              codInsumo = c["codItem"]?.ToString(),
-              quantidade = c["quantidade"]?.ToObject<double>() ?? 0,
-              centroCusto = c["centroCusto"]?.ToString(),
-              comprimento = c["comprimento"]?.ToObject<double>() ?? 0,
-              largura = c["largura"]?.ToObject<double>() ?? 0,
-              espessura = c["espessura"]?.ToObject<double>() ?? 0,
-              percQuebra = c["percQuebra"]?.ToObject<double>() ?? 0,
-              codClassificacaoInsumo = c["codClassificacao"]?.ToObject<int>() ?? 0,
+              seqComponente = SafeToInt(c["seqComponente"]),
+              codInsumo = SafeToString(c["codItem"]),
+              quantidade = SafeToDouble(c["quantidade"]),
+              centroCusto = SafeToString(c["centroCusto"]),
+              comprimento = SafeToDouble(c["comprimento"]),
+              largura = SafeToDouble(c["largura"]),
+              espessura = SafeToDouble(c["espessura"]),
+              percQuebra = SafeToDouble(c["percQuebra"]),
+              codClassificacaoInsumo = SafeToInt(c["codClassificacao"])
             }).ToList() ?? new List<ComponenteEng>(),
 
             operacoes = jsonObject["operacoes"]?.Select(o => new OperacaoEng {
-              seqOperacao = o["seqOperacao"]?.ToObject<int>() ?? 0,
-              codOperacao = o["codOperacao"]?.ToObject<int>() ?? 0,
-              abreviaturaOperacao = o["abreviaturaOperacao"]?.ToString(),
-              numOperadores = o["numOpradores"]?.ToObject<double>() ?? 0,
-              codFaseOperacao = o["faseProducao"]?.ToObject<int>() ?? 0,
-              codMascaraMaquina = o["mascMaquina"]?.ToString(),
-              tempoPadraoOperacao = o["tempoPadrao"]?.ToObject<double>() ?? 0,
-              tempoPreparacaoOperacao = o["tempoPreparacao"]?.ToObject<double>() ?? 0,
-              centroCusto = o["centroCusto"]?.ToString(),
+              seqOperacao = SafeToInt(o["seqOperacao"]),
+              codOperacao = SafeToInt(o["codOperacao"]),
+              abreviaturaOperacao = SafeToString(o["abreviaturaOperacao"]),
+              numOperadores = SafeToDouble(o["numOpradores"]),
+              codFaseOperacao = SafeToInt(o["faseProducao"]),
+              codMascaraMaquina = SafeToString(o["mascMaquina"]),
+              tempoPadraoOperacao = SafeToDouble(o["tempoPadrao"]),
+              tempoPreparacaoOperacao = SafeToDouble(o["tempoPreparacao"]),
+              centroCusto = SafeToString(o["centroCusto"])
             }).ToList() ?? new List<OperacaoEng>()
           };
-
+        } else {
+          var errorMessage = ApiError.Parse(response.Content);
+          throw new Exception($"{response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
         LmException.ShowException(ex, $"Erro ao retornar engenharia: {codigo}");
@@ -247,9 +251,8 @@ namespace AddinArtama {
 
           return codigo;
         } else {
-          var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
-          var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro ao Duplicar Produto";
-          throw new Exception($"Erro ao Cadastrar Item: {itemGenerico.refTecnica}\n\nErro: {response.StatusCode}\r\n{errorMessage}");
+          var errorMessage = ApiError.Parse(response.Content);
+          throw new Exception($"Erro ao Duplicar Item: {itemGenerico.refTecnica}\n\nErro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
         Toast.Error($"{ex.Message}");
@@ -257,6 +260,28 @@ namespace AddinArtama {
       }
 
     }
+
+    #region Private metodos
+
+    private static int SafeToInt(JToken token) {
+      if (token == null) return 0;
+      if (int.TryParse(token.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out int value))
+        return value;
+      return 0;
+    }
+
+    private static double SafeToDouble(JToken token) {
+      if (token == null) return 0;
+      if (double.TryParse(token.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
+        return value;
+      return 0;
+    }
+
+    private static string SafeToString(JToken token) {
+      return token?.ToString() ?? string.Empty;
+    }
+
+    #endregion
 
   }
 }

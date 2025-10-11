@@ -47,8 +47,7 @@ namespace AddinArtama {
           _return = responseObj.data;
 
         } else {
-          var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
-          var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro desconhecido";
+          var errorMessage = ApiError.Parse(response.Content);
           Toast.Error($"Erro: {response.StatusCode}\r\n{errorMessage}");
         }
 

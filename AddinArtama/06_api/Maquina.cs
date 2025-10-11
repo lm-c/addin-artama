@@ -1,12 +1,13 @@
 ﻿using LmCorbieUI;
+using LmCorbieUI.Metodos.AtributosCustomizados;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Linq;
-using LmCorbieUI.Metodos.AtributosCustomizados;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AddinArtama {
   internal partial class Api {
@@ -56,8 +57,7 @@ namespace AddinArtama {
             _return.AddRange(responseObj.data);
 
           } else {
-            var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
-            var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro desconhecido";
+            var errorMessage = ApiError.Parse(response.Content);
             Toast.Error($"Erro: {response.StatusCode}\r\n{errorMessage}");
             break;
           }

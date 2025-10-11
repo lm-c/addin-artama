@@ -82,8 +82,7 @@ namespace AddinArtama {
           var responseData = response.Content;
           jsonObject = JObject.Parse(responseData);
         } else {
-          var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
-          var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro ao Alterar Item";
+          var errorMessage = ApiError.Parse(response.Content);
           throw new Exception($"Item: {produtoErp.Name}\n\nErro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
@@ -105,8 +104,7 @@ namespace AddinArtama {
           jsonObject = JObject.Parse(responseData);
           return true;
         } else {
-          var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
-          var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro ao Cadastrar Produto";
+          var errorMessage = ApiError.Parse(response.Content);
           throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
@@ -151,6 +149,9 @@ namespace AddinArtama {
             pesoPadraoNBR = jsonObject["dadosEntrada"]["pesoPadraoNBR"]?.ToObject<double>() ?? 0,
             situacao = jsonObject["dadosEntrada"]["situacao"]?.ToObject<int>() ?? 0,
           };
+        } else {
+          var errorMessage = ApiError.Parse(response.Content);
+          throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
         LmException.ShowException(ex, $"Item código: {codigo} | Erro ao pesquisar item genérico");
@@ -220,6 +221,9 @@ namespace AddinArtama {
               _return.Add(itemGenerico);
             }
           }
+        } else {
+          var errorMessage = ApiError.Parse(response.Content);
+          throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
         LmException.ShowException(ex, $"Item nome: {nomeItem} | Erro ao pesquisar item genérico");

@@ -3,8 +3,8 @@ using System;
 
 namespace AddinArtama {
   class Prefixo {
-   public static string GetPrefixo => ""; // para Oficial         
-     //public static string GetPrefixo => "teste_"; // para testes
+    // public static string GetPrefixo => ""; // para Oficial         
+    public static string GetPrefixo => "teste_"; // para testes
   }
 
   public class ConexaoMySql : IDisposable {

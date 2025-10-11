@@ -80,6 +80,9 @@ namespace AddinArtama {
           var operacao = ListaOperacoesERP.FirstOrDefault(x => x.codOperacao == processo.codigo_operacao);
           var maquina = ListaMaquinasERP.FirstOrDefault(x => x.codMaquina == processo.codigo_maquina);
 
+          if (operacao == null)
+            continue;
+
           ListaProcessos.Add(new Processo {
             codAxion = processo.id,
             codOperacao = operacao.codOperacao,

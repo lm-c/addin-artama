@@ -301,7 +301,7 @@ namespace AddinArtama {
                   Denominacao = produtoErp.Denominacao,
                   Referencia = itemCorte.NomeLista,
                   CodComponente = produtoErp.CodComponente,
-                  CodProduto = itemCorte.CodProduto.ToString(),
+                  //CodProduto = itemCorte.CodProduto.ToString(),
                   Img3D = Properties.Resources.part,
                   Img2D = produtoErp.Img2D,
                   TipoComponente = TipoComponente.Peca,
@@ -480,7 +480,7 @@ namespace AddinArtama {
                   produtoErp.Nivel = "1." + nivel;
                   produtoErp.Quantidade = qtd;
                   produtoErp.CodComponente = codComp;
-                  produtoErp.CodProduto = swTableAnnotation.get_Text(i, 4).Trim();
+                  // produtoErp.CodProduto = swTableAnnotation.get_Text(i, 4).Trim();
                   produtoErp.Denominacao = swTableAnnotation.get_Text(i, 6);
                   var comprim = swTableAnnotation.get_Text(i, 10);
                   double.TryParse(comprim.Replace(".", ","), out double comprimento);
@@ -587,7 +587,7 @@ namespace AddinArtama {
                         Denominacao = produtoErp.Denominacao,
                         Referencia = itemCorte.NomeLista,
                         CodComponente = produtoErp.CodComponente,
-                        CodProduto = itemCorte.CodProduto,
+                        //CodProduto = itemCorte.CodProduto,
                         Img3D = Properties.Resources.part,
                         Img2D = produtoErp.Img2D,
                         TipoComponente = TipoComponente.Peca,

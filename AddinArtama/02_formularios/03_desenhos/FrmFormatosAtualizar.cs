@@ -87,21 +87,21 @@ namespace AddinArtama {
         btnAtualizar.Enabled = false;
 
         var swModel = default(ModelDoc2);
-        var swModelTemplate = default(ModelDoc2);
+        //var swModelTemplate = default(ModelDoc2);
 
         templates.Carregar();
 
         int status = 0;
         int warnings = 0;
 
-        Sw.App.OpenDoc6(templates.model.formato_a4r, (int)swDocumentTypes_e.swDocDRAWING,
-            (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
+        //Sw.App.OpenDoc6(templates.model.formato_a4r, (int)swDocumentTypes_e.swDocDRAWING,
+        //    (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
 
-        Sw.App.ActivateDoc2(templates.model.formato_a4r, false, 0);
-        swModelTemplate = (ModelDoc2)Sw.App.ActiveDoc;
+        //Sw.App.ActivateDoc2(templates.model.formato_a4r, false, 0);
+        //swModelTemplate = (ModelDoc2)Sw.App.ActiveDoc;
 
-        FormatoPadrao.GetDefaultFileProps(swModelTemplate);
-        Sw.App.CloseDoc(templates.model.formato_a4r);
+        //FormatoPadrao.GetDefaultFileProps(swModelTemplate);
+        //Sw.App.CloseDoc(templates.model.formato_a4r);
 
         await Loader.ShowDuringOperation(
             "Iniciando leitura da tabela...",
@@ -131,7 +131,7 @@ namespace AddinArtama {
                   Sw.App.ActivateDoc2(file.PathName, false, 0);
                   swModel = (ModelDoc2)Sw.App.ActiveDoc;
 
-                  FormatoPadrao.ChangeFileProps(swModel);
+                  // FormatoPadrao.ChangeFileProps(swModel);
                   UpdateFormato(swModel);
 
                   swModel.Save();

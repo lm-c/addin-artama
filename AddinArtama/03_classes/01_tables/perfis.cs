@@ -27,7 +27,7 @@ namespace AddinArtama {
     [LarguraColunaGrid(250)]
     public string descricao { get; set; }
 
-    [Required(ErrorMessage = "Campo \"Permissão\" é Obrigatório!")]
+    // [Required(ErrorMessage = "Campo \"Permissão\" é Obrigatório!")]
     [LarguraColunaGrid(150)]
     public string permissoes { get; set; }
 
