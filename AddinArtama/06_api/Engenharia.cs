@@ -143,7 +143,6 @@ namespace AddinArtama {
           var responseData = response.Content;
           var jsonObject = JObject.Parse(responseData);
 
-
           var codClassificacao = jsonObject["codClassificacao"]?.ToString();
           var statusEngenharia = jsonObject["statusEngenharia"]?.ToString();
 
@@ -181,6 +180,9 @@ namespace AddinArtama {
           };
         } else {
           var errorMessage = ApiError.Parse(response.Content);
+          if(errorMessage == $"Engenharia {codigo} não cadastrada!") {
+            return null;
+          }
           throw new Exception($"{response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {

@@ -11,6 +11,7 @@ using System.IO;
 using System.Threading.Tasks;
 using static AddinArtama.Api;
 using System.Collections.Generic;
+using System.Linq.Dynamic.Core;
 
 namespace AddinArtama {
   public partial class FrmProdutoImport : LmSingleForm {
@@ -109,7 +110,7 @@ namespace AddinArtama {
 
             await Loader.ShowDuringOperation(async (progress) => {
               progress.Report("Iniciando leitura Componentes");
-              _produtos = await ProdutoErp.GetComponentsAsync(_arvoreCompleta, _montageGeralNome);
+              _produtos = await ProdutoErp.GetComponentsAsync(_arvoreCompleta);
             });
 
             UIThreadHelper.Invoke(btnCarrProcess, () => {
@@ -168,11 +169,11 @@ namespace AddinArtama {
 
         var possuiErro = false;
         _produtos.Where(x => x.Nivel == produtoERP.Nivel || x.Nivel.StartsWith($"{produtoERP.Nivel}.")).ToList().ForEach(x => {
-          if (x.Pendencias.Count > 0) {
-
+          if (x.Pendencias.Where(y => y.EhPendenciaCritica()).ToList().Count > 0) {
             var msgPend = string.Empty;
-            x.Pendencias.ForEach(y => {
-              msgPend += $"- {y.ObterDescricaoEnum()}\r\n";
+            x.Pendencias.Where(y => y.EhPendenciaCritica()).ToList().ForEach(y => {
+              if (y.EhPendenciaCritica())
+                msgPend += $"- {y.ObterDescricaoEnum()}\r\n";
             });
 
             Toast.Warning($"{x.Name} [{x.Nivel}]\r\n{msgPend}");
@@ -407,96 +408,7 @@ namespace AddinArtama {
                 // imprimir label 
                 progress.Report($"Cadastrando produto '{nomeProduto}'!");
 
-                int tipo = produtoErp.PathName.EndsWith("SLDASM")
-                ? (int)swDocumentTypes_e.swDocASSEMBLY
-                : (int)swDocumentTypes_e.swDocPART;
-
-                //// calcular peso
-                //if (produtoErp.ItemCorte != null) {
-                //  if (produtoErp.ItemCorte.Tipo == TipoListaMaterial.Chapa) {
-                //    produtoErp.PesoBruto = ((produtoErp.ItemCorte.Largura + produtoErp.SobremetalLarg) / 1000) *
-                //    ((produtoErp.ItemCorte.Comprimento + produtoErp.SobremetalCompr) / 1000) * produtoErp.PesoPadraoNBR;
-                //  } else {
-                //    produtoErp.PesoBruto = ((produtoErp.ItemCorte.Comprimento + produtoErp.SobremetalCompr) / 1000) * produtoErp.PesoPadraoNBR;
-                //  }
-                //}
-
-                produtoErp.PesoBruto = Math.Round(produtoErp.PesoBruto, 4);
-                if (produtoErp.PesoLiquido > produtoErp.PesoBruto)
-                  produtoErp.PesoLiquido = produtoErp.PesoBruto;
-
-                if (produtoErp.CadastrarProdutoErp) {
-                  var itemGenerico = new Api.ItemGenerico();
-                  MontarItemGenerico(produtoErp, itemGenerico);
-
-                  if (produtoErp.Fantasma) {
-                    itemGenerico.situacao = 0;
-                  }
-
-                  var codigoNovo = await Api.DuplicarItemGenericoAsync(db, itemGenerico);
-
-                  if (!string.IsNullOrEmpty(codigoNovo)) {
-                    produtoErp.CodProduto = codigoNovo;
-                    if (produtoErp.CadastrarAddin) {
-                      CadastrarAddin(db, produtoErp);
-                    } else {
-                      AtualizarAddin(db, produtoErp);
-                    }
-                  }
-                } else {
-                  if (produtoErp.TipoComponente != TipoComponente.ItemBiblioteca && produtoErp.TipoComponente != TipoComponente.ListaMaterial && !produtoErp.Name.StartsWith("4")) {
-                    await Api.UpdateItemGenericoAsync(db, produtoErp);
-                  }
-
-                  if (!string.IsNullOrEmpty(produtoErp.CodProduto)) {
-                    if (produtoErp.CadastrarAddin) {
-                      CadastrarAddin(db, produtoErp);
-                    } else {
-                      AtualizarAddin(db, produtoErp);
-                    }
-                  }
-                }
-
-                if (produtoErp.CadastrarAddin || produtoErp.CadastrarProdutoErp) {
-                  swModel = Sw.App.OpenDoc6(produtoErp.PathName, tipo,
-                    (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
-
-                  if (swModel != null && !swModel.IsOpenedReadOnly()) {
-                    var swModelDocExt = swModel.Extension;
-                    var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
-
-                    if (produtoErp.Referencia.StartsWith("Item da lista de corte")) {
-                      //produtoErp.ItensCorte[0].CodProduto = produtoErp.CodProduto;
-                      bool boolstatus = swModel.Extension.SelectByID2(produtoErp.Referencia, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
-
-                      SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
-                      Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
-                      swCustPropMgr = swFeat.CustomPropertyManager;
-                    }
-
-                    swCustPropMgr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, produtoErp.CodProduto, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-
-                    swModel.Save();
-
-                    if (Path.GetFileNameWithoutExtension(produtoErp.PathName) != nameItemPai)
-                      Sw.App.CloseDoc(produtoErp.PathName);
-                  }
-                }
-
-                produtoErp.Pendencias = new List<PendenciasEngenharia>();
-
-                if (!string.IsNullOrEmpty(produtoErp.CodProduto)) {
-                  produtoErp.ImgPendencia = new Bitmap(20, 20);
-                  dgv.Grid.Rows[startIndex].DefaultCellStyle.ForeColor = dgv.Grid.Rows[startIndex].DefaultCellStyle.SelectionForeColor = corSucesso;
-                } else {
-                  produtoErp.ImgPendencia = Properties.Resources.error;
-                  produtoErp.Pendencias.Add(PendenciasEngenharia.ErroAoCadastrarCod);
-                  dgv.Grid.Rows[startIndex].DefaultCellStyle.ForeColor = dgv.Grid.Rows[startIndex].DefaultCellStyle.SelectionForeColor = corErro;
-                }
-
-                AtualizarInfoAlerta(produtoErp);
-
-                produtoErp.CadastrarProdutoErp = produtoErp.CadastrarAddin = false;
+                await SalvarProdutoAsync(produtoErp, db, swModel, startIndex, nameItemPai, status, warnings);
 
                 startIndex++;
                 if (startIndex >= dgv.Grid.Rows.Count)
@@ -530,19 +442,16 @@ namespace AddinArtama {
             }
           });
 
-          UIThreadHelper.Invoke(dgv.Grid, () => {
-            lblCodigoProduto.Text = produtoErp.CodProduto;
-
-          });
-
           if (!_canceladoComErro)
-            MsgBox.Show("Cadastro de produtos e engenharia finalizado com sucesso", "Addin LM Projetos",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Toast.Success("Cadastro de produtos e engenharia finalizado com sucesso");
           else
             MsgBox.Show("Cadastro de produtos e engenharia finalizado com Erro", "Addin LM Projetos",
               MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-          btnSalvar.Enabled = btnCarrProcess.Enabled = true;
+          UIThreadHelper.Invoke(lblCodigoProduto, () => {
+            lblCodigoProduto.Text = produtoErp.CodProduto;
+            btnSalvar.Enabled = btnCarrProcess.Enabled = true;
+          });
         } catch (Exception ex) {
           // dgv.RowIndexChanged += Dgv_RowIndexChanged;
           MsgBox.Show($"Erro ao cadastrar produto\n\nItem: {nomeProduto}\n\n{ex.Message}", "Addin LM Projetos",
@@ -552,6 +461,75 @@ namespace AddinArtama {
         } finally {
         }
       }));
+    }
+
+    private async Task SalvarProdutoAsync(ProdutoErp produtoErp, ContextoDados db, ModelDoc2 swModel, int startIndex, string nameItemPai, int status, int warnings) {
+
+      int tipo = produtoErp.PathName.EndsWith("SLDASM")
+      ? (int)swDocumentTypes_e.swDocASSEMBLY
+      : (int)swDocumentTypes_e.swDocPART;
+
+      //if (produtoErp.ItemGenerico == null) {
+      if (string.IsNullOrEmpty(produtoErp.CodProduto)) {
+        var itemGenerico = new Api.ItemGenerico();
+        MontarItemGenerico(produtoErp, itemGenerico);
+
+        if (produtoErp.Fantasma) {
+          itemGenerico.situacao = 0;
+        }
+
+        var codigoNovo = await Api.DuplicarItemGenericoAsync(db, itemGenerico);
+
+        if (!string.IsNullOrEmpty(codigoNovo)) {
+          produtoErp.CodProduto = codigoNovo;
+        }
+      } else {
+        if (produtoErp.TipoComponente != TipoComponente.ItemBiblioteca && produtoErp.TipoComponente != TipoComponente.ListaMaterial) {
+          await Api.UpdateItemGenericoAsync(produtoErp);
+        }
+      }
+
+      var jaCadastradoAddin = long.TryParse(produtoErp.CodProduto, out long codprod)
+         && db.produto_erp.Any(x => x.codigo_produto == codprod && x.name == produtoErp.Name && x.referencia == produtoErp.Referencia);
+
+      if (!jaCadastradoAddin) {
+        CadastrarAddin(db, produtoErp);
+      } else {
+        AtualizarAddin(db, produtoErp);
+      }
+
+      if (produtoErp.ItemGenerico == null) {
+        swModel = Sw.App.OpenDoc6(produtoErp.PathName, tipo,
+          (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref status, ref warnings);
+
+        if (!swModel.IsOpenedReadOnly()) {
+          var swModelDocExt = swModel.Extension;
+          var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
+
+          if (produtoErp.Referencia.StartsWith("Item da lista de corte")) {
+            //produtoErp.ItemCorte.CodProduto = produtoErp.CodProduto; // talvez precise disso
+            bool boolstatus = swModel.Extension.SelectByID2(produtoErp.Referencia, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
+
+            SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+            Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
+            swCustPropMgr = swFeat.CustomPropertyManager;
+          }
+
+          swCustPropMgr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, produtoErp.CodProduto, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+
+          swModel.Save();
+
+          if (Path.GetFileNameWithoutExtension(produtoErp.PathName) != nameItemPai)
+            Sw.App.CloseDoc(produtoErp.PathName);
+        }
+      }
+
+      produtoErp.Pendencias = new List<PendenciasEngenharia>();
+      produtoErp.ImgPendencia = new Bitmap(20, 20);
+
+      AtualizarInfoAlerta(produtoErp);
+
+      dgv.Grid.Rows[startIndex].DefaultCellStyle.ForeColor = dgv.Grid.Rows[startIndex].DefaultCellStyle.SelectionForeColor = corSucesso;
     }
 
     private async Task PercorrerTreeViewSalvarEngAsync(ContextoDados db, TreeNode node, configuracao_api configApi, IProgress<string> progress) {

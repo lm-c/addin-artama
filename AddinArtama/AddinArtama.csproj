@@ -118,23 +118,23 @@
       <HintPath>..\packages\RestSharp.106.12.0\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="SolidWorks.Interop.sldworks">
-      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2022\SolidWorks.Interop.sldworks.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.sldworks.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swcommands">
-      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2022\SolidWorks.Interop.swcommands.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.swcommands.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swconst">
-      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2022\SolidWorks.Interop.swconst.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.swconst.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swdocumentmgr">
-      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2022\SolidWorks.Interop.swdocumentmgr.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.swdocumentmgr.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swpublished">
-      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2022\SolidWorks.Interop.swpublished.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.swpublished.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
@@ -315,6 +315,12 @@
     </Compile>
     <Compile Include="02_formularios\05_cadastros\FrmPermissao.Designer.cs">
       <DependentUpon>FrmPermissao.cs</DependentUpon>
+    </Compile>
+    <Compile Include="02_formularios\07_integrador\FrmEscolherCodigoErp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="02_formularios\07_integrador\FrmEscolherCodigoErp.Designer.cs">
+      <DependentUpon>FrmEscolherCodigoErp.cs</DependentUpon>
     </Compile>
     <Compile Include="02_formularios\07_integrador\FrmProcessoCad.cs">
       <SubType>Form</SubType>
@@ -502,6 +508,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="02_formularios\05_cadastros\FrmPermissao.resx">
       <DependentUpon>FrmPermissao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="02_formularios\07_integrador\FrmEscolherCodigoErp.resx">
+      <DependentUpon>FrmEscolherCodigoErp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="02_formularios\07_integrador\FrmProcessoCad.resx">
       <DependentUpon>FrmProcessoCad.cs</DependentUpon>

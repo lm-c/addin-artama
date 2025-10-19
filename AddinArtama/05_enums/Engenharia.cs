@@ -40,20 +40,20 @@ namespace AddinArtama {
   }
 
   public enum PendenciasEngenharia {
-    [Description("Nescessário revisar operações"), TipoPendencia(PendenciaCritica.Sim)]
-    OperacaoRevisar = 0,
-    [Description("Não possui operações"), TipoPendencia(PendenciaCritica.Sim)]
-    OperacaoNaoPossui = 1,
+    //[Description("Nescessário revisar operações"), TipoPendencia(PendenciaCritica.Sim)]
+    //OperacaoRevisar,
+    //[Description("Não possui operações"), TipoPendencia(PendenciaCritica.Sim)]
+    //OperacaoNaoPossui,
     [Description("Aberto como somente leitura"), TipoPendencia(PendenciaCritica.Nao)]
-    SomenteLeitura = 2,
+    SomenteLeitura,
     [Description("Material não cadastrado no ERP"), TipoPendencia(PendenciaCritica.Sim)]
-    MateriaPrimaInexistente = 3,
+    MateriaPrimaInexistente,
     [Description("Produto Sofreu Alteração"), TipoPendencia(PendenciaCritica.Nao)]
-    ItemAlterado = 4,
+    ItemAlterado ,
     [Description("Material errado no projeto"), TipoPendencia(PendenciaCritica.Sim)]
-    MateriaErrado = 5,
+    MateriaErrado ,
     [Description("Erro Impedindo Geração de Código"), TipoPendencia(PendenciaCritica.Sim)]
-    ErroAoCadastrarCod = 6,
+    ErroAoCadastrarCod,
   }
 
   public enum StatusEngenharia {

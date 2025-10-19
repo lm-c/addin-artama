@@ -166,9 +166,9 @@ namespace AddinArtama {
           produtoERP.ImgPendencia = new Bitmap(20, 20);
           dgv.Grid.CurrentRow.DefaultCellStyle.ForeColor = Color.Black;
         } else {
-          ProdutoErp.AdicionarPendencia(produtoERP, PendenciasEngenharia.OperacaoNaoPossui);
-          produtoERP.ImgPendencia = Properties.Resources.error;
-          dgv.Grid.CurrentRow.DefaultCellStyle.ForeColor = Color.Red;
+          //ProdutoErp.AdicionarPendencia(produtoERP, PendenciasEngenharia.OperacaoNaoPossui);
+          //produtoERP.ImgPendencia = Properties.Resources.error;
+          //dgv.Grid.CurrentRow.DefaultCellStyle.ForeColor = Color.Red;
         }
 
         lblMaterial.UseCustomColor =
@@ -641,11 +641,10 @@ namespace AddinArtama {
             DataGridViewRow row = (DataGridViewRow)list[i];
             var produtoErp = row.DataBoundItem as ProdutoErp;
 
-
-            if (produtoErp.Operacoes != null && produtoErp.Operacoes.Count == 0 && produtoErp.TipoComponente != TipoComponente.ItemBiblioteca) {
-              ProdutoErp.AdicionarPendencia(produtoErp, PendenciasEngenharia.OperacaoNaoPossui);
-              row.DefaultCellStyle.ForeColor = Color.Red;
-            }
+            //if (produtoErp.Operacoes != null && produtoErp.Operacoes.Count == 0 && produtoErp.TipoComponente != TipoComponente.ItemBiblioteca) {
+            //  ProdutoErp.AdicionarPendencia(produtoErp, PendenciasEngenharia.OperacaoNaoPossui);
+            //  row.DefaultCellStyle.ForeColor = Color.Red;
+            //}
           }
         }
       } catch (Exception ex) {

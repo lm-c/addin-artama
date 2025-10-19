@@ -1,13 +1,14 @@
-﻿using System;
+﻿using LmCorbieUI;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using RestSharp;
-using Newtonsoft.Json.Linq;
-using static AddinArtama.Api;
-using LmCorbieUI;
 using System.Windows.Forms;
+using static AddinArtama.Api;
 
 namespace AddinArtama {
   internal partial class Api {
@@ -30,11 +31,11 @@ namespace AddinArtama {
       public TipoDocumento tipoDocumento { get; set; }
     }
 
-    internal static async Task UpdateItemGenericoAsync(ContextoDados db, ProdutoErp produtoErp) {
+    internal static async Task UpdateItemGenericoAsync(ProdutoErp produtoErp) {
       ItemGenerico itemGenerico = new ItemGenerico();
       try {
         itemGenerico = await Api.GetItemGenericoAsync(produtoErp.CodProduto);
-        
+
         Api.MontarItemGenerico(produtoErp, itemGenerico);
 
         if (produtoErp.Fantasma) {
@@ -126,9 +127,16 @@ namespace AddinArtama {
 
         var response = await client.ExecuteAsync(request);
 
+
         if (response.IsSuccessful) {
           var responseData = response.Content;
           var jsonObject = JObject.Parse(responseData);
+
+          // Acessar o array "data"
+          var dataArray = jsonObject["data"] as JArray;
+
+          var mascaraSaida = jsonObject["dadosSaida"]?["mascara"]?.ToString();
+          var mascaraEntrada = jsonObject["dadosEntrada"]?["mascara"]?.ToString();
 
           _return = new ItemGenerico {
             codigo = jsonObject["codigo"]?.ToString(),
@@ -136,18 +144,20 @@ namespace AddinArtama {
             refTecnica = jsonObject["refTecnica"]?.ToString(),
             unidadeMedida = jsonObject["unidadeMedida"]?.ToString(),
             classificacaoFiscal = jsonObject["classificacaoFiscal"]?.ToString(),
-            finalidade = jsonObject["finalidade"]?.ToObject<int>() ?? 0,
-            origem = jsonObject["origem"]?.ToObject<int>() ?? 0,
-            tipo = jsonObject["tipo"]?.ToObject<int>() ?? 0,
-            procedencia = jsonObject["procedencia"]?.ToObject<int>() ?? 0,
 
-            pesoBruto = jsonObject["dadosSaida"]["pesoBruto"]?.ToObject<double>() ?? 0,
-            pesoLiquido = jsonObject["dadosSaida"]["pesoLiquido"]?.ToObject<double>() ?? 0,
-            mascaraSaida = jsonObject["dadosSaida"]["mascara"]?.ToString(),
+            finalidade = int.TryParse(jsonObject["finalidade"]?.ToString(), out var f) ? f : 0,
+            origem = int.TryParse(jsonObject["origem"]?.ToString(), out var o) ? o : 0,
+            tipo = int.TryParse(jsonObject["tipo"]?.ToString(), out var t) ? t : 0,
+            procedencia = int.TryParse(jsonObject["procedencia"]?.ToString(), out var p) ? p : 0,
 
-            mascaraEntrada = jsonObject["dadosEntrada"]["mascara"]?.ToString(),
-            pesoPadraoNBR = jsonObject["dadosEntrada"]["pesoPadraoNBR"]?.ToObject<double>() ?? 0,
-            situacao = jsonObject["dadosEntrada"]["situacao"]?.ToObject<int>() ?? 0,
+            pesoBruto = double.TryParse(jsonObject["dadosSaida"]?["pesoBruto"]?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var pb) ? pb : 0,
+            pesoLiquido = double.TryParse(jsonObject["dadosSaida"]?["pesoLiquido"]?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var pl) ? pl : 0,
+            mascaraSaida = mascaraSaida,
+
+            mascaraEntrada = mascaraEntrada,
+            pesoPadraoNBR = double.TryParse(jsonObject["dadosEntrada"]?["pesoPadraoNBR"]?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var ppn) ? ppn : 0,
+
+            situacao = int.TryParse(jsonObject["dadosEntrada"]?["situacao"]?.ToString(), out var sit) ? sit : 1,
           };
         } else {
           var errorMessage = ApiError.Parse(response.Content);
@@ -172,43 +182,52 @@ namespace AddinArtama {
 
         var response = await client.ExecuteAsync(request);
 
+
         if (response.IsSuccessful) {
           var responseData = response.Content;
           var jsonObject = JObject.Parse(responseData);
 
           // Acessar o array "data"
           var dataArray = jsonObject["data"] as JArray;
-
           if (dataArray != null) {
             foreach (var item in dataArray) {
+
+              // Strings simples
               var codigo = item["codigo"]?.ToString();
               var nome = item["nome"]?.ToString();
               var refTecnica = item["refTecnica"]?.ToString();
               var unidadeMedida = item["unidadeMedida"]?.ToString();
               var classificacaoFiscal = item["classificacaoFiscal"]?.ToString();
-              var finalidade = item["finalidade"]?.ToObject<int>() ?? 0;
-              var origem = item["origem"]?.ToString();
-              var tipo = item["tipo"]?.ToObject<int>() ?? 0;
-              var procedencia = item["procedencia"]?.ToString();
 
-              var pesoBruto = item["dadosSaida"]["pesoBruto"]?.ToObject<double>() ?? 0;
-              var pesoLiquido = item["dadosSaida"]["pesoLiquido"]?.ToObject<double>() ?? 0;
-              var mascaraSaida = item["dadosSaida"]["mascara"]?.ToString();
+              // Inteiros com TryParse
+              var finalidade = int.TryParse(item["finalidade"]?.ToString(), out var f) ? f : 0;
+              var origem = int.TryParse(item["origem"]?.ToString(), out var o) ? o : 0;
+              var tipo = int.TryParse(item["tipo"]?.ToString(), out var t) ? t : 0;
+              var procedencia = int.TryParse(item["procedencia"]?.ToString(), out var p) ? p : 0;
 
-              var mascaraEntrada = item["dadosEntrada"]["mascara"]?.ToString();
-              var pesoPadraoNBR = item["dadosEntrada"]["pesoPadraoNBR"]?.ToObject<double>() ?? 0;
-              var situacao = item["dadosEntrada"]["situacao"]?.ToString() ?? "";
+              // Dados de saída
+              var pesoBruto = double.TryParse(item["dadosSaida"]?["pesoBruto"]?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var pb) ? pb : 0;
+              var pesoLiquido = double.TryParse(item["dadosSaida"]?["pesoLiquido"]?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var pl) ? pl : 0;
+              var mascaraSaida = item["dadosSaida"]?["mascara"]?.ToString();
 
-              var itemGenerico = new ItemGenerico {
+              // Dados de entrada
+              var mascaraEntrada = item["dadosEntrada"]?["mascara"]?.ToString();
+              var pesoPadraoNBR = double.TryParse(item["dadosEntrada"]?["pesoPadraoNBR"]?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var ppn) ? ppn : 0;
+
+              // Situação (se vier vazio → 1 como padrão)
+              var situacao = int.TryParse(item["dadosEntrada"]?["situacao"]?.ToString(), out var sit) ? sit : 1;
+
+              // Monta o objeto final
+              _return.Add(new ItemGenerico {
                 codigo = codigo,
                 nome = nome,
                 refTecnica = refTecnica,
                 unidadeMedida = unidadeMedida,
                 classificacaoFiscal = classificacaoFiscal,
                 finalidade = finalidade,
-                origem = !string.IsNullOrEmpty( origem) ? int.Parse(origem) : 0,
+                origem = origem,
                 tipo = tipo,
-                procedencia = !string.IsNullOrEmpty(procedencia) ? int.Parse(procedencia) : 0,
+                procedencia = procedencia,
 
                 pesoBruto = pesoBruto,
                 pesoLiquido = pesoLiquido,
@@ -216,10 +235,10 @@ namespace AddinArtama {
 
                 mascaraEntrada = mascaraEntrada,
                 pesoPadraoNBR = pesoPadraoNBR,
-                situacao = !string.IsNullOrEmpty(situacao) ? int.Parse(situacao) : 1,
-                              };
-              _return.Add(itemGenerico);
+                situacao = situacao,
+              });
             }
+
           }
         } else {
           var errorMessage = ApiError.Parse(response.Content);
@@ -248,7 +267,7 @@ namespace AddinArtama {
 
       string nomeParaErp = nomeAjustado + separador + codigo;
 
-      if(produtoErp.NaoAlterarNomeERP) {
+      if (produtoErp.NaoAlterarNomeERP) {
         nomeParaErp = denominacao.Length > maxComprimento ? denominacao.Substring(0, maxComprimento) : denominacao;
         nomeParaErp = !string.IsNullOrEmpty(itemGenerico.nome) ? itemGenerico.nome : nomeParaErp;
       }
@@ -259,6 +278,8 @@ namespace AddinArtama {
       itemGenerico.pesoLiquido = produtoErp.PesoLiquido;
       itemGenerico.tipoDocumento = produtoErp.TipoComponente == TipoComponente.Montagem ? TipoDocumento.Montagem : TipoDocumento.Peca;
       itemGenerico.unidadeMedida = produtoErp.UnidadeMedida;
+
+      produtoErp.ItemGenerico = itemGenerico;
     }
 
   }

@@ -5,7 +5,9 @@ namespace AddinArtama {
     [Description("Chapa")]
     Chapa = 0,
     [Description("Laminados")]
-    Soldagem = 1
+    Soldagem = 1,
+    [Description("Não Possui")]
+    NaoPossui = 2
   }
 
   public enum SwDwgPaperSizes_e {

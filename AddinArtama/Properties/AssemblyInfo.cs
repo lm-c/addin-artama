@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion(InfoAssembly.Version)]
 
 public class InfoAssembly {
-  public const string Version = "4.0.0.1";
+  public const string Version = "4.0.0.2";
 
   public const string TitleView = "Addin Leonardo Michalak";
 
