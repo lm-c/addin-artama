@@ -196,9 +196,9 @@ namespace AddinArtama {
 
         try {
           while (swFeat != null) {
-            //MsgBox.Show(swFeat.GetTypeName());
+            //    MsgBox.Show(swFeat.GetTypeName());
             if (swFeat.GetTypeName() == "FlatPattern") {
-              //planificar
+              //  planificar
               var nameFeat = swFeat.Name;
               var typeFeat = swFeat.GetTypeName2();
 

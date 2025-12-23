@@ -92,10 +92,10 @@ namespace AddinArtama {
             nameShort = Path.GetFileNameWithoutExtension(PathName);
 
             var dxfExport = new DxfExport();
-            var procs = GetProcesso(refConfig, swModel, dxfExport);
+            //var procs = GetProcesso(refConfig, swModel, dxfExport);
             var codMat = 0;
 
-            if (!string.IsNullOrEmpty(procs) && int.TryParse(dxfExport.CodigoMaterial, out codMat)) {
+            if (/*!string.IsNullOrEmpty(procs) && */int.TryParse(dxfExport.CodigoMaterial, out codMat)) {
               dxfExport.Exportar = true;
               dxfExport.PathName = PathName;
               dxfExport.CodComponente = nameShort;
@@ -141,63 +141,63 @@ namespace AddinArtama {
       }
     }
 
-    private static string GetProcesso(string activeConfig, ModelDoc2 swModel, DxfExport dxfExport) {
-      try {
-        ModelDocExtension swModelDocExt = default(ModelDocExtension);
-        Configuration swConfig = default(Configuration);
-        ConfigurationManager swConfMgr = default(ConfigurationManager);
-        CustomPropertyManager swCustPropMgr = default(CustomPropertyManager);
+    //private static string GetProcesso(string activeConfig, ModelDoc2 swModel, DxfExport dxfExport) {
+    //  try {
+    //    ModelDocExtension swModelDocExt = default(ModelDocExtension);
+    //    Configuration swConfig = default(Configuration);
+    //    ConfigurationManager swConfMgr = default(ConfigurationManager);
+    //    CustomPropertyManager swCustPropMgr = default(CustomPropertyManager);
 
-        object[] configNameArr = null;
-        object[] vPropNames;
-        bool status = false;
-        bool ehTerceiro = false;
-        int nNbrProps;
-        string valOut;
-        string resolvedValOut;
-        string operacao = "";
+    //    object[] configNameArr = null;
+    //    object[] vPropNames;
+    //    bool status = false;
+    //    bool ehTerceiro = false;
+    //    int nNbrProps;
+    //    string valOut;
+    //    string resolvedValOut;
+    //    string operacao = "";
 
-        swConfMgr = swModel.ConfigurationManager;
-        swModelDocExt = swModel.Extension;
-        configNameArr = (object[])swModel.GetConfigurationNames();
+    //    swConfMgr = swModel.ConfigurationManager;
+    //    swModelDocExt = swModel.Extension;
+    //    configNameArr = (object[])swModel.GetConfigurationNames();
 
-        swConfig = (Configuration)swModel.GetConfigurationByName(activeConfig);
+    //    swConfig = (Configuration)swModel.GetConfigurationByName(activeConfig);
 
-        status = swModel.ShowConfiguration2(activeConfig);
+    //    status = swModel.ShowConfiguration2(activeConfig);
 
-        swCustPropMgr = swConfig.CustomPropertyManager;
-        nNbrProps = swCustPropMgr.Count;
-        vPropNames = (object[])swCustPropMgr.GetNames();
+    //    swCustPropMgr = swConfig.CustomPropertyManager;
+    //    nNbrProps = swCustPropMgr.Count;
+    //    vPropNames = (object[])swCustPropMgr.GetNames();
 
-        swCustPropMgr.Get2("Operação", out valOut, out resolvedValOut);
-        operacao = resolvedValOut;
+    //    swCustPropMgr.Get2("Operação", out valOut, out resolvedValOut);
+    //    operacao = resolvedValOut;
 
-        swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
-        nNbrProps = swCustPropMgr.Count;
-        vPropNames = (object[])swCustPropMgr.GetNames();
+    //    swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
+    //    nNbrProps = swCustPropMgr.Count;
+    //    vPropNames = (object[])swCustPropMgr.GetNames();
 
-        swCustPropMgr.Get2("Terceiro", out valOut, out resolvedValOut);
-        ehTerceiro = resolvedValOut == "Sim";
+    //    swCustPropMgr.Get2("Terceiro", out valOut, out resolvedValOut);
+    //    ehTerceiro = resolvedValOut == "Sim";
 
-        if (operacao == "") {
-          swCustPropMgr.Get2("Operação", out valOut, out resolvedValOut);
-          operacao = resolvedValOut;
-        }
+    //    if (operacao == "") {
+    //      swCustPropMgr.Get2("Operação", out valOut, out resolvedValOut);
+    //      operacao = resolvedValOut;
+    //    }
 
-        if ((swModel.GetType() == (int)swDocumentTypes_e.swDocPART && !ehTerceiro) || (operacao == "" && ehTerceiro)) {
-          var opTmp = operacao;
-          operacao = GetInfoFromCutList(swModel, dxfExport);
-          if (operacao == "")
-            operacao = opTmp;
-        }
+    //    if ((swModel.GetType() == (int)swDocumentTypes_e.swDocPART && !ehTerceiro) || (operacao == "" && ehTerceiro)) {
+    //      var opTmp = operacao;
+    //      operacao = GetInfoFromCutList(swModel, dxfExport);
+    //      if (operacao == "")
+    //        operacao = opTmp;
+    //    }
 
-        return operacao;
-      } catch (Exception ex) {
-        MsgBox.Show($"Erro ao verificar CheckList\n\n{ex.Message}", "Addin LM Projetos",
-           MessageBoxButtons.OK, MessageBoxIcon.Error);
-        return "";
-      }
-    }
+    //    return operacao;
+    //  } catch (Exception ex) {
+    //    MsgBox.Show($"Erro ao verificar CheckList\n\n{ex.Message}", "Addin LM Projetos",
+    //       MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //    return "";
+    //  }
+    //}
 
     private static string GetInfoFromCutList(ModelDoc2 swModel, DxfExport dxfExport) {
       string _return = string.Empty;
