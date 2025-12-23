@@ -278,6 +278,7 @@ namespace AddinArtama {
       itemGenerico.pesoLiquido = produtoErp.PesoLiquido;
       itemGenerico.tipoDocumento = produtoErp.TipoComponente == TipoComponente.Montagem ? TipoDocumento.Montagem : TipoDocumento.Peca;
       itemGenerico.unidadeMedida = produtoErp.UnidadeMedida;
+      itemGenerico.situacao = produtoErp.Situacao;
 
       produtoErp.ItemGenerico = itemGenerico;
     }

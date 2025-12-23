@@ -77,6 +77,10 @@ namespace AddinArtama {
     [LarguraColunaGrid(350)]
     public string Denominacao { get; set; }
 
+    [DisplayName("Status Eng.")]
+    [LarguraColunaGrid(120)]
+    public string StatusProduto { get; set; }
+
     //[Browsable(false)]
     [DisplayName("Referência")]
     [LarguraColunaGrid(150)]
@@ -353,7 +357,7 @@ namespace AddinArtama {
             string templateGeral = $"{Application.StartupPath}\\01 - Addin LM\\ListaCompleta.sldbomtbt";
             int BomTypeGeral = (int)swBomType_e.swBomType_Indented;
             int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
-            bool DetailedCutList = false;
+            bool DetailedCutList = true;
             var swBOMAnnotationGeral = swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList);
             await PegaDadosListaGeralAsync(db, swBOMAnnotationGeral, rootNode, _listaProduto, nodes, treeView);
             ListaCorte.ExcluirLista(swModel);
@@ -416,10 +420,13 @@ namespace AddinArtama {
 
                   progress2.Report(($"Lendo componentes... \n\n{nameShort}", i, total));
 
+                  if (!File.Exists(ptNm))
+                    continue;
+
                   var nivel = swTableAnnotation.get_Text(i, 0).Trim();
                   var qtd = Convert.ToInt32(swTableAnnotation.get_Text(i, 1));
                   var codMaterial = swTableAnnotation.get_Text(i, 2).Trim();
-                  var configName = swTableAnnotation.get_Text(i, 11).Trim();
+                  var configName = swTableAnnotation.get_Text(i, 11);
 
                   if (!string.IsNullOrEmpty(codMaterial) || nameShort.Contains("~"))
                     continue;
@@ -467,6 +474,9 @@ namespace AddinArtama {
       var name = Path.GetFileNameWithoutExtension(pathName);
       string resolvedValOut = string.Empty;
 
+      if (name.Contains("^"))
+        name = name.Substring(0, name.IndexOf("^"));
+
       try {
         ModelDocExtension swModelDocExt = swModel.Extension;
         ConfigurationManager swConfMgr = swModel.ConfigurationManager;
@@ -513,6 +523,9 @@ namespace AddinArtama {
           produtoErp.Denominacao = resolvedValOut;
         }
 
+        if (name.StartsWith("30") && string.IsNullOrEmpty(produtoErp.CodComponente))
+          produtoErp.CodComponente = name;
+
         //if (swConf.UseAlternateNameInBOM == true) {
         //  if (!string.IsNullOrEmpty(swConf.AlternateName))
         //    produtoErp.CodComponente = swConf.AlternateName;
@@ -531,10 +544,11 @@ namespace AddinArtama {
           if (eng != null && eng.statusEngenharia != StatusEngenharia.EmDesenvolvimento) {
             if (nivel == "1") {
               throw new Exception($"A Engenharia {produtoErp.CodComponente} está com status '{eng.statusEngenharia.ObterDescricaoEnum()}', só pode ser importada se estiver 'Em Desenvolvimento'.");
-            } else {
-              produtoErp.TipoComponente = tipo == (int)swDocumentTypes_e.swDocASSEMBLY ? TipoComponente.Montagem : TipoComponente.Peca;
-              produtoErp.CodProduto = produtoErp.CodComponente;
-            }
+            } 
+            //else {
+            //  produtoErp.TipoComponente = tipo == (int)swDocumentTypes_e.swDocASSEMBLY ? TipoComponente.Montagem : TipoComponente.Peca;
+            //  produtoErp.CodProduto = produtoErp.CodComponente;
+            //}
           } else {
             produtoErp.CodProduto = produtoErp.CodComponente;
             produtoErp.NaoAlterarNomeERP = true;
@@ -744,6 +758,7 @@ namespace AddinArtama {
           var engenharia = await Api.GetEngenhariaAsync(produtoErp.CodProduto);
           if (engenharia != null) {
             produtoErp.Engenharia = engenharia;
+            produtoErp.StatusProduto = engenharia.statusEngenharia.ObterDescricaoEnum();
 
             PegarOperacaoERP(produtoErp, engenharia.operacoes);
 
@@ -792,6 +807,24 @@ namespace AddinArtama {
 
                 await Api.UpdateItemGenericoAsync(prodCancelar);
               }
+
+              // verificar engenharia
+              var engenharia = await Api.GetEngenhariaAsync(produtoErp.CodProduto);
+              if (engenharia != null) {
+                produtoErp.Engenharia = engenharia;
+                produtoErp.StatusProduto = engenharia.statusEngenharia.ObterDescricaoEnum();
+
+                PegarOperacaoERP(produtoErp, engenharia.operacoes);
+
+                if (!produtoErp.Referencia.StartsWith("Item da lista de corte")) {
+                  var pesoItem = Math.Round(itens[0].pesoBruto, 2);
+                  var pesoProd = Math.Round(produtoErp.PesoBruto, 2);
+                  var dif = Math.Round(Math.Abs(pesoItem - pesoProd), 2);
+                  if (dif > 0.01 && !produtoErp.Pendencias.Contains(PendenciasEngenharia.MateriaErrado)) {
+                    AdicionarPendencia(produtoErp, PendenciasEngenharia.ItemAlterado);
+                  }
+                }
+              }
             }
           });
 
@@ -809,7 +842,7 @@ namespace AddinArtama {
 
     private static void CreateTreeCompNode(TreeNode rootNode, ProdutoErp produtoErp,
       string nivel, bool verificaMaterial, Dictionary<string, TreeNode> nodes, List<ProdutoErp> _listaProduto, TreeView treeView) {
-      string nodeText = $"{produtoErp.Name} - {produtoErp.Denominacao}";
+      string nodeText = $"{produtoErp.CodComponente} - {produtoErp.Denominacao}";
       var node = new TreeNode(nodeText);
 
       node.Tag = produtoErp;

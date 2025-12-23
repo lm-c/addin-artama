@@ -89,7 +89,11 @@ namespace AddinArtama {
             trvProduto.Nodes.Clear();
 
             await Loader.ShowDuringOperation(async (progress) => {
-              progress.Report("Limpando dados antigos");
+              progress.Report("Limpando cache e dados antigos");
+
+              // Limpar todos os caches para evitar duplicação de códigos no ERP
+              ProdutoErp.ClearAllCaches();
+
               await Processo.Carregar();
               _produtos = new SortableBindingList<ProdutoErp>();
 
@@ -490,7 +494,7 @@ namespace AddinArtama {
       }
 
       var jaCadastradoAddin = long.TryParse(produtoErp.CodProduto, out long codprod)
-         && db.produto_erp.Any(x => x.codigo_produto == codprod && x.name == produtoErp.Name && x.referencia == produtoErp.Referencia);
+         && db.produto_erp.Any(x => x.codigo_produto == codprod);
 
       if (!jaCadastradoAddin) {
         CadastrarAddin(db, produtoErp);
