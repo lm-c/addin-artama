@@ -1,0 +1,9 @@
+# Binarios de instalacao (gerados ou de terceiros) - excedem limites do GitHub
+Instalador/**/*.exe
+Instalador/**/*.7z
+Instalador/**/*.msi
+Instalador/**/*.msm
+Instalador/**/*.cab
+
+# Credenciais locais
+.env

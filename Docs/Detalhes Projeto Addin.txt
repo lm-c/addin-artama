@@ -1,0 +1,68 @@
+Lista Materiais Addin [ListaCompleta.sldbomtbt]
+	Ordenar cima para baixo
+	Colunas/Ordem
+	00 |	POS.								| Nº DO ITEM (NÍVEL)
+	01 |	QTD.								| Valor Predeterminado
+	02 |	CÓDIGO								| CÓDIGO MATERIAL
+	03 |	COMPONENTE							| COMPONENTE
+	04 |	Código Produto						| Código Produto
+	05 |	MATERIAL							| DESCRIÇÃO MATERIAL
+	06 |	Denominação							| Denominação
+	07 |	Espessura da Chapa metálica			| ESPESSURA CHAPA
+	08 |	Largura da Caixa delimitadora		| LARGURA CHAPA
+	09 |	Comprimento da Caixa delimitadora	| COMPRIMENTO CHAPA
+	10 |	COMPRIMENTO							| COMPRIMENTO
+	11 |	sw-Nome da configuração				| NOME CONFIGURAÇÃO	
+	12 |	OPERAÇÃO							| OPERAÇÃO	
+	13 |	Massa								| Massa	
+	14 |	Fantasma							| Fantasma	
+
+Versão SW 2021
+	
+405020027-1
+
+PROXIMAS ETAPAS
+
+- testar item chegando a 9999
+
+--- Reunião, Carlos, Tiago e Leonardo
+		- Configurar Grupo de máquinas [000]
+- itens fantasmas não inserir processos
+	- criar tela de manutenção de engenharia para itens pré cadastrados 30, verificar se tem componentes não seriados(status = 5) [usar manipulo para teste]
+- ao atualizar um código de chapa atualizar o produto ativo na tela de importação, para não precisar carregar novamente para aplicar
+
+[OK] - quando der peso ou comprimento "0" ao enviar para egenharia, parar importação e passar mensagem para projetista
+
+[OK] - verificar comprimento em parafuso
+
+
+401010179 - ELEVADOR PASS. E CARGA 10X13X20 0,6T 2PAR. TESTE NOME
+
+
+--------------------------------------------------------------------
+- [ok] remover tabela de operações 
+- [ok] operacoes terceiros carregar todos
+- criar grupo de máquinas
+- ao terminar de cadastrar produtos, trazer o código para o Label
+- ler insumos e vincular a uma sequência operacional
+
+---------------------------------------------------------------
+
+
+
+
+
+
+EXPANDIR
+      var result = MsgBox.ImputBox(out DialogResult dialogResult, titulo: "Descrição", textoImputPadrao: txtDescricao.Text, textoLongo: true, centralizarForm: false, somenteLeitura: this.Modo != Modo.Novo && this.Modo != Modo.Alteracao);
+
+Este é meu suporte com nome muito grande chega a meis de 60char
+MESA DOCA S/F 20 X 25 3T EH PROTEÇÃO SANFONADA
+- 
+
+
+      Invoke(new MethodInvoker(async () => {
+
+      }));
+
+

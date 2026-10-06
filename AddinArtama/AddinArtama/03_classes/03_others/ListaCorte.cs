@@ -1,0 +1,431 @@
+﻿using LmCorbieUI;
+using SolidWorks.Interop.sldworks;
+using SolidWorks.Interop.swconst;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Windows.Forms;
+
+namespace AddinArtama {
+  internal class ListaCorte {
+    public int Codigo { get; set; }
+    //public string CodProduto { get; set; }
+    public string NomeLista { get; set; }
+    public string Denominacao { get; set; }
+    public string Material { get; set; }
+    public string Operacao { get; set; }
+    public string OperacaoOrigem { get; set; }
+    public double Espessura { get; set; }
+    public double Largura { get; set; }
+    public double Comprimento { get; set; }
+    public double Massa { get; set; }
+    public int Quantidade { get; set; }
+    public string unidadeMedida { get; set; }
+    public TipoListaMaterial Tipo { get; set; }
+
+    public static List<ListaCorte> GetCutList(ModelDoc2 swModel, string nomePeca/*, out bool changeCutListName*/) {
+      List<ListaCorte> _return = new List<ListaCorte>();
+      bool boolstatus;
+      //changeCutListName = false;
+
+      try {
+        FeatureManager swFeatMgr = default(FeatureManager);
+        Feature swFeat = default(Feature);
+        string FeatType = null;
+        string FeatTypeName = null;
+        int bodyCount = 0;
+
+        BodyFolder swBodyFolder = default(BodyFolder);
+
+        Feature[] featureArr = new Feature[3];
+
+        swFeatMgr = swModel.FeatureManager;
+
+        var configAtiva = ((Configuration)swModel.GetActiveConfiguration()).Name;
+
+        swFeat = (Feature)swModel.FirstFeature();
+
+        while ((swFeat != null)) {
+          ListaCorte listaCorte = new ListaCorte();
+
+          FeatType = swFeat.Name;
+          FeatTypeName = swFeat.GetTypeName2();
+
+          if (FeatTypeName == "CutListFolder") {
+            swBodyFolder = (BodyFolder)swFeat.GetSpecificFeature2();
+            bodyCount = swBodyFolder.GetBodyCount();
+
+            if (bodyCount > 0) {
+              boolstatus = swModel.Extension.SelectByID2(FeatType, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
+
+              SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+              swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
+
+              var isExcluded = swFeat.ExcludeFromCutList;
+
+              if (!isExcluded) {
+                var nomeLista = $"Item da lista de corte{_return.Count + 1}";
+                var nomeLista2 = $"Item da lista de corte {_return.Count + 1}";
+                var nomeLista3 = $"Item da lista de corte  {_return.Count + 1}";
+
+                if (swFeat.Name != nomeLista && swFeat.Name != nomeLista2 && swFeat.Name != nomeLista3) {
+                  // changeCutListName = true;
+                  swFeat.Name = nomeLista;
+                  if (swFeat.Name != nomeLista) {
+                    swFeat.Name = nomeLista2;
+                    if (swFeat.Name != nomeLista2) {
+                      swFeat.Name = nomeLista3;
+                    }
+                  }
+                }
+
+                listaCorte.NomeLista = swFeat.Name;
+
+                CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
+
+                object[] custPropNames = (object[])swCustPropMngr.GetNames();
+
+                if (custPropNames != null) {
+                  listaCorte.Tipo = DeterminarTipoMaterial(swBodyFolder, swCustPropMngr);
+
+                  swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+                  swCustPropMngr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Material\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+
+                  string sValue, sResolvedvalue;
+
+                  swCustPropMngr.Get2("Código", out sValue, out sResolvedvalue);
+                  int.TryParse(sResolvedvalue, out int cod);
+                  listaCorte.Codigo = cod;
+
+                  //swCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
+                  //listaCorte.CodProduto = sResolvedvalue;
+
+                  swCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
+                  listaCorte.Denominacao = sResolvedvalue;
+
+                  swCustPropMngr.Get2("Material", out sValue, out sResolvedvalue);
+                  listaCorte.Material = sResolvedvalue;
+
+                  swCustPropMngr.Get2("Espessura da Chapa metálica", out sValue, out sResolvedvalue);
+                  double.TryParse(sResolvedvalue.Replace(".", ","), out double esp);
+                  listaCorte.Espessura = Math.Round(esp, 4);
+
+                  swCustPropMngr.Get2("COMPRIMENTO", out sValue, out sResolvedvalue);
+                  var compr = sResolvedvalue;
+
+                  if (compr.ToLower().Contains("x")) {
+                    var splComp = compr.ToLower().Replace(" ", "").Split('x');
+                    double.TryParse(splComp[0].Replace(".", ","), out double largura);
+                    double.TryParse(splComp[1].Replace(".", ","), out double comprim);
+                    listaCorte.Largura = Math.Round(largura, 4);
+                    listaCorte.Comprimento = Math.Round(comprim, 4);
+                    listaCorte.Tipo = TipoListaMaterial.Chapa;
+                  } else if (listaCorte.Tipo == TipoListaMaterial.Chapa) {
+                    string descCustProp = $"\"SW-Largura da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\" X \"SW-Comprimento da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\"";
+                    swCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText, descCustProp,
+                        (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+
+                    swCustPropMngr.Get2("COMPRIMENTO", out sValue, out sResolvedvalue);
+                    compr = sResolvedvalue;
+                    var splComp = compr.ToLower().Replace(" ", "").Split('x');
+                    double.TryParse(splComp[0].Replace(".", ","), out double largura);
+                    double.TryParse(splComp[1].Replace(".", ","), out double comprim);
+                    listaCorte.Largura = Math.Round(largura, 4);
+                    listaCorte.Comprimento = Math.Round(comprim, 4);
+                  } else {
+                    double.TryParse(sResolvedvalue.Replace(".", ","), out double comprim);
+                    listaCorte.Comprimento = Math.Round(comprim, 4);
+                  }
+
+                  swCustPropMngr.Get2("QUANTITY", out sValue, out sResolvedvalue);
+                  listaCorte.Quantidade = !string.IsNullOrEmpty(sResolvedvalue) ? Convert.ToInt32(sResolvedvalue) : 0;
+
+                  if (listaCorte.Quantidade == 0) {
+                    swCustPropMngr.Get2("Quantidade", out sValue, out sResolvedvalue);
+                    listaCorte.Quantidade = !string.IsNullOrEmpty(sResolvedvalue) ? Convert.ToInt32(sResolvedvalue) : 0;
+                  }
+
+                  swCustPropMngr.Get2("Operação", out sValue, out sResolvedvalue);
+                  listaCorte.Operacao = listaCorte.OperacaoOrigem = sResolvedvalue;
+
+                  swCustPropMngr.Get2("Massa", out sValue, out sResolvedvalue);
+                  double.TryParse(sResolvedvalue.Replace(".", ","), out double Massa);
+                  listaCorte.Massa = Math.Round(Massa, 4);
+
+                }
+
+                // ver configs aqui para pegar sobremetal no comprimento
+                _return.Add(listaCorte);
+              }
+            }
+          }
+          swFeat = (Feature)swFeat.GetNextFeature();
+        }
+
+        foreach (var item in _return) 
+          VerificarSobremetal(swModel, _return[0], configAtiva);
+
+      } catch (Exception ex) {
+        MsgBox.Show($"Erro ao pegar lista corte\n\nItem: {nomePeca}\n\n{ex.Message}", "Addin LM Projetos",
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+
+      return _return;
+    }
+
+    private static void VerificarSobremetal(ModelDoc2 swModel, ListaCorte listaCorte, string configAtiva) {
+      if (listaCorte.Tipo != TipoListaMaterial.Soldagem)
+        return;
+
+      var configs = (object[])swModel.GetConfigurationNames();
+
+      foreach (var conf in configs) {
+        swModel.ShowConfiguration((string)conf);
+
+        Feature featInConfig = swModel.FirstFeature();
+        while (featInConfig != null) {
+          if (featInConfig.Name == listaCorte.NomeLista &&
+              featInConfig.GetTypeName2() == "CutListFolder") {
+
+            CustomPropertyManager propMgr = featInConfig.CustomPropertyManager;
+
+            propMgr.Get2("COMPRIMENTO", out _, out string resolvedComp);
+            double.TryParse(resolvedComp.Replace(".", ","), out double comp);
+
+            if (comp > listaCorte.Comprimento && (comp - listaCorte.Comprimento) < 500) {
+              listaCorte.Comprimento = Math.Round(comp, 4);
+            }
+
+            break; // achou o que queria, sai do loop da config
+          }
+
+          featInConfig = featInConfig.GetNextFeature();
+        }
+      }
+
+      // Volta pra config ativa
+      swModel.ShowConfiguration(configAtiva);
+    }
+
+    // Método auxiliar para determinar o tipo de material de forma mais robusta
+    private static TipoListaMaterial DeterminarTipoMaterial(BodyFolder swBodyFolder, CustomPropertyManager swCustPropMngr) {
+      try {
+        // Primeiro, verificar se existe a propriedade "Espessura da Chapa metálica"
+        swCustPropMngr.Get2("Espessura da Chapa metálica", out string sValue, out string sResolvedvalue);
+        if (!string.IsNullOrEmpty(sResolvedvalue) && double.TryParse(sResolvedvalue.Replace(".", ","), out double espessura) && espessura > 0) {
+          return TipoListaMaterial.Chapa;
+        } else
+          return TipoListaMaterial.Soldagem;
+
+        //// Verificar os corpos (bodies) para determinar se são sheet metal
+        //object[] vBodies = (object[])swBodyFolder.GetBodies();
+        //if (vBodies != null) {
+        //  bool temSheetMetal = false;
+        //  bool temSolido = false;
+
+        //  for (int i = vBodies.GetLowerBound(0); i <= vBodies.GetUpperBound(0); i++) {
+        //    Body2 body = (Body2)vBodies[i];
+
+        //    if (body != null) {
+        //      // Verificar se é sheet metal
+        //      if (body.IsSheetMetal()) {
+        //        temSheetMetal = true;
+        //      } else {
+        //        // Verificar o tipo do corpo
+        //        int bodyType = body.GetType();
+        //        // swBodyType_e.swSolidBody = 0, swSheetBody = 1, swWireBody = 2
+        //        if (bodyType == 0) // Corpo sólido
+        //        {
+        //          temSolido = true;
+        //        }
+        //      }
+        //    }
+        //  }
+
+        //  // Se tem sheet metal, é chapa
+        //  if (temSheetMetal) {
+        //    return TipoListaMaterial.Chapa;
+        //  }
+
+        //  // Se tem apenas corpos sólidos, é soldagem
+        //  if (temSolido) {
+        //    return TipoListaMaterial.Soldagem;
+        //  }
+        //}
+
+        //// Por padrão, assumir soldagem se não conseguir determinar
+        //return TipoListaMaterial.Soldagem;
+      } catch (Exception) {
+        // Em caso de erro, retornar soldagem como padrão
+        return TipoListaMaterial.Soldagem;
+      }
+    }
+
+    public static void RefreshCutList(ModelDoc2 swModel, string nomePeca, ListaCorte listaCorte) {
+      bool boolstatus;
+
+      try {
+        boolstatus = swModel.Extension.SelectByID2(listaCorte.NomeLista, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
+
+        SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+        Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
+        CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
+        BodyFolder swBodyFolder = default(BodyFolder);
+
+        if (swFeat != null) {
+          var isExcluded = swFeat.ExcludeFromCutList;
+          if (!isExcluded) {
+            object[] custPropNames = (object[])swCustPropMngr.GetNames();
+            if (custPropNames != null) {
+
+              swBodyFolder = (BodyFolder)swFeat.GetSpecificFeature2();
+              //boolstatus = swBodyFolder.SetAutomaticCutList(true);
+              //boolstatus = swBodyFolder.UpdateCutList();
+
+              object[] vBodies = (object[])swBodyFolder.GetBodies();
+
+              if ((vBodies != null)) {
+                for (int i = vBodies.GetLowerBound(0); i <= vBodies.GetUpperBound(0); i++) {
+                  // CORREÇÃO: Melhor determinação do tipo (Chapa ou Soldagem)
+                  listaCorte.Tipo = DeterminarTipoMaterial(swBodyFolder, swCustPropMngr);
+
+                  swCustPropMngr.Add3("Massa", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Mass\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+                  swCustPropMngr.Add3("Material", (int)swCustomInfoType_e.swCustomInfoText, "\"SW-Material\"", (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+
+                  string sValue, sResolvedvalue;
+
+                  swCustPropMngr.Get2("Código", out sValue, out sResolvedvalue);
+                  int.TryParse(sResolvedvalue, out int cod);
+                  listaCorte.Codigo = cod;
+
+                  //swCustPropMngr.Get2("Código Produto", out sValue, out sResolvedvalue);
+                  //listaCorte.CodProduto = sResolvedvalue;
+
+                  swCustPropMngr.Get2("Denominação", out sValue, out sResolvedvalue);
+                  listaCorte.Denominacao = sResolvedvalue;
+
+                  swCustPropMngr.Get2("Material", out sValue, out sResolvedvalue);
+                  listaCorte.Material = sResolvedvalue;
+
+                  swCustPropMngr.Get2("Espessura da Chapa metálica", out sValue, out sResolvedvalue);
+                  double.TryParse(sResolvedvalue.Replace(".", ","), out double esp);
+                  listaCorte.Espessura = Math.Round(esp, 4);
+
+                  swCustPropMngr.Get2("COMPRIMENTO", out sValue, out sResolvedvalue);
+                  var compr = sResolvedvalue;
+                  //double.TryParse(sResolvedvalue.Replace(".", ","), out double compr);
+                  if (compr.ToLower().Contains("x")) {
+                    var splComp = compr.ToLower().Replace(" ", "").Split('x');
+                    double.TryParse(splComp[0].Replace(".", ","), out double largura);
+                    double.TryParse(splComp[1].Replace(".", ","), out double comprim);
+                    listaCorte.Largura = Math.Round(largura, 4);
+                    listaCorte.Comprimento = Math.Round(comprim, 4);
+                    listaCorte.Tipo = TipoListaMaterial.Chapa;
+                  } else if (listaCorte.Tipo == TipoListaMaterial.Chapa) {
+                    string descCustProp = $"\"SW-Largura da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\" X \"SW-Comprimento da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\"";
+                    swCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText, descCustProp,
+                        (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+
+                    swCustPropMngr.Get2("COMPRIMENTO", out sValue, out sResolvedvalue);
+                    compr = sResolvedvalue;
+                    var splComp = compr.ToLower().Replace(" ", "").Split('x');
+                    double.TryParse(splComp[0].Replace(".", ","), out double largura);
+                    double.TryParse(splComp[1].Replace(".", ","), out double comprim);
+                    listaCorte.Largura = Math.Round(largura, 4);
+                    listaCorte.Comprimento = Math.Round(comprim, 4);
+                  }
+
+                  swCustPropMngr.Get2("QUANTITY", out sValue, out sResolvedvalue);
+                  listaCorte.Quantidade = !string.IsNullOrEmpty(sResolvedvalue) ? Convert.ToInt32(sResolvedvalue) : 0;
+
+                  if (listaCorte.Quantidade == 0) {
+                    swCustPropMngr.Get2("Quantidade", out sValue, out sResolvedvalue);
+                    listaCorte.Quantidade = !string.IsNullOrEmpty(sResolvedvalue) ? Convert.ToInt32(sResolvedvalue) : 0;
+                  }
+
+                  swCustPropMngr.Get2("Operação", out sValue, out sResolvedvalue);
+                  listaCorte.Operacao = listaCorte.OperacaoOrigem = sResolvedvalue;
+
+                  swCustPropMngr.Get2("Massa", out sValue, out sResolvedvalue);
+                  double.TryParse(sResolvedvalue, NumberStyles.Any, CultureInfo.InvariantCulture, out double massa);
+                  listaCorte.Massa = Math.Round(massa, 4);
+
+                  // ver configs aqui para pegar sobremetal no comprimento
+                  if (listaCorte.Tipo == TipoListaMaterial.Soldagem) {
+                    var configAtiva = ((Configuration)swModel.GetActiveConfiguration()).Name;
+
+                    VerificarSobremetal(swModel, listaCorte, configAtiva);
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (Exception ex) {
+        MsgBox.Show($"Erro ao pegar lista corte\n\n{ex.Message}", "Addin LM Projetos",
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+
+    }
+
+    public static void UpdateCutList(ModelDoc2 swModel, ListaCorte listaCorte) {
+      bool boolstatus = swModel.Extension.SelectByID2(listaCorte.NomeLista, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
+
+      SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+      Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
+      CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
+
+      swCustPropMngr.Add3("Operação", (int)swCustomInfoType_e.swCustomInfoText, Convert.ToString(listaCorte.Operacao), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+
+      if (listaCorte.Tipo == TipoListaMaterial.Chapa) {
+        string nomePeca = Path.GetFileName(swModel.GetPathName());
+
+        swCustPropMngr.Add3("Código", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.Codigo.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+        //swCustPropMngr.Add3("Código Produto", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.CodProduto.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+        swCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, listaCorte.Denominacao.ToString(), (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+        swCustPropMngr.Add3("COMPRIMENTO", (int)swCustomInfoType_e.swCustomInfoText,
+            $"\"SW-Largura da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\" X \"SW-Comprimento da Caixa delimitadora@@@{listaCorte.NomeLista}@{nomePeca}\"",
+            (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+      }
+    }
+
+    public static void DeletarPropriedadeDaLista(ModelDoc2 swModel, ListaCorte CutList, string nomePropriedade) {
+      bool boolstatus = swModel.Extension.SelectByID2(CutList.NomeLista, "SUBWELDFOLDER", 0, 0, 0, false, 0, null, 0);
+
+      SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+      Feature swFeat = (Feature)swSelMgr.GetSelectedObject6(1, 0);
+      CustomPropertyManager swCustPropMngr = swFeat.CustomPropertyManager;
+
+      swCustPropMngr.Delete2(nomePropriedade);
+    }
+
+    public static void ExcluirLista(ModelDoc2 swModel) {
+      try {
+        Feature swFeat = (Feature)swModel.FirstFeature();
+
+        while ((swFeat != null)) {
+          Debug.Print(swFeat.Name + " [" + swFeat.GetTypeName2() + "]");
+
+          if (swFeat.GetTypeName() == "TableFolder") {
+            Feature swSubFeat = (Feature)swFeat.GetFirstSubFeature();
+
+            if ((swSubFeat != null)) {
+              Debug.Print("    " + swSubFeat.Name + " [" + swSubFeat.GetTypeName() + "]");
+              bool boolstatus = swModel.Extension.SelectByID2(swSubFeat.Name, "BOMFEATURE", 0, 0, 0, false, 0, null, 0);
+              swModel.EditDelete();
+              break;
+            }
+          }
+          swFeat = (Feature)swFeat.GetNextFeature();
+        }
+      } catch (Exception ex) {
+        MsgBox.Show($"Erro ao Excluir Lista\n\n{ex.Message}", "Addin LM Projetos",
+             MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+  }
+}
