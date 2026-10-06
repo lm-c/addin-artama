@@ -644,22 +644,22 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\de" /s/q
-rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\es" /s/q
-rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\fr" /s/q
-rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\it" /s/q
-rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\ja" /s/q
-rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\ko" /s/q
-rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\pt" /s/q
-rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\ru" /s/q
-rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\zh-CHS" /s/q
-rd "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\zh-CHT" /s/q
+    <PostBuildEvent>rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\de" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\es" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\fr" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\it" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\ja" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\ko" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\pt" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\ru" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\zh-CHS" /s/q
+rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\zh-CHT" /s/q
 
-del "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\LmCorbieUI.pdb"
-del "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\AddinArtama\AddinArtama\bin\Debug\AddinArtama.pdb"
+del "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\LmCorbieUI.pdb"
+del "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\AddinArtama.pdb"
 
-xcopy "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\Instalador\axion addin\Atualizador\AtualizarAddin.bat" "C:\Temp" /Y /A /V
-call  "C:\repositorio_corbie\00_CLIENTES\addin-artama - 4.0\Instalador\axion addin\Atualizador\AttOnBuildAddin.exe"</PostBuildEvent>
+xcopy "C:\repositorio_corbie\00_CLIENTES\addin-artama\Instalador\axion addin\Atualizador\AtualizarAddin.bat" "C:\Temp" /Y /A /V
+call  "C:\repositorio_corbie\00_CLIENTES\addin-artama\Instalador\axion addin\Atualizador\AttOnBuildAddin.exe"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
