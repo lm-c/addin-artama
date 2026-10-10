@@ -1,0 +1,84 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- WinForms: hospedar o ActiveX do eDrawings (AxHost) e o TreeView usado pelas regras de negócio do CORE -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- ⚠ O controle ActiveX do eDrawings só funciona em processo 64 bits -->
+    <PlatformTarget>x64</PlatformTarget>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>AxionConnect.Wpf</RootNamespace>
+    <!-- Mesmo nome do executável WinForms (atalhos e instalador) -->
+    <AssemblyName>AxionConnect</AssemblyName>
+    <!-- Versão: 3 dígitos, a mesma do Addin Artama -->
+    <Version>5.0.1</Version>
+    <ApplicationIcon>Assets\axion_connect.ico</ApplicationIcon>
+    <Product>Axion Connect Artama</Product>
+    <Company>Leonardo Adriano Michalak</Company>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <SatelliteResourceLanguages>pt-BR;pt</SatelliteResourceLanguages>
+    <!-- NU1701/MSB3277: CORE e LmCorbieUI (WinForms) são assemblies .NET Framework 4.8 carregados em modo de compatibilidade -->
+    <NoWarn>$(NoWarn);NU1701;MSB3277</NoWarn>
+  </PropertyGroup>
+
+  <!-- Release = pasta pronta para o instalador: bin\Release\net10.0-windows\win-x64\ já sai com o .NET 10 embutido. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <DebugType>none</DebugType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Regras de negócio (compiladas pelo AxionConnect.CORE, .NET Framework 4.8) -->
+    <CoreBinDir>$(MSBuildThisFileDirectory)..\AxionConnect.CORE\bin\Debug\</CoreBinDir>
+    <EDrawingsDir>C:\Program Files\Common Files\eDrawings2025\</EDrawingsDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <!-- Mesma versão do CORE: a 9.6 não aceita mais "SSL Mode=None" (usado no ConexaoMySql) -->
+    <PackageReference Include="MySql.Data" Version="9.3.0" />
+    <PackageReference Include="MySql.Data.EntityFramework" Version="9.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <!-- Mesma versão usada pelo CORE (a API mudou nas versões seguintes) -->
+    <PackageReference Include="RestSharp" Version="106.15.0" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.5" />
+  </ItemGroup>
+
+  <!-- Componentes visuais LM (multi-target net48;net10.0-windows: aqui entra a versão .NET 10) -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\corbie-ui\LmCorbieUI.Wpf\LmCorbieUI.Wpf.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AxionConnect.CORE">
+      <HintPath>$(CoreBinDir)AxionConnect.CORE.dll</HintPath>
+    </Reference>
+    <Reference Include="LmCorbieUI">
+      <HintPath>$(CoreBinDir)LmCorbieUI.dll</HintPath>
+    </Reference>
+    <Reference Include="LmCorbieCriptografar">
+      <HintPath>$(CoreBinDir)LmCorbieCriptografar.dll</HintPath>
+    </Reference>
+    <Reference Include="BouncyCastle.Cryptography">
+      <HintPath>$(CoreBinDir)BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="eDrawings.Interop.EModelViewControl">
+      <HintPath>$(EDrawingsDir)eDrawings.Interop.EModelViewControl.dll</HintPath>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\*.png" />
+    <!-- Ícone solto na pasta do app: usado pelos atalhos do instalador -->
+    <None Include="Assets\axion_connect.ico" Link="axion_connect.ico"
+          CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

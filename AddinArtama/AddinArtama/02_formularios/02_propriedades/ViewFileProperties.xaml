@@ -1,0 +1,54 @@
+<lm:LmView x:Class="AddinArtama.ViewFileProperties"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+           Titulo="Propriedades Personalizadas">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="3*" />
+          <ColumnDefinition Width="10" />
+          <ColumnDefinition Width="2*" MinWidth="110" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <lm:LmLabel Content="Projetista" Tamanho="Medium" Margin="0,6,0,4" />
+        <lm:LmComboBox x:Name="cmbProjetista" Grid.Row="1" Height="30"
+                       DisplayMemberPath="login" SelectedValuePath="id" IsEditable="True" IsTextSearchEnabled="True" />
+
+        <lm:LmLabel Grid.Column="2" Content="Data Projeto" Tamanho="Medium" Margin="0,6,0,4" />
+        <lm:LmTextBox x:Name="dtpDataProjeto" Grid.Row="1" Grid.Column="2" Valor="Data" Height="30" />
+
+        <lm:LmLabel Grid.Row="2" Content="Desenhista" Tamanho="Medium" Margin="0,10,0,4" />
+        <lm:LmComboBox x:Name="cmbDesenhista" Grid.Row="3" Height="30"
+                       DisplayMemberPath="login" SelectedValuePath="id" IsEditable="True" IsTextSearchEnabled="True" />
+
+        <lm:LmLabel Grid.Row="2" Grid.Column="2" Content="Data Desenho" Tamanho="Medium" Margin="0,10,0,4" />
+        <lm:LmTextBox x:Name="dtpDataDesenho" Grid.Row="3" Grid.Column="2" Valor="Data" Height="30" />
+      </Grid>
+
+      <lm:LmGroupBox Header="Atualizar Somente" Padding="8" Margin="0,14,0,0">
+        <StackPanel>
+          <lm:LmRadioButton x:Name="rdbPasta" Content="Na Mesma Pasta da Montagem" GroupName="Atualizar" IsChecked="True" />
+          <DockPanel Margin="0,8,0,0">
+            <lm:LmRadioButton x:Name="rdbNome" Content="Nome Começa Com" GroupName="Atualizar" VerticalAlignment="Center" Margin="0,0,10,0" />
+            <lm:LmTextBox x:Name="txtNome" Height="30" />
+          </DockPanel>
+        </StackPanel>
+      </lm:LmGroupBox>
+
+      <lm:LmButton Content="Aplicar Propriedades"
+                   Icone="&#xE74E;"
+                   Height="32"
+                   Margin="0,14,0,0"
+                   HorizontalAlignment="Left"
+                   Click="BtnSalvar_Click" />
+    </StackPanel>
+  </ScrollViewer>
+</lm:LmView>

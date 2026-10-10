@@ -1,0 +1,59 @@
+<lm:LmView x:Class="AddinArtama.ViewProcessoFabricacao"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+           Titulo="Processo de Fabricação">
+  <DockPanel>
+    <Grid x:Name="pnlControls" DockPanel.Dock="Top" Margin="0,4,0,8">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition />
+        <ColumnDefinition Width="8" />
+        <ColumnDefinition Width="70" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <lm:LmLabel Content="Pedido" Tamanho="Medium" Margin="0,0,0,4" />
+      <lm:LmTextBox x:Name="txtPedido" Grid.Row="1" CampoObrigatorio="True" Height="30" />
+
+      <lm:LmLabel Grid.Column="2" Content="Qtd" Tamanho="Medium" Margin="0,0,0,4" />
+      <lm:LmTextBox x:Name="txtQtd" Grid.Row="1" Grid.Column="2" Valor="Num_Inteiro" CampoObrigatorio="True" Height="30" />
+
+      <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal" Margin="8,0,0,0">
+        <lm:LmButton Icone="&#xE72C;" Width="36" Height="30" Padding="0"
+                     ToolTip="Carregar componentes da montagem" Click="BtnCarrProcess_Click" />
+        <lm:LmButton Icone="&#xEA90;" Width="36" Height="30" Padding="0" Margin="6,0,0,0"
+                     ToolTip="Gerar processos de fabricação (PDF e CSV)" Click="BtnSalvar_Click" />
+      </StackPanel>
+    </Grid>
+
+    <lm:LmDataGrid x:Name="dgv"
+                   AutoGenerateColumns="False"
+                   IsReadOnly="True"
+                   SelectionMode="Single"
+                   TextoSemRegistros="Carregue os componentes da montagem.">
+      <lm:LmDataGrid.Columns>
+        <DataGridTextColumn Header="PROCESSO" Binding="{Binding DescricaoProcesso}" Width="120" />
+        <DataGridTextColumn Header="CÓDIGO" Binding="{Binding CodigoItem}" Width="80" />
+        <DataGridTextColumn Header="DENOMINAÇÃO" Binding="{Binding DescricaoItem}" Width="*" MinWidth="200" />
+        <DataGridTextColumn Header="ESPES." Binding="{Binding EspessuraMaterial}" Width="80">
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
+        <DataGridTextColumn Header="QTD" Binding="{Binding QtdItem}" Width="50">
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
+      </lm:LmDataGrid.Columns>
+    </lm:LmDataGrid>
+  </DockPanel>
+</lm:LmView>

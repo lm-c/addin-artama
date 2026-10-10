@@ -1,0 +1,69 @@
+<lm:LmView x:Class="AddinArtama.ViewPackList"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+           Titulo="Pack List">
+  <DockPanel>
+    <Grid DockPanel.Dock="Top" Margin="0,4,0,8">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition />
+        <ColumnDefinition Width="8" />
+        <ColumnDefinition Width="120" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <lm:LmLabel Content="Descrição" Tamanho="Medium" Margin="0,0,0,4" />
+      <lm:LmTextBox x:Name="txtDescricao" Grid.Row="1" Height="30"
+                    IconeF7="&#xE8AC;" ToolTipF7="Buscar denominação da montagem [F7]"
+                    BotaoF7Click="TxtDescricao_BotaoF7Click" />
+
+      <lm:LmLabel Grid.Column="2" Content="Pedido" Tamanho="Medium" Margin="0,0,0,4" />
+      <lm:LmTextBox x:Name="txtPedido" Grid.Row="1" Grid.Column="2" Height="30" />
+
+      <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal" Margin="8,0,0,0">
+        <lm:LmButton Icone="&#xE72C;" Width="36" Height="30" Padding="0"
+                     ToolTip="Carregar componentes da montagem" Click="BtnCarrProcess_Click" />
+        <lm:LmButton Icone="&#xEA90;" Width="36" Height="30" Padding="0" Margin="6,0,0,0"
+                     ToolTip="Gerar Pack List (PDF)" Click="BtnSalvar_Click" />
+      </StackPanel>
+
+      <lm:LmLabel Grid.Row="2" Content="Observação" Tamanho="Medium" Margin="0,8,0,4" />
+      <lm:LmTextBox x:Name="txtObs" Grid.Row="3" Height="30" />
+
+      <lm:LmLabel Grid.Row="2" Grid.Column="2" Content="Data" Tamanho="Medium" Margin="0,8,0,4" />
+      <lm:LmTextBox x:Name="txtData" Grid.Row="3" Grid.Column="2" Valor="Data" Height="30" />
+    </Grid>
+
+    <lm:LmDataGrid x:Name="dgv"
+                   AutoGenerateColumns="False"
+                   IsReadOnly="True"
+                   SelectionMode="Single"
+                   TextoSemRegistros="Carregue os componentes da montagem.">
+      <lm:LmDataGrid.Columns>
+        <DataGridTextColumn Header="ID" Binding="{Binding IdVolume}" Width="40">
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
+        <DataGridTextColumn Header="VOLUME" Binding="{Binding DescricaoVolume}" Width="250" />
+        <DataGridTextColumn Header="CÓDIGO" Binding="{Binding CodigoItem}" Width="80" />
+        <DataGridTextColumn Header="DENOMINAÇÃO" Binding="{Binding DescricaoItem}" Width="*" MinWidth="150" />
+        <DataGridTextColumn Header="QTD" Binding="{Binding QtdItem}" Width="50">
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
+      </lm:LmDataGrid.Columns>
+    </lm:LmDataGrid>
+  </DockPanel>
+</lm:LmView>

@@ -1,0 +1,79 @@
+<lm:LmWindow x:Class="AddinArtama.WindowReportWorks"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+             Title="Report Works"
+             Width="1100"
+             Height="620">
+  <lm:LmWindow.Resources>
+    <Style x:Key="Centro" TargetType="TextBlock">
+      <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+  </lm:LmWindow.Resources>
+
+  <lm:LmView MostrarCabecalho="False" FecharComEsc="False">
+    <DockPanel Margin="4">
+      <!-- Topo: carregar / abrir / salvar + codificação do CSV -->
+      <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+          <lm:LmLabel Content="Unicode" Tamanho="Medium" VerticalAlignment="Center" Margin="0,0,8,0" />
+          <lm:LmRadioButton x:Name="rdbUtf8" Content="UTF-8" GroupName="Unicode" VerticalAlignment="Center" Margin="0,0,10,0" />
+          <lm:LmRadioButton x:Name="rdbIso" Content="ISO-8859-1" GroupName="Unicode" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <lm:LmButton Content="Carregar" Icone="&#xE72C;" Width="110" Height="30" Click="BtnLoad_Click" />
+          <lm:LmButton Content="Abrir CSV" Icone="&#xE8E5;" Width="110" Height="30" Margin="6,0,0,0" Click="BtnAbrir_Click" />
+          <lm:LmButton Content="Salvar CSV" Icone="&#xE74E;" Width="110" Height="30" Margin="6,0,0,0" Click="BtnSalvar_Click" />
+        </StackPanel>
+      </DockPanel>
+
+      <!-- Rodapé: filtro de seriado e substituição de processo -->
+      <WrapPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+        <lm:LmLabel Content="Seriado" Tamanho="Medium" VerticalAlignment="Center" Margin="0,0,6,0" />
+        <lm:LmComboBox x:Name="cmbSeriado" Width="160" Height="30" DisplayMemberPath="Descricao" SelectedValuePath="Valor"
+                       SelectionChanged="CmbSeriado_SelectionChanged" />
+
+        <lm:LmLabel Content="Substituir Processo De" Tamanho="Medium" VerticalAlignment="Center" Margin="20,0,6,0" />
+        <lm:LmTextBox x:Name="txtDe" Width="74" Height="30" />
+        <lm:LmLabel Content="Para" Tamanho="Medium" VerticalAlignment="Center" Margin="8,0,6,0" />
+        <lm:LmTextBox x:Name="txtPara" Width="74" Height="30" />
+        <lm:LmButton Content="Substituir" Icone="&#xE8AB;" Width="110" Height="30" Margin="8,0,0,0" Click="BtnSubstituir_Click" />
+
+        <lm:LmLabel Content="Procurar" Tamanho="Medium" VerticalAlignment="Center" Margin="20,0,6,0" />
+        <lm:LmTextBox x:Name="txtProcurar" Width="200" Height="30" MostrarBotaoLimpar="True" TextChanged="TxtProcurar_TextChanged" />
+      </WrapPanel>
+
+      <lm:LmDataGrid x:Name="dgv"
+                     AutoGenerateColumns="False"
+                     SelectionMode="Single"
+                     SelectionUnit="FullRow"
+                     CanUserSortColumns="False"
+                     CanUserReorderColumns="False"
+                     CanUserAddRows="False"
+                     CanUserDeleteRows="False"
+                     PreviewKeyDown="Dgv_PreviewKeyDown"
+                     TextoSemRegistros="Carregue a montagem ou abra um CSV.">
+        <lm:LmDataGrid.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="Inserir Registro" Click="TsmAdd_Click" />
+            <MenuItem Header="Excluir Registro" Click="TsmDelete_Click" />
+            <MenuItem Header="Salvar Dados No SolidWorks" Click="TsmAltDados_Click" />
+            <MenuItem Header="Abrir 3D" Click="TsmOpen3D_Click" />
+          </ContextMenu>
+        </lm:LmDataGrid.ContextMenu>
+        <lm:LmDataGrid.Columns>
+          <DataGridTextColumn Header="Nivel" Binding="{Binding Nivel}" Width="70" />
+          <DataGridTextColumn Header="Qtd" Binding="{Binding Qtd}" Width="40" ElementStyle="{StaticResource Centro}" />
+          <DataGridTextColumn Header="Código" Binding="{Binding Codigo}" Width="80" ElementStyle="{StaticResource Centro}" />
+          <DataGridTextColumn Header="Componente" Binding="{Binding Componente}" Width="80" ElementStyle="{StaticResource Centro}" />
+          <DataGridTextColumn Header="Material" Binding="{Binding Material}" Width="100" ElementStyle="{StaticResource Centro}" />
+          <DataGridTextColumn Header="Denominação" Binding="{Binding Denominacao}" Width="*" MinWidth="200" />
+          <DataGridTextColumn Header="Comprimento" Binding="{Binding Comprimento}" Width="100" ElementStyle="{StaticResource Centro}" />
+          <DataGridTextColumn Header="Seriado" Binding="{Binding Seriado}" Width="60" ElementStyle="{StaticResource Centro}" />
+          <DataGridTextColumn Header="Operação" Binding="{Binding Operacao}" Width="80" ElementStyle="{StaticResource Centro}" />
+          <DataGridTextColumn Header="Máquina" Binding="{Binding Maquina}" Width="60" ElementStyle="{StaticResource Centro}" />
+        </lm:LmDataGrid.Columns>
+      </lm:LmDataGrid>
+    </DockPanel>
+  </lm:LmView>
+</lm:LmWindow>

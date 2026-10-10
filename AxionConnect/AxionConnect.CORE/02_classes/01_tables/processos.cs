@@ -33,6 +33,42 @@ namespace AxionConnect {
     [LarguraColunaGrid(80)]
     public bool ativo { get; set; }
 
+    /// <summary>
+    /// Mesmas regras do Addin (processos.Salvar): não permite repetir operação + máquina.
+    /// Retorna false quando o processo já existe; as mensagens ficam por conta da tela.
+    /// </summary>
+    public static bool Salvar(processos processo) {
+      using (ContextoDados db = new ContextoDados()) {
+        if (processo.id == 0) {
+          if (db.processos.Any(x => x.codigo_operacao == processo.codigo_operacao && x.codigo_maquina == processo.codigo_maquina))
+            return false;
+
+          db.processos.Add(processo);
+          db.SaveChanges();
+        } else {
+          if (db.processos.Any((x => x.id != processo.id && x.codigo_operacao == processo.codigo_operacao && x.codigo_maquina == processo.codigo_maquina)))
+            return false;
+
+          var modelAlt = db.processos.FirstOrDefault(x => x.id == processo.id);
+          modelAlt.codigo_operacao = processo.codigo_operacao;
+          modelAlt.codigo_maquina = processo.codigo_maquina;
+          modelAlt.tipoOperacao = processo.tipoOperacao;
+          modelAlt.ativo = processo.ativo;
+
+          db.SaveChanges();
+        }
+
+        return true;
+      }
+    }
+
+    public static void Excluir(int processo_id) {
+      using (ContextoDados db = new ContextoDados()) {
+        db.processos.Remove(db.processos.FirstOrDefault(x => x.id == processo_id));
+        db.SaveChanges();
+      }
+    }
+
     public static List<processos> SelecionarTodos() {
       var _return = new List<processos>();
 

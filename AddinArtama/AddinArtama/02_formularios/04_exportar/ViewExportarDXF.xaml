@@ -1,0 +1,61 @@
+<lm:LmView x:Class="AddinArtama.ViewExportarDXF"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+           Titulo="Exportar DXF">
+  <DockPanel>
+    <DockPanel DockPanel.Dock="Top" Margin="0,4,0,8">
+      <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+        <lm:LmButton x:Name="btnCarregar" Icone="&#xE72C;" Width="36" Height="30" Padding="0" Margin="0,0,6,0"
+                     ToolTip="Carregar peças da montagem" Click="BtnCarregar_Click" />
+        <lm:LmButton x:Name="btnExportar" Icone="&#xEDE1;" Width="36" Height="30" Padding="0" Margin="0,0,6,0"
+                     ToolTip="Gerar DXF das peças marcadas" Click="BtnExportar_Click" />
+        <lm:LmButton x:Name="btnCancelar" Content="Cancelar" Icone="&#xE711;" Estilo="Gray" Height="30" Margin="0,0,6,0"
+                     Visibility="Collapsed" Click="BtnCancelar_Click" />
+      </StackPanel>
+
+      <lm:LmTextBox x:Name="txtPesquisar"
+                    Watermark="Pesquisar componente ou denominação"
+                    IconeF7="&#xE721;"
+                    ToolTipF7="Próximo resultado [F7]"
+                    Height="30"
+                    BotaoF7Click="TxtPesquisar_BotaoF7Click"
+                    PreviewKeyDown="TxtPesquisar_PreviewKeyDown" />
+    </DockPanel>
+
+    <lm:LmLabel x:Name="lblPercDesenho" DockPanel.Dock="Bottom" Content="Peça 0 de 0" Tamanho="Medium" Margin="0,6,0,0" />
+
+    <lm:LmDataGrid x:Name="dgv"
+                   AutoGenerateColumns="False"
+                   SelectionMode="Single"
+                   CanUserAddRows="False"
+                   CanUserDeleteRows="False"
+                   CanUserSortColumns="False"
+                   SelectionChanged="Dgv_SelectionChanged"
+                   TextoSemRegistros="Carregue as peças da montagem.">
+      <lm:LmDataGrid.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="Selecionar Todos" Click="TsmSelectAll_Click" />
+          <MenuItem Header="Remover Seleção Todos" Click="TsmUnselectAll_Click" />
+          <Separator />
+          <MenuItem Header="Abrir 3D" Click="TsmOpen3D_Click" />
+          <MenuItem Header="Abrir 2D" Click="TsmOpen2D_Click" />
+        </ContextMenu>
+      </lm:LmDataGrid.ContextMenu>
+      <lm:LmDataGrid.Columns>
+        <DataGridTemplateColumn Header="Sel" Width="40" CanUserResize="False">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <lm:LmCheckBox IsChecked="{Binding Exportar, UpdateSourceTrigger=PropertyChanged}"
+                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn Header="COMPONENTE" Binding="{Binding CodComponente}" Width="100" IsReadOnly="True" />
+        <DataGridTextColumn Header="DENOMINAÇÃO" Binding="{Binding Denominacao}" Width="*" MinWidth="150" IsReadOnly="True" />
+        <DataGridTextColumn Header="ESPESSURA" Binding="{Binding EspessuraMaterial}" Width="80" IsReadOnly="True" />
+        <DataGridTextColumn Header="CÓD. MATERIAL" Binding="{Binding CodigoMaterial}" Width="100" IsReadOnly="True" />
+      </lm:LmDataGrid.Columns>
+    </lm:LmDataGrid>
+  </DockPanel>
+</lm:LmView>

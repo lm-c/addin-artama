@@ -1,0 +1,28 @@
+<lm:LmView x:Class="AddinArtama.ViewAlterarSenha"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+           Titulo="Redefinir Senha"
+           MostrarBotaoAjuda="True"
+           AjudaClick="LmView_AjudaClick">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel>
+      <lm:LmLabel Content="Senha Atual *" Tamanho="Medium" Margin="0,6,0,4" />
+      <lm:LmPasswordBox x:Name="txtSenhaAtual" CampoObrigatorio="True" Height="30" />
+
+      <lm:LmLabel Content="Nova Senha *" Tamanho="Medium" Margin="0,10,0,4" />
+      <lm:LmPasswordBox x:Name="txtSenhaNova" CampoObrigatorio="True" Height="30" />
+
+      <lm:LmLabel Content="Repetir Senha *" Tamanho="Medium" Margin="0,10,0,4" />
+      <lm:LmPasswordBox x:Name="txtSenhaRepetir" CampoObrigatorio="True" Height="30" />
+
+      <lm:LmButton Content="_Salvar"
+                   Icone="&#xE74E;"
+                   Width="110"
+                   Margin="0,14,0,0"
+                   HorizontalAlignment="Left"
+                   IsDefault="True"
+                   Click="BtnSalvar_Click" />
+    </StackPanel>
+  </ScrollViewer>
+</lm:LmView>

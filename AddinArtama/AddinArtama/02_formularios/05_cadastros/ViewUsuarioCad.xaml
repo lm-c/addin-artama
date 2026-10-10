@@ -1,0 +1,115 @@
+<lm:LmView x:Class="AddinArtama.ViewUsuarioCad"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+           Titulo="Cadastro de Usuário"
+           MostrarBotaoAjuda="True"
+           AjudaClick="LmView_AjudaClick">
+  <lm:LmView.Resources>
+    <Style x:Key="BotaoPerfil" TargetType="{x:Type lm:LmButton}">
+      <Setter Property="Height" Value="30" />
+      <Setter Property="Margin" Value="0,0,6,0" />
+    </Style>
+  </lm:LmView.Resources>
+
+  <lm:LmTabControl x:Name="tbcUsuario">
+    <!-- ============ CADASTRO ============ -->
+    <TabItem Header="Cadastro">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel x:Name="pnlCadastro" Margin="0,6,0,0">
+          <lm:LmLabel Content="Código" Tamanho="Medium" Margin="0,0,0,4" />
+          <lm:LmTextBox x:Name="txtID"
+                        Valor="Num_Inteiro"
+                        Watermark="Novo"
+                        IconeF7="&#xE721;"
+                        ToolTipF7="Pesquisar [F7]"
+                        Height="30"
+                        BotaoF7Click="TxtID_BotaoF7Click"
+                        LostFocus="TxtID_LostFocus"
+                        PreviewKeyDown="TxtID_PreviewKeyDown" />
+
+          <lm:LmLabel Content="Nome *" Tamanho="Medium" Margin="0,10,0,4" />
+          <lm:LmTextBox x:Name="txtNome" CampoObrigatorio="True" MaxLength="250" Height="30" />
+
+          <lm:LmLabel Content="Login *" Tamanho="Medium" Margin="0,10,0,4" />
+          <lm:LmTextBox x:Name="txtLogin" CampoObrigatorio="True" MaxLength="10" Height="30" LostFocus="TxtLogin_LostFocus" />
+
+          <lm:LmLabel Content="Senha *" Tamanho="Medium" Margin="0,10,0,4" />
+          <lm:LmPasswordBox x:Name="txtSenha" CampoObrigatorio="True" Height="30" />
+
+          <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+            <lm:LmLabel Content="Situação" Tamanho="Medium" VerticalAlignment="Center" Margin="0,0,12,0" />
+            <lm:LmCheckBox x:Name="ckbSituacao" Content="Ativo" IsChecked="True" VerticalAlignment="Center" />
+          </StackPanel>
+
+          <WrapPanel Margin="0,14,0,0">
+            <lm:LmButton Content="_Salvar" Icone="&#xE74E;" Width="100" Margin="0,0,6,6" IsDefault="True" Click="BtnSalvar_Click" />
+            <lm:LmButton Content="_Limpar" Icone="&#xE894;" Estilo="Gray" Width="100" Margin="0,0,6,6" Click="BtnLimpar_Click" />
+            <lm:LmButton x:Name="btnExcluir" Content="E_xcluir" Icone="&#xE74D;" Estilo="Gray" Width="100" Margin="0,0,6,6"
+                         IsEnabled="False" Click="BtnExcluir_Click" />
+          </WrapPanel>
+        </StackPanel>
+      </ScrollViewer>
+    </TabItem>
+
+    <!-- ============ PERFIL ============ -->
+    <TabItem Header="Perfil">
+      <Grid Margin="0,6,0,0">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="140" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <WrapPanel>
+          <lm:LmButton x:Name="btnSelPerfil" Style="{StaticResource BotaoPerfil}" Content="Selecionar" Icone="&#xE73A;"
+                       ToolTip="Selecionar os perfis do usuário" Click="BtnSelPerfil_Click" />
+          <lm:LmButton x:Name="btnAltPerfil" Style="{StaticResource BotaoPerfil}" Content="Alterar" Icone="&#xE70F;"
+                       ToolTip="Alterar o perfil selecionado" IsEnabled="False" Click="BtnAltPerfil_Click" />
+          <lm:LmButton Style="{StaticResource BotaoPerfil}" Content="Perfil" Icone="&#xE710;"
+                       ToolTip="Cadastrar novo perfil" Click="BtnAddPerfil_Click" />
+        </WrapPanel>
+
+        <lm:LmDataGrid x:Name="dgvPerfil"
+                       Grid.Row="1"
+                       Margin="0,6,0,0"
+                       AutoGenerateColumns="False"
+                       IsReadOnly="True"
+                       SelectionMode="Single"
+                       CanUserSortColumns="False"
+                       CanUserReorderColumns="False"
+                       TextoSemRegistros="Nenhum perfil selecionado.">
+          <lm:LmDataGrid.Columns>
+            <DataGridTextColumn Header="CÓDIGO" Binding="{Binding Codigo}" Width="70" />
+            <DataGridTextColumn Header="DESCRIÇÃO" Binding="{Binding Descricao}" Width="200" />
+            <DataGridTextColumn Header="OBSERVAÇÃO" Binding="{Binding Observacao}" Width="*" MinWidth="150" />
+          </lm:LmDataGrid.Columns>
+        </lm:LmDataGrid>
+
+        <lm:LmLabel Grid.Row="2" Content="Permissões dos perfis" Tamanho="Medium" Margin="0,10,0,4" />
+
+        <lm:LmDataGrid x:Name="dgvPermis"
+                       Grid.Row="3"
+                       AutoGenerateColumns="False"
+                       IsReadOnly="True"
+                       SelectionMode="Single"
+                       CanUserSortColumns="False"
+                       CanUserReorderColumns="False"
+                       TextoSemRegistros="Sem permissões.">
+          <lm:LmDataGrid.Columns>
+            <DataGridTemplateColumn Header="" Width="34" CanUserResize="False">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <Image Source="{Binding Imagem}" Width="18" Height="18" ToolTip="Mostra Icone de Acordo com o Tipo" />
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTextColumn Header="CÓDIGO" Binding="{Binding Codigo}" Width="70" />
+            <DataGridTextColumn Header="PERMISSÃO ESPECÍFICA" Binding="{Binding Descricao}" Width="*" />
+          </lm:LmDataGrid.Columns>
+        </lm:LmDataGrid>
+      </Grid>
+    </TabItem>
+  </lm:LmTabControl>
+</lm:LmView>

@@ -1,0 +1,67 @@
+<lm:LmView x:Class="AddinArtama.ViewDesenho"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+           Titulo="Criar/Detalhar Desenhos"
+           MostrarBotaoAjuda="True"
+           AjudaClick="LmView_AjudaClick">
+  <lm:LmView.Resources>
+    <Style x:Key="BotaoQuadrado" TargetType="{x:Type lm:LmButton}">
+      <Setter Property="Width" Value="34" />
+      <Setter Property="Height" Value="32" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0,0,4,4" />
+    </Style>
+  </lm:LmView.Resources>
+
+  <DockPanel>
+    <StackPanel DockPanel.Dock="Top" Margin="0,4,0,8">
+      <WrapPanel>
+        <lm:LmButton Style="{StaticResource BotaoQuadrado}" Icone="&#xE72C;" ToolTip="Carregar" Click="BtnLoadDesenho_Click" />
+        <lm:LmButton Style="{StaticResource BotaoQuadrado}" Icone="&#xE893;" ToolTip="Avançar" Click="BtnFFdesenho_Click" />
+        <lm:LmButton Style="{StaticResource BotaoQuadrado}" Icone="&#xE76B;" ToolTip="Folha Anterior" Click="BtnDownDes_Click" />
+        <lm:LmButton Style="{StaticResource BotaoQuadrado}" Icone="&#xE76C;" ToolTip="Folha Posterior" Click="BtnUpDes_Click" />
+        <lm:LmButton Style="{StaticResource BotaoQuadrado}" Icone="&#xE8FD;" ToolTip="Inserir Lista" Click="BtnInserirListaSoldagem_Click" />
+      </WrapPanel>
+      <WrapPanel>
+        <lm:LmButton Style="{StaticResource BotaoQuadrado}" Content="4R" ToolTip="A4 Retrato" Click="BtnA4R_Click" />
+        <lm:LmButton Style="{StaticResource BotaoQuadrado}" Content="A4" ToolTip="A4 Paisagem" Click="BtnA4_Click" />
+        <lm:LmButton Style="{StaticResource BotaoQuadrado}" Content="A3" Click="BtnA3_Click" />
+        <lm:LmButton Style="{StaticResource BotaoQuadrado}" Content="A2" Click="BtnA2_Click" />
+        <lm:LmButton Style="{StaticResource BotaoQuadrado}" Content="A1" Click="BtnA1_Click" />
+      </WrapPanel>
+
+      <lm:LmTextBox x:Name="txtName"
+                    Watermark="Nome da folha"
+                    IconeF7="&#xE8AC;"
+                    ToolTipF7="Renomear folha [F7]"
+                    Height="30"
+                    Margin="0,4,0,0"
+                    BotaoF7Click="BtnRename_Click" />
+    </StackPanel>
+
+    <lm:LmLabel x:Name="lblPercDesenho" DockPanel.Dock="Bottom" Content="Peça 0 de 0" Tamanho="Medium" Margin="0,6,0,0" />
+
+    <lm:LmDataGrid x:Name="dgv"
+                   AutoGenerateColumns="False"
+                   IsReadOnly="True"
+                   SelectionMode="Single"
+                   CanUserSortColumns="False"
+                   SelectionChanged="Dgv_SelectionChanged"
+                   TextoSemRegistros="Carregue a peça ou montagem.">
+      <lm:LmDataGrid.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="Abrir 3D" Click="TsmOpen3D_Click" />
+          <MenuItem Header="Abrir 2D" Click="TsmOpen2D_Click" />
+          <MenuItem Header="Atualizar Código (Componente)" Visibility="Collapsed" Click="TsmAttCodigo_Click" />
+        </ContextMenu>
+      </lm:LmDataGrid.ContextMenu>
+      <lm:LmDataGrid.Columns>
+        <DataGridTextColumn Header="TP" Binding="{Binding Tipo3D}" Width="36" />
+        <DataGridTextColumn Header="DS" Binding="{Binding TemDesenho}" Width="40" />
+        <DataGridTextColumn Header="COMPONENTE" Binding="{Binding ShortName}" Width="100" />
+        <DataGridTextColumn Header="DENOMINAÇÃO" Binding="{Binding Denominacao}" Width="*" />
+      </lm:LmDataGrid.Columns>
+    </lm:LmDataGrid>
+  </DockPanel>
+</lm:LmView>

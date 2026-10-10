@@ -1,19 +1,22 @@
-﻿using LmCorbieUI;
-using LmCorbieUI.Controls;
-using LmCorbieUI.Design;
-using LmCorbieUI.LmForms;
+using LmCorbieUI;
 using System;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using MediaColor = System.Windows.Media.Color;
+using Wpf = LmCorbieUI.Wpf;
+using WpfCtl = System.Windows.Controls;
 
 namespace AddinArtama {
+  /// <summary>
+  /// Task Pane do add-in. O conteúdo é a casca WPF (LmPainel: menu, telas, rodapé) num único LmWpfHost.
+  /// </summary>
   [ComVisible(true)]
   [ProgId(SWTASKPANE_PROGID)]
-  public partial class UcPainelTarefas : LmUserControl {
+  public partial class UcPainelTarefas : UserControl {
     public const string SWTASKPANE_PROGID = "AddinArtama.SWTaskPane.Plugin";
 
     static UcPainelTarefas instancia;
@@ -27,15 +30,23 @@ namespace AddinArtama {
       }
     }
 
+    /// <summary>Logo da Artama (fundo do painel e tela de login).</summary>
+    internal static readonly ImageSource Logo = CarregarLogo();
+
+    readonly Wpf.LmPainel painel;
+    ViewLogin login;
+
+    Wpf.LmItemMenu miProcess, miProperties;
+    Wpf.LmItemMenu miDesenho, miCriarDesenho, miAtualizarDesenho;
+    Wpf.LmItemMenu miExportar, miExportarPDF, miExportarDXF;
+    Wpf.LmItemMenu miCadastros, miUsuarioCad, miPerfilCad, miMaterialCad, miMateriaPrimaCad, miRedefinirSenha;
+    Wpf.LmItemMenu miRelatorio, miProcessoFabricacao, miPackList, miPlanoPintura, miManutPacklistPlanoDePintura, miReportWorks;
+    Wpf.LmItemMenu miCSW, miCadastroProduto, miConfiguracaoProcesso, miConfiguracaoIntegracao;
+    Wpf.LmItemMenu miConfig, miConfigTemplate, miAparencia;
+    Wpf.LmItemMenu miLogout;
+
     public UcPainelTarefas() {
       InitializeComponent();
-      
-      OcultarControles();
-
-      if (ConexaoMySql.Database.StartsWith("teste"))
-        LmCor.CorPrimaria = Color.Red;
-
-      //LmCor.CorSecundaria = ValorPredefinido.model.CorSecundaria.StringToColor();
 
       // Forçar o uso de TLS 1.2 (ou versões anteriores se necessário)
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
@@ -43,192 +54,119 @@ namespace AddinArtama {
       // Ignorar erros de certificado SSL
       ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
-      string imagePath = @"C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\01 - Addin LM\LogoArtama.png";
+      // Variáveis de ambiente (também usadas pela cor do tema salva)
+      ValPadrao.DefinirPadrao("LM Projetos Data", "Axion Artama", "Artama", "michalakleo@gmail.com");
 
-      if (File.Exists(imagePath)) {
-        pnlMain.BackgroundImage = Image.FromFile(imagePath);
+      // Cor do tema salva pelo usuário (no banco de teste fica fixa em vermelho)
+      Aparencia.AplicarSalva();
+
+      painel = new Wpf.LmPainel {
+        MostrarMenu = false,
+        ImagemFundo = Logo,
+      };
+
+      MontarMenu();
+
+      Controls.Add(new Wpf.LmWpfHost(painel));
+    }
+
+    static ImageSource CarregarLogo() {
+      try {
+        var logo = new BitmapImage();
+        logo.BeginInit();
+        logo.UriSource = new Uri("pack://application:,,,/AddinArtama;component/Resources/logo_fundo.png");
+        logo.CacheOption = BitmapCacheOption.OnLoad;
+        logo.EndInit();
+        logo.Freeze();
+
+        return logo;
+      } catch (Exception) {
+        return null;
       }
     }
 
     private void UcPainelTarefas_Load(object sender, EventArgs e) {
       instancia = this;
 
-      AttControls(this);
-
-      FrmLogin frm = new FrmLogin();
-      AbrirFormFilho(frm);
+      login = new ViewLogin();
+      AbrirTela(login);
     }
 
-    internal void AbrirFormFilho(Form frm) {
-      try {
-        if (!pnlMain.Controls.ContainsKey(frm.Name)) {
-          frm.Dock = System.Windows.Forms.DockStyle.Fill;
-          frm.TopLevel = false;
-          frm.Parent = pnlMain;
-          frm.Show();
+    #region Menu
 
-          if (frm is LmSingleForm)
-            ((LmSingleForm)frm).Movimentar = false;
+    void MontarMenu() {
+      miProcess = new Wpf.LmItemMenu("Aplicação de Processos/Matéria Prima", "", AbrirTela<ViewMateriaPrimaApl>);
+      miProperties = new Wpf.LmItemMenu("Propriedades Personalizadas", "", AbrirTela<ViewFileProperties>);
 
-          pnlMain.Controls.Add(frm);
-          frm.BringToFront();
-        } else {
-          pnlMain.Controls[frm.Name].BringToFront();
-        }
-      } catch (Exception ex) {
-        Toast.Error("Erro ao Abrir Tela.\r\n" + ex.ToString());
-      }
-    }
+      miDesenho = new Wpf.LmItemMenu("Desenhos", "");
+      miCriarDesenho = new Wpf.LmItemMenu("Criar/Alterar Desenhos", "", AbrirTela<ViewDesenho>);
+      miAtualizarDesenho = new Wpf.LmItemMenu("Atualizar Templates dos Desenhos", "", AbrirTela<ViewFormatosAtualizar>);
+      miDesenho.SubItens.Add(miCriarDesenho);
+      miDesenho.SubItens.Add(miAtualizarDesenho);
 
-    private void MsProcess_Click(object sender, EventArgs e) {
-      FrmMateriaPrimaApl frm = new FrmMateriaPrimaApl();
-      AbrirFormFilho(frm);
-    }
+      miExportar = new Wpf.LmItemMenu("Exportar Arquivos", "");
+      miExportarPDF = new Wpf.LmItemMenu("Exportar PDF/DWG", "", AbrirTela<ViewExportarPDF>);
+      miExportarDXF = new Wpf.LmItemMenu("Exportar DXF", "", AbrirTela<ViewExportarDXF>);
+      miExportar.SubItens.Add(miExportarPDF);
+      miExportar.SubItens.Add(miExportarDXF);
 
-    private void MsProperties_Click(object sender, EventArgs e) {
-      FrmFileProperties frm = new FrmFileProperties();
-      AbrirFormFilho(frm);
-    }
+      miCadastros = new Wpf.LmItemMenu("Cadastros Gerais", "");
+      miUsuarioCad = new Wpf.LmItemMenu("Cadastro de Usuário", "", AbrirTela<ViewUsuarioCad>);
+      miPerfilCad = new Wpf.LmItemMenu("Cadastro de Perfil do Usuário", "", AbrirTela<ViewPerfil>);
+      miMaterialCad = new Wpf.LmItemMenu("Cadastro de Material", "", AbrirTela<ViewMaterialCad>);
+      miMateriaPrimaCad = new Wpf.LmItemMenu("Cadastro de Matéria Prima", "", AbrirTela<ViewMateriaPrimaCad>);
+      miRedefinirSenha = new Wpf.LmItemMenu("Redefinir Senha", "", AbrirTela<ViewAlterarSenha>);
+      miCadastros.SubItens.Add(miUsuarioCad);
+      miCadastros.SubItens.Add(miPerfilCad);
+      miCadastros.SubItens.Add(miMaterialCad);
+      miCadastros.SubItens.Add(miMateriaPrimaCad);
+      miCadastros.SubItens.Add(miRedefinirSenha);
 
-    private void MsDesenho_Click(object sender, EventArgs e) {
-      msMenuDesenho.Show((LmMenuItem)sender, ((LmMenuItem)sender).Width, ((LmMenuItem)sender).Height);
-    }
+      miRelatorio = new Wpf.LmItemMenu("Relatórios", "");
+      miProcessoFabricacao = new Wpf.LmItemMenu("Processo de Fabricação", "", AbrirTela<ViewProcessoFabricacao>);
+      miPackList = new Wpf.LmItemMenu("Pack List", "", AbrirTela<ViewPackList>);
+      miPlanoPintura = new Wpf.LmItemMenu("Plano de Pintura", "", AbrirTela<ViewPlanoPintura>);
+      miManutPacklistPlanoDePintura = new Wpf.LmItemMenu("Manutenção Packlist e Plano de Pintura", "", AbrirTela<ViewManutProps>);
+      miReportWorks = new Wpf.LmItemMenu("Report Works", "", () => new WindowReportWorks().Show());
+      miRelatorio.SubItens.Add(miProcessoFabricacao);
+      miRelatorio.SubItens.Add(miPackList);
+      miRelatorio.SubItens.Add(miPlanoPintura);
+      miRelatorio.SubItens.Add(miManutPacklistPlanoDePintura);
+      miRelatorio.SubItens.Add(miReportWorks);
 
-    private void MsCriarDesenho_Click(object sender, EventArgs e) {
-      var frm = new FrmDesenho();
-      AbrirFormFilho(frm);
-    }
+      miCSW = new Wpf.LmItemMenu("Integração ERP", "");
+      miCadastroProduto = new Wpf.LmItemMenu("Cadastro de Produto/Engenharia", "", AbrirTela<ViewProdutoImport>);
+      miConfiguracaoProcesso = new Wpf.LmItemMenu("Configuração de Processo", "", AbrirTela<ViewProcessoCad>);
+      miConfiguracaoIntegracao = new Wpf.LmItemMenu("Configuração de Integração", "", () => new WindowConfigIntegrador().ShowDialog());
+      miCSW.SubItens.Add(miCadastroProduto);
+      miCSW.SubItens.Add(miConfiguracaoProcesso);
+      miCSW.SubItens.Add(miConfiguracaoIntegracao);
 
-    private void MsAtualizarDesenho_Click(object sender, EventArgs e) {
-      var frm = new FrmFormatosAtualizar();
-      AbrirFormFilho(frm);
-    }
+      miConfig = new Wpf.LmItemMenu("Configuração", "") { Direita = true };
+      miConfigTemplate = new Wpf.LmItemMenu("Configurar Templates", "", () => new WindowConfigTemplate().ShowDialog());
+      miAparencia = new Wpf.LmItemMenu("Aparência", "", AbrirMenuAparencia);
+      miConfig.SubItens.Add(miConfigTemplate);
+      miConfig.SubItens.Add(miAparencia);
 
-    private void MsMenuExportar_Click(object sender, EventArgs e) {
-      msMenuExportar.Show((LmMenuItem)sender, ((LmMenuItem)sender).Width, ((LmMenuItem)sender).Height);
-    }
+      miLogout = new Wpf.LmItemMenu("Logout", "", Logout) { Direita = true };
 
-    private void MsExportar_Click(object sender, EventArgs e) {
-      var frm = new FrmExportarPDF();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsExportarDXF_Click(object sender, EventArgs e) {
-      var frm = new FrmExportarDXF();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsCadastro_Click(object sender, EventArgs e) {
-      msMenuCadastro.Show((LmMenuItem)sender, ((LmMenuItem)sender).Width, ((LmMenuItem)sender).Height);
-    }
-
-    private void MsUsuarioCad_Click(object sender, EventArgs e) {
-      FrmUsuarioCad frm = new FrmUsuarioCad();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsPerfilCad_Click(object sender, EventArgs e) {
-      FrmPerfil frm = new FrmPerfil();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsMaterialCad_Click(object sender, EventArgs e) {
-      FrmMaterialCad frm = new FrmMaterialCad();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsMateriaPrimaCad_Click(object sender, EventArgs e) {
-      FrmMateriaPrimaCad frm = new FrmMateriaPrimaCad();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsProcessoCad_Click(object sender, EventArgs e) {
-      FrmProcessoCad frm = new FrmProcessoCad();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsRedefinirSenha_Click(object sender, EventArgs e) {
-      FrmAlterarSenha frm = new FrmAlterarSenha();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsRelatorio_Click(object sender, EventArgs e) {
-      msMenuRelatorio.Show((LmMenuItem)sender, ((LmMenuItem)sender).Width, ((LmMenuItem)sender).Height);
-    }
-
-    private void MsProcessoFabricacao_Click(object sender, EventArgs e) {
-      var frm = new FrmProcessoFabricacao();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsPackList_Click(object sender, EventArgs e) {
-      var frm = new FrmPackList();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsPlanoPintura_Click(object sender, EventArgs e) {
-      var frm = new FrmPlanoPintura();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsManutPacklistPlanoDePintura_Click(object sender, EventArgs e) {
-      var frm = new FrmManutProps();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsReportWorks_Click(object sender, EventArgs e) {
-      var frm = new FrmReportWorks();
-      frm.Show();
-    }
-
-    private void MsCSW_Click(object sender, EventArgs e) {
-      msMenuCSW.Show((LmMenuItem)sender, ((LmMenuItem)sender).Width, ((LmMenuItem)sender).Height);
-    }
-
-    private void MsCadastroProduto_Click(object sender, EventArgs e) {
-      var frm = new FrmProdutoImport();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsConfiguracaoProcesso_Click(object sender, EventArgs e) {
-      var frm = new FrmProcessoCad();
-      AbrirFormFilho(frm);
-    }
-
-    private void MsCadastroEngenhariaProduto_Click(object sender, EventArgs e) {
-      Toast.Warning("Em Desenvolvmento!");
-    }
-
-    private void MsConfiguracaoIntegracao_Click(object sender, EventArgs e) {
-      FrmConfigIntegrador frm = new FrmConfigIntegrador();
-      frm.ShowDialog();
-    }
-
-    private void MsConfig_Click(object sender, EventArgs e) {
-      FrmConfigTemplate frm = new FrmConfigTemplate();
-      frm.ShowDialog();
-    }
-
-    private void MsLogout_Click(object sender, EventArgs e) {
-      try {
-        usuario_alocados.Deslogar();
-
-        var frmLogin = pnlMain.Controls.OfType<FrmLogin>().FirstOrDefault();
-        frmLogin.Visible = true;
-
-        OcultarControles();
-
-        foreach (var frm in pnlMain.Controls.OfType<LmSingleForm>().ToList()) {
-          if (frm.Name != "FrmLogin") {
-            frm.Close();
-          }
-        }
-      } catch (Exception ex) {
-        Toast.Error("Erro ao Fazer Logout");
-      }
+      painel.Itens.Add(miProcess);
+      painel.Itens.Add(miProperties);
+      painel.Itens.Add(miDesenho);
+      painel.Itens.Add(miExportar);
+      painel.Itens.Add(miCadastros);
+      painel.Itens.Add(miRelatorio);
+      painel.Itens.Add(miCSW);
+      // À direita: o primeiro adicionado fica mais à direita.
+      painel.Itens.Add(miLogout);
+      painel.Itens.Add(miConfig);
     }
 
     internal void ConfigurarPermissoes() {
+      if (InvokeRequired) {
+        Invoke(new MethodInvoker(ConfigurarPermissoes));
+        return;
+      }
       try {
         if (usuario_alocados.model.usuario_id == -1)
           return;
@@ -236,114 +174,159 @@ namespace AddinArtama {
         Corbie_Admin.PermissoesPerfil = usuarios.SelecionarPermissoes(usuario_alocados.model.usuario_id);
 
         //Menu Controle
-        msProcess.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.AplicacaoProcesso);
+        miProcess.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.AplicacaoProcesso);
 
-        msProperties.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.PropsPersonalizadas);
+        miProperties.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.PropsPersonalizadas);
 
-        msDesenho.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Desenho);
-        msCriarDesenho.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.CriarAlterarDesenhos);
-        msAtualizarDesenho.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.AtualizarTemplatesDesenhos);
+        miDesenho.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.Desenho);
+        miCriarDesenho.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.CriarAlterarDesenhos);
+        miAtualizarDesenho.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.AtualizarTemplatesDesenhos);
 
-        msImprimir.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Exportar);
-        msExportarPDF.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.ExportarPDF);
-        msExportarDXF.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.ExportarDXF);
+        miExportar.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.Exportar);
+        miExportarPDF.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.ExportarPDF);
+        miExportarDXF.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.ExportarDXF);
 
-        msCadastro.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Cadastros);
-        msUsuarioCad.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.UsuarioCad);
-        msPerfilCad.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.PerfilUsuarioCad);
-        msMaterialCad.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.MaterialCad);
-        msMateriaPrimaCad.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.MateriaPrimaCad);
-        msRedefinirSenha.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.SenhaRedefinir);
+        miCadastros.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.Cadastros);
+        miUsuarioCad.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.UsuarioCad);
+        miPerfilCad.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.PerfilUsuarioCad);
+        miMaterialCad.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.MaterialCad);
+        miMateriaPrimaCad.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.MateriaPrimaCad);
+        miRedefinirSenha.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.SenhaRedefinir);
 
-        msRelatorio.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Relatorios);
-        msProcessoFabricacao.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.ProcessoFabricacao);
-        msPackList.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.PackList);
-        msPlanoPintura.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.PlanoPintura);
-        msManutPacklistPlanoDePintura.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.ManutencaoPinturaPackList);
-        msReportWorks.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.ReportWorks);
+        miRelatorio.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.Relatorios);
+        miProcessoFabricacao.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.ProcessoFabricacao);
+        miPackList.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.PackList);
+        miPlanoPintura.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.PlanoPintura);
+        miManutPacklistPlanoDePintura.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.ManutencaoPinturaPackList);
+        miReportWorks.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.ReportWorks);
 
-        msCSW.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.menuIntegracao);
-        msCadastroProduto.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.produtoCad);
-        msConfiguracaoProcesso.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.processoConfig);
-        msConfiguracaoIntegracao.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.IntegracaoConfig);
+        miCSW.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.menuIntegracao);
+        miCadastroProduto.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.produtoCad);
+        miConfiguracaoProcesso.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.processoConfig);
+        miConfiguracaoIntegracao.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.IntegracaoConfig);
 
-        msConfig.Visible = Corbie_Admin.TemPermissao(PermissoesSistema.Configuracao);
+        miConfig.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.Configuracao);
       } catch (Exception ex) {
-        MsgBox.Show("Erro Crítico!!!\nSuas Permissões do sistema precisa ser redefinida.",
-            "Erro Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Wpf.MsgBox.Show("Erro Crítico!!!\nSuas Permissões do sistema precisa ser redefinida.",
+            "Erro Crítico", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
         LmException.ShowException(ex, "Erro Permissão.", true);
       }
     }
 
-    internal void AttControls(Control control) {
-      AtualizarRecursivo(control);
+    /// <summary>Menu de cores do tema: opções prontas, a atual marcada, e uma cor personalizada.</summary>
+    void AbrirMenuAparencia() {
+      var menu = new WpfCtl.ContextMenu {
+        PlacementTarget = painel,
+        Placement = System.Windows.Controls.Primitives.PlacementMode.MousePoint,
+        Style = (System.Windows.Style)painel.FindResource(Wpf.LmPainel.EstiloSubmenuKey),
+      };
+      Wpf.Design.LmTema.Aplicar(menu);
 
-      ptbPaint.BackColor = LmCor.CorPrimaria;
-      PtbPaint_MouseLeave(ptbPaint, EventArgs.Empty);
-      ptbPaint.Refresh();
+      if (Aparencia.AmbienteTeste) {
+        AdicionarItemAparencia(menu, "Ambiente de teste: cor fixa em vermelho", null).IsEnabled = false;
+        menu.IsOpen = true;
+        return;
+      }
 
-      UcPainelTarefas.Instancia.Refresh();
-      UcPainelTarefas.Instancia.Invalidate();
+      var atual = Wpf.Design.LmTema.CorPrimaria;
+      foreach (var opcao in Aparencia.Opcoes) {
+        var cor = opcao.Cor;
+        AdicionarItemAparencia(menu, CabecalhoCor(opcao.Nome, cor, cor == atual), () => Aparencia.Alterar(cor));
+      }
+
+      var personalizada = !Aparencia.Opcoes.Any(x => x.Cor == atual);
+      AdicionarItemAparencia(menu, CabecalhoCor("Cor personalizada...", personalizada ? atual : (MediaColor?)null, personalizada), () => {
+        using (var dialogo = new ColorDialog {
+          FullOpen = true,
+          Color = System.Drawing.Color.FromArgb(atual.R, atual.G, atual.B),
+        }) {
+          if (dialogo.ShowDialog() == DialogResult.OK)
+            Aparencia.Alterar(MediaColor.FromRgb(dialogo.Color.R, dialogo.Color.G, dialogo.Color.B));
+        }
+      });
+
+      menu.IsOpen = true;
     }
 
-    private void AtualizarRecursivo(Control control) {
-      foreach (var item in control.Controls) {
-        if (item is LmMenuItem menuItem) {
-          menuItem.AplicarStilo();
-          menuItem.Refresh();
-        }
+    /// <summary>Amostra da cor + nome + ✓ na cor atual.</summary>
+    static object CabecalhoCor(string nome, MediaColor? cor, bool atual) {
+      var linha = new WpfCtl.StackPanel { Orientation = WpfCtl.Orientation.Horizontal };
+      linha.Children.Add(new WpfCtl.Border {
+        Width = 16, Height = 16, CornerRadius = new System.Windows.CornerRadius(3), BorderThickness = new System.Windows.Thickness(1),
+        BorderBrush = Brushes.Gray,
+        Background = cor.HasValue ? new SolidColorBrush(cor.Value) : (Brush)Brushes.Transparent,
+        Margin = new System.Windows.Thickness(0, 0, 10, 0), VerticalAlignment = System.Windows.VerticalAlignment.Center,
+      });
+      linha.Children.Add(new WpfCtl.TextBlock { Text = nome, VerticalAlignment = System.Windows.VerticalAlignment.Center, MinWidth = 150 });
+      if (atual)
+        linha.Children.Add(new WpfCtl.TextBlock {
+          Text = "", FontFamily = new FontFamily("Segoe MDL2 Assets"), VerticalAlignment = System.Windows.VerticalAlignment.Center,
+        });
+      return linha;
+    }
 
-        if (item is LmButton btn) {
-          btn.AplicarStilo();
-          btn.Refresh();
-        }
+    WpfCtl.MenuItem AdicionarItemAparencia(WpfCtl.ContextMenu menu, object cabecalho, Action acao) {
+      var item = new WpfCtl.MenuItem {
+        Header = cabecalho,
+        Style = (System.Windows.Style)painel.FindResource(Wpf.LmPainel.EstiloItemSubmenuKey),
+      };
+      if (acao != null)
+        item.Click += (s, e) => acao();
+      menu.Items.Add(item);
+      return item;
+    }
 
-        if (control.Controls.Count > 0)
-          AtualizarRecursivo((Control)item);
+    #endregion
+
+    #region Telas
+
+    /// <summary>Abre uma tela WPF na casca (se já estiver aberta, traz para frente).</summary>
+    internal void AbrirTela(Wpf.LmView view) {
+      try {
+        painel.AbrirTela(view);
+      } catch (Exception ex) {
+        Wpf.Toast.Error("Erro ao Abrir Tela.\r\n" + ex.ToString());
       }
+    }
+
+    /// <summary>Abre a tela WPF do tipo T, criando-a só se ainda não estiver aberta.</summary>
+    internal void AbrirTela<T>() where T : Wpf.LmView, new() {
+      try {
+        painel.AbrirTela<T>();
+      } catch (Exception ex) {
+        Wpf.Toast.Error("Erro ao Abrir Tela.\r\n" + ex.ToString());
+      }
+    }
+
+    #endregion
+
+    #region Login
+
+    /// <summary>Chamado pela ViewLogin após autenticar: esconde o login e libera o menu.</summary>
+    internal void LoginConcluido() {
+      painel.OcultarTela(login);
+      painel.MostrarMenu = true;
     }
 
     internal void Carregarrodape(string version, string user) {
-      lblVersao.Text = version;
-      lblUsuario.Text = user;
+      painel.TextoRodape = $"Versão Atual: {version} | Usuário: {user}";
     }
 
-    internal void MostrarControles() {
-      msMenu.Visible = stpRodape.Visible = /*ptbPaint.Visible =*/ true;
-    }
+    void Logout() {
+      try {
+        usuario_alocados.Deslogar();
 
-    private void OcultarControles() {
-      msMenu.Visible = stpRodape.Visible = ptbPaint.Visible = false;
-    }
+        painel.FecharTodas(login);
+        painel.MostrarMenu = false;
+        painel.TextoRodape = null;
 
-    private void PtbPaint_MouseEnter(object sender, EventArgs e) {
-      ptbPaint.Image = LmCor.CorPrimaria.IsDarkColor() 
-        ? ptbPaint.Image.ApplyColor(Color.White.Escurecer(66) )
-        : ptbPaint.Image.ApplyColor(Color.Black.Clarear(66));
-    }
-
-    private void PtbPaint_MouseLeave(object sender, EventArgs e) {
-      ptbPaint.Image = LmCor.CorPrimaria.IsDarkColor() 
-        ? ptbPaint.Image.ApplyColor(Color.White)
-        : ptbPaint.Image.ApplyColor(Color.Black);
-    }
-
-    private void PtbPaint_Click(object sender, EventArgs e) {
-      ColorDialog cld = new ColorDialog {
-        FullOpen = true,
-        Color = LmCor.CorPrimaria,
-      };
-
-      if (cld.ShowDialog() == DialogResult.OK) {
-
-        // MsgBox.ShowWaitMessage("Aplicando Tema, Aguarde...");
-        LmCor.CorPrimaria = cld.Color;
-        // ValorPredefinido.model.CorPrimaria = cld.Color.ColorToString();
-
-        AttControls(this);
-
-        Toast.Success("Tema novo aplicado!");
+        login.LimparSenha();
+        AbrirTela(login);
+      } catch (Exception) {
+        Wpf.Toast.Error("Erro ao Fazer Logout");
       }
     }
+
+    #endregion
   }
 }

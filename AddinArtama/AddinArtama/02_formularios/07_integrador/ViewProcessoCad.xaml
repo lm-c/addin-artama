@@ -1,0 +1,55 @@
+<lm:LmView x:Class="AddinArtama.ViewProcessoCad"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+           Titulo="Cadastro de Processo">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel MaxWidth="380" HorizontalAlignment="Left">
+      <lm:LmLabel Content="Código" Tamanho="Medium" Margin="0,6,0,4" />
+      <lm:LmTextBox x:Name="txtID"
+                    Valor="Num_Inteiro"
+                    Width="140"
+                    HorizontalAlignment="Left"
+                    Watermark="Novo"
+                    IconeF7="&#xE721;"
+                    ToolTipF7="Pesquisar [F7]"
+                    Height="30"
+                    BotaoF7Click="TxtID_BotaoF7Click"
+                    LostFocus="TxtID_LostFocus"
+                    PreviewKeyDown="TxtID_PreviewKeyDown" />
+
+      <lm:LmLabel Content="Operação *" Tamanho="Medium" Margin="0,10,0,4" />
+      <lm:LmComboBox x:Name="cmbOperacao"
+                     CampoObrigatorio="True"
+                     DisplayMemberPath="descricao"
+                     SelectedValuePath="codOperacao"
+                     IsEditable="True"
+                     IsTextSearchEnabled="True"
+                     Watermark="Carregando operações..."
+                     Height="30"
+                     SelectionChanged="CmbOperacao_SelectionChanged" />
+
+      <lm:LmLabel x:Name="lblMaquina" Content="Máquina *" Tamanho="Medium" Margin="0,10,0,4" />
+      <lm:LmComboBox x:Name="cmbMaquina"
+                     CampoObrigatorio="True"
+                     DisplayMemberPath="descricao"
+                     SelectedValuePath="codMaquina"
+                     IsEditable="True"
+                     IsTextSearchEnabled="True"
+                     Watermark="Carregando máquinas..."
+                     Height="30" />
+
+      <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+        <lm:LmLabel Content="Situação" Tamanho="Medium" VerticalAlignment="Center" Margin="0,0,12,0" />
+        <lm:LmCheckBox x:Name="ckbSituacao" Content="Ativo" IsChecked="True" VerticalAlignment="Center" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+        <lm:LmButton Content="_Salvar" Icone="&#xE74E;" Width="100" IsDefault="True" Click="BtnSalvar_Click" />
+        <lm:LmButton Content="_Limpar" Icone="&#xE894;" Estilo="Gray" Width="100" Margin="6,0,0,0" Click="BtnLimpar_Click" />
+        <lm:LmButton x:Name="btnExcluir" Content="E_xcluir" Icone="&#xE74D;" Estilo="Gray" Width="100" Margin="6,0,0,0"
+                     IsEnabled="False" Click="BtnExcluir_Click" />
+      </StackPanel>
+    </StackPanel>
+  </ScrollViewer>
+</lm:LmView>

@@ -1,0 +1,89 @@
+<lm:LmView x:Class="AxionConnect.Wpf.Views.ProcessoCadView"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+           Titulo="Cadastro de Processo"
+           MostrarBotaoFechar="False"
+           FecharComEsc="False">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="380" />
+      <ColumnDefinition Width="*" MinWidth="360" />
+    </Grid.ColumnDefinitions>
+
+    <!-- ============ FORMULÁRIO ============ -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,6,0">
+      <StackPanel>
+        <Border Style="{StaticResource Cartao}" Padding="12">
+          <StackPanel x:Name="Formulario">
+            <TextBlock Text="Código" Style="{StaticResource RotuloCampo}" />
+            <lm:LmTextBox x:Name="TxtCodigo" Text="{Binding Codigo, UpdateSourceTrigger=PropertyChanged}"
+                          Valor="Num_Inteiro" Watermark="Novo" Width="140" HorizontalAlignment="Left" Height="30"
+                          IsReadOnly="{Binding CodigoBloqueado}"
+                          ToolTip="Informe o código e tecle Enter, ou selecione o processo na lista ao lado"
+                          LostKeyboardFocus="TxtCodigo_LostKeyboardFocus"
+                          PreviewKeyDown="TxtCodigo_PreviewKeyDown" />
+
+            <TextBlock Style="{StaticResource RotuloCampo}" Margin="0,10,0,4">Operação <Run Text="*" Foreground="#D32F2F" /></TextBlock>
+            <lm:LmComboBox x:Name="CmbOperacao" ItemsSource="{Binding Operacoes}" DisplayMemberPath="Descricao" SelectedValuePath="Codigo"
+                           SelectedValue="{Binding OperacaoSelecionada}" CampoObrigatorio="True"
+                           IsEditable="True" IsTextSearchEnabled="True" Height="30" />
+
+            <TextBlock Style="{StaticResource RotuloCampo}" Margin="0,10,0,4">Máquina <Run x:Name="MaquinaAsterisco" Text="*" Foreground="#D32F2F" /></TextBlock>
+            <lm:LmComboBox x:Name="CmbMaquina" ItemsSource="{Binding Maquinas}" DisplayMemberPath="Descricao" SelectedValuePath="Codigo"
+                           SelectedValue="{Binding MaquinaSelecionada}" CampoObrigatorio="True"
+                           IsEnabled="{Binding MaquinaObrigatoria}"
+                           IsEditable="True" IsTextSearchEnabled="True" Height="30" />
+
+            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+              <TextBlock Text="Situação" Style="{StaticResource RotuloCampo}" VerticalAlignment="Center" Margin="0,0,12,0" />
+              <lm:LmCheckBox Content="Ativo" IsChecked="{Binding Ativo}" VerticalAlignment="Center" />
+            </StackPanel>
+
+            <WrapPanel Margin="0,14,0,0">
+              <lm:LmButton Content="Salvar" Icone="&#xE74E;" Width="100" Margin="0,0,6,6" Click="BtnSalvar_Click" />
+              <lm:LmButton Content="Limpar" Icone="&#xE894;" Estilo="Gray" Width="100" Margin="0,0,6,6" Command="{Binding LimparCommand}" />
+              <lm:LmButton Content="Excluir" Icone="&#xE74D;" Estilo="Gray" Width="100" Margin="0,0,6,6"
+                           IsEnabled="{Binding PodeExcluir}" Command="{Binding ExcluirCommand}" />
+            </WrapPanel>
+          </StackPanel>
+        </Border>
+
+        <!-- Carregamento das operações e máquinas do ERP -->
+        <Border Style="{StaticResource Cartao}" Margin="0,8,0,0" Padding="10,6"
+                Visibility="{Binding Carregando, Converter={StaticResource BoolToVisibility}}">
+          <StackPanel>
+            <TextBlock Text="Carregando operações e máquinas do ERP..." Style="{StaticResource RotuloCampo}" Margin="0" />
+            <ProgressBar IsIndeterminate="True" Height="3" Margin="0,6,0,0" BorderThickness="0"
+                         Foreground="{DynamicResource {x:Static lm:LmCor.Bc_Header}}"
+                         Background="{DynamicResource {x:Static lm:LmCor.Bc_Txt_Disabled}}" />
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+
+    <!-- ============ PROCESSOS CADASTRADOS ============ -->
+    <DockPanel Grid.Column="1" Margin="6,0,0,0">
+      <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+        <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource TextoDica}"
+                   Text="{Binding Processos.Count, StringFormat='{}{0} processos'}" />
+        <lm:LmTextBox Text="{Binding Filtro, UpdateSourceTrigger=PropertyChanged, Delay=250}" Height="30"
+                      Watermark="Procurar por código, operação ou máquina..."
+                      MostrarBotaoLimpar="True" />
+      </DockPanel>
+
+      <lm:LmDataGrid ItemsSource="{Binding ProcessosView}" SelectedItem="{Binding ProcessoSelecionado}"
+                     AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow"
+                     HeadersVisibility="Column" CanUserReorderColumns="False" CanUserResizeRows="False"
+                     TextoSemRegistros="Nenhum processo cadastrado.">
+        <lm:LmDataGrid.Columns>
+          <DataGridTextColumn Header="CÓDIGO" Binding="{Binding Codigo}" Width="80" />
+          <DataGridTextColumn Header="OPERAÇÃO" Binding="{Binding Operacao}" Width="*" MinWidth="180" />
+          <DataGridTextColumn Header="MÁQUINA" Binding="{Binding Maquina}" Width="*" MinWidth="180" />
+          <DataGridTextColumn Header="TIPO" Binding="{Binding Tipo}" Width="90" />
+          <DataGridTextColumn Header="SITUAÇÃO" Binding="{Binding Situacao}" Width="90" />
+        </lm:LmDataGrid.Columns>
+      </lm:LmDataGrid>
+    </DockPanel>
+  </Grid>
+</lm:LmView>

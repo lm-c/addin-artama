@@ -1,0 +1,45 @@
+<lm:LmWindow x:Class="AddinArtama.WindowSelecionarPerfil"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+             Title="Selecionar Perfil"
+             Width="420"
+             Height="340"
+             MostrarMinimizar="False"
+             MostrarMaximizar="False"
+             ShowInTaskbar="False">
+  <lm:LmView MostrarCabecalho="False" FecharComEsc="False">
+    <DockPanel Margin="4">
+      <lm:LmButton DockPanel.Dock="Bottom"
+                   Content="Confirmar"
+                   Icone="&#xE73E;"
+                   IsDefault="True"
+                   Width="132"
+                   Height="30"
+                   HorizontalAlignment="Right"
+                   Margin="0,8,0,0"
+                   Click="BtnConfirmar_Click" />
+
+      <lm:LmDataGrid x:Name="dgv"
+                     AutoGenerateColumns="False"
+                     SelectionMode="Single"
+                     CanUserSortColumns="False"
+                     CanUserReorderColumns="False"
+                     TextoSemRegistros="Nenhum perfil cadastrado.">
+        <lm:LmDataGrid.Columns>
+          <DataGridTemplateColumn Header="SEL" Width="40" CanUserResize="False">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <lm:LmCheckBox IsChecked="{Binding Selecionado, UpdateSourceTrigger=PropertyChanged}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTextColumn Header="ID" Binding="{Binding Codigo}" Width="60" IsReadOnly="True" />
+          <DataGridTextColumn Header="DESCRIÇÃO" Binding="{Binding Descricao}" Width="*" IsReadOnly="True" />
+        </lm:LmDataGrid.Columns>
+      </lm:LmDataGrid>
+    </DockPanel>
+  </lm:LmView>
+</lm:LmWindow>

@@ -1,0 +1,38 @@
+<lm:LmView x:Class="AddinArtama.ViewLogin"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+           MostrarCabecalho="False"
+           FecharComEsc="False">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel Width="240" Margin="0,20" VerticalAlignment="Center" HorizontalAlignment="Center">
+      <Image x:Name="imgLogo"
+             MaxHeight="130"
+             Stretch="Uniform"
+             Margin="0,0,0,24" />
+
+      <lm:LmLabel Content="Acesso ao Sistema"
+                  Tamanho="Tall"
+                  Negrito="True"
+                  HorizontalAlignment="Center"
+                  Margin="0,0,0,14" />
+
+      <lm:LmTextBox x:Name="txtUsuario"
+                    Watermark="Usuário"
+                    CampoObrigatorio="True"
+                    Height="32" />
+
+      <lm:LmPasswordBox x:Name="txtSenha"
+                        Watermark="Senha"
+                        CampoObrigatorio="True"
+                        Height="32"
+                        Margin="0,8,0,0" />
+
+      <lm:LmButton Content="Entrar"
+                   Icone="&#xE72A;"
+                   Height="32"
+                   Margin="0,16,0,0"
+                   Click="BtnLogin_Click" />
+    </StackPanel>
+  </ScrollViewer>
+</lm:LmView>

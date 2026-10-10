@@ -6,13 +6,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{532F4008-0AE8-42A0-B329-C45B55AA6DEB}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>AxionConnect</RootNamespace>
-    <AssemblyName>AxionConnect</AssemblyName>
+    <AssemblyName>AxionConnect.CORE</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -78,11 +79,6 @@
   <ItemGroup>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
       <HintPath>..\packages\BouncyCastle.Cryptography.2.5.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
-    </Reference>
-    <Reference Include="eDrawings.Interop.EModelViewControl, Version=30.2.0.37, Culture=neutral, PublicKeyToken=4ef2927eea4906f6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\Program Files\Common Files\eDrawings2025\eDrawings.Interop.EModelViewControl.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
@@ -152,6 +148,12 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
+    <Reference Include="System.Resources.Extensions" Condition="Exists('..\packages\System.Resources.Extensions.10.0.5\lib\net462\System.Resources.Extensions.dll')">
+      <HintPath>..\packages\System.Resources.Extensions.10.0.5\lib\net462\System.Resources.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Resources.Extensions" Condition="!Exists('..\packages\System.Resources.Extensions.10.0.5\lib\net462\System.Resources.Extensions.dll') And Exists('$(MSBuildSDKsPath)\\..\\System.Resources.Extensions.dll')">
+      <HintPath>$(MSBuildSDKsPath)\..\System.Resources.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -184,18 +186,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="01_forms\00_inicializacao\FrmLogin.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="01_forms\00_inicializacao\FrmLogin.Designer.cs">
-      <DependentUpon>FrmLogin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="01_forms\00_inicializacao\FrmPrincipal.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="01_forms\00_inicializacao\FrmPrincipal.Designer.cs">
-      <DependentUpon>FrmPrincipal.cs</DependentUpon>
-    </Compile>
     <Compile Include="02_classes\00_context\ContextoDados.cs" />
     <Compile Include="02_classes\01_tables\configuracao_sistema.cs" />
     <Compile Include="02_classes\01_tables\configuracao_api.cs" />
@@ -215,9 +205,6 @@
     <Compile Include="02_classes\03_others\Z_Padrao.cs" />
     <Compile Include="02_classes\04_atributos\Attribute.cs" />
     <Compile Include="02_classes\05_extensao\Default.cs" />
-    <Compile Include="02_classes\06_custom\SplitContainerComEstilo.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="04_metodos\SerializadorXML.cs" />
     <Compile Include="05_enums\Engenharia.cs" />
     <Compile Include="05_enums\Enums.cs" />
@@ -229,62 +216,8 @@
     <Compile Include="06_api\Operacao.cs" />
     <Compile Include="07_helper\ConexaoMySql.cs" />
     <Compile Include="07_helper\InfoSetting.cs" />
-    <Compile Include="08_user_controls\CardOperacao.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="08_user_controls\CardOperacao.Designer.cs">
-      <DependentUpon>CardOperacao.cs</DependentUpon>
-    </Compile>
-    <Compile Include="08_user_controls\CardProduto.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="08_user_controls\CardProduto.Designer.cs">
-      <DependentUpon>CardProduto.cs</DependentUpon>
-    </Compile>
-    <Compile Include="08_user_controls\EDrawingsHost.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="08_user_controls\EDrawingsUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="08_user_controls\EDrawingsUserControl.Designer.cs">
-      <DependentUpon>EDrawingsUserControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="01_forms\01_engenharia_produto\FrmEngenharia.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="01_forms\01_engenharia_produto\FrmEngenharia.Designer.cs">
-      <DependentUpon>FrmEngenharia.cs</DependentUpon>
-    </Compile>
-    <Compile Include="01_forms\FrmSeqSel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="01_forms\FrmSeqSel.Designer.cs">
-      <DependentUpon>FrmSeqSel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="07_helper\Loader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="01_forms\00_inicializacao\FrmLogin.resx">
-      <DependentUpon>FrmLogin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="01_forms\00_inicializacao\FrmPrincipal.resx">
-      <DependentUpon>FrmPrincipal.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="01_forms\FrmSeqSel.resx">
-      <DependentUpon>FrmSeqSel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="08_user_controls\CardOperacao.resx">
-      <DependentUpon>CardOperacao.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="08_user_controls\CardProduto.resx">
-      <DependentUpon>CardProduto.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="08_user_controls\EDrawingsUserControl.resx">
-      <DependentUpon>EDrawingsUserControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="01_forms\01_engenharia_produto\FrmEngenharia.resx">
-      <DependentUpon>FrmEngenharia.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -296,22 +229,9 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="01_forms\02_auxiliar_forms\" />
-    <Folder Include="03_metodos\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\assembly.png" />
@@ -369,26 +289,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\zoomfit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="EModelView">
-      <Guid>{578877A6-53CF-4FA1-84D3-781841DC64D5}</Guid>
-      <VersionMajor>25</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="EModelViewMarkup">
-      <Guid>{7C92D35B-115F-4BA0-AA68-72C0538F8053}</Guid>
-      <VersionMajor>25</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

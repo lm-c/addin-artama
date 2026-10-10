@@ -105,6 +105,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\corbie-ui\LmCorbieUI\bin\Debug\LmCorbieUI.dll</HintPath>
     </Reference>
+    <Reference Include="LmCorbieUI.Wpf">
+      <HintPath>..\..\..\..\corbie-ui\LmCorbieUI.Wpf\bin\Debug\LmCorbieUI.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -286,144 +293,6 @@
     <Compile Include="01_painel_tarefas\UcPainelTarefas.Designer.cs">
       <DependentUpon>UcPainelTarefas.cs</DependentUpon>
     </Compile>
-    <Compile Include="02_formularios\01_aplicacao_materia_prima\FrmMateriaPrimaApl.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\01_aplicacao_materia_prima\FrmMateriaPrimaApl.Designer.cs">
-      <DependentUpon>FrmMateriaPrimaApl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\02_propriedades\FrmFileProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\02_propriedades\FrmFileProperties.Designer.cs">
-      <DependentUpon>FrmFileProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\03_desenhos\FrmDesenho.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\03_desenhos\FrmDesenho.Designer.cs">
-      <DependentUpon>FrmDesenho.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\03_desenhos\FrmFormatosAtualizar.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\03_desenhos\FrmFormatosAtualizar.Designer.cs">
-      <DependentUpon>FrmFormatosAtualizar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\04_exportar\FrmExportarDXF.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\04_exportar\FrmExportarDXF.Designer.cs">
-      <DependentUpon>FrmExportarDXF.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\04_exportar\FrmExportarPDF.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\04_exportar\FrmExportarPDF.Designer.cs">
-      <DependentUpon>FrmExportarPDF.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmAlterarSenha.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmAlterarSenha.Designer.cs">
-      <DependentUpon>FrmAlterarSenha.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmMaterialCad.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmMaterialCad.Designer.cs">
-      <DependentUpon>FrmMaterialCad.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmMateriaPrimaCad.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmMateriaPrimaCad.Designer.cs">
-      <DependentUpon>FrmMateriaPrimaCad.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmPerfil.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmPerfil.Designer.cs">
-      <DependentUpon>FrmPerfil.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmPermissao.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmPermissao.Designer.cs">
-      <DependentUpon>FrmPermissao.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\07_integrador\FrmProcessoCad.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\07_integrador\FrmProcessoCad.Designer.cs">
-      <DependentUpon>FrmProcessoCad.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmSelecionarPerfil.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmSelecionarPerfil.Designer.cs">
-      <DependentUpon>FrmSelecionarPerfil.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmUsuarioCad.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\05_cadastros\FrmUsuarioCad.Designer.cs">
-      <DependentUpon>FrmUsuarioCad.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\88_cards\CardOperacao.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="02_formularios\88_cards\CardOperacao.Designer.cs">
-      <DependentUpon>CardOperacao.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\99_configuracoes\FrmConfigTemplate.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\99_configuracoes\FrmConfigTemplate.Designer.cs">
-      <DependentUpon>FrmConfigTemplate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\06_relatorios\FrmManutProps.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\06_relatorios\FrmManutProps.Designer.cs">
-      <DependentUpon>FrmManutProps.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\06_relatorios\FrmPackList.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\06_relatorios\FrmPackList.Designer.cs">
-      <DependentUpon>FrmPackList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\06_relatorios\FrmPlanoPintura.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\06_relatorios\FrmPlanoPintura.Designer.cs">
-      <DependentUpon>FrmPlanoPintura.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\06_relatorios\FrmProcessoFabricacao.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\06_relatorios\FrmProcessoFabricacao.Designer.cs">
-      <DependentUpon>FrmProcessoFabricacao.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\06_relatorios\FrmReportWorks.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\06_relatorios\FrmReportWorks.Designer.cs">
-      <DependentUpon>FrmReportWorks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\07_integrador\FrmConfigIntegrador.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\07_integrador\FrmConfigIntegrador.Designer.cs">
-      <DependentUpon>FrmConfigIntegrador.cs</DependentUpon>
-    </Compile>
-    <Compile Include="02_formularios\07_integrador\FrmProdutoImport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\07_integrador\FrmProdutoImport.Designer.cs">
-      <DependentUpon>FrmProdutoImport.cs</DependentUpon>
-    </Compile>
     <Compile Include="03_classes\01_tables\configuracao_api.cs" />
     <Compile Include="03_classes\01_tables\materiais.cs" />
     <Compile Include="03_classes\01_tables\processos_nao_seriado.cs" />
@@ -462,12 +331,6 @@
     <Compile Include="05_enums\Enums.cs" />
     <Compile Include="05_enums\PermissoesSistema.cs" />
     <Compile Include="06_api\Api.cs" />
-    <Compile Include="02_formularios\00_login\FrmLogin.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="02_formularios\00_login\FrmLogin.Designer.cs">
-      <DependentUpon>FrmLogin.cs</DependentUpon>
-    </Compile>
     <Compile Include="03_classes\00_context\ContextoDados.cs" />
     <Compile Include="07_helper\ApiError.cs" />
     <Compile Include="06_api\Engenharia.cs" />
@@ -500,81 +363,6 @@
     <Analyzer Include="..\..\..\..\..\Users\micha\Documents\Engenharia\00 - Dlls\SW2021\SolidWorks.Interop.swpublished.dll" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="01_painel_tarefas\UcPainelTarefas.resx">
-      <DependentUpon>UcPainelTarefas.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\00_login\FrmLogin.resx">
-      <DependentUpon>FrmLogin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\01_aplicacao_materia_prima\FrmMateriaPrimaApl.resx">
-      <DependentUpon>FrmMateriaPrimaApl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\02_propriedades\FrmFileProperties.resx">
-      <DependentUpon>FrmFileProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\03_desenhos\FrmDesenho.resx">
-      <DependentUpon>FrmDesenho.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\03_desenhos\FrmFormatosAtualizar.resx">
-      <DependentUpon>FrmFormatosAtualizar.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\04_exportar\FrmExportarDXF.resx">
-      <DependentUpon>FrmExportarDXF.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\04_exportar\FrmExportarPDF.resx">
-      <DependentUpon>FrmExportarPDF.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\05_cadastros\FrmAlterarSenha.resx">
-      <DependentUpon>FrmAlterarSenha.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\05_cadastros\FrmMaterialCad.resx">
-      <DependentUpon>FrmMaterialCad.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\05_cadastros\FrmMateriaPrimaCad.resx">
-      <DependentUpon>FrmMateriaPrimaCad.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\05_cadastros\FrmPerfil.resx">
-      <DependentUpon>FrmPerfil.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\05_cadastros\FrmPermissao.resx">
-      <DependentUpon>FrmPermissao.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\07_integrador\FrmProcessoCad.resx">
-      <DependentUpon>FrmProcessoCad.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\05_cadastros\FrmSelecionarPerfil.resx">
-      <DependentUpon>FrmSelecionarPerfil.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\05_cadastros\FrmUsuarioCad.resx">
-      <DependentUpon>FrmUsuarioCad.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\88_cards\CardOperacao.resx">
-      <DependentUpon>CardOperacao.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\99_configuracoes\FrmConfigTemplate.resx">
-      <DependentUpon>FrmConfigTemplate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\06_relatorios\FrmManutProps.resx">
-      <DependentUpon>FrmManutProps.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\06_relatorios\FrmPackList.resx">
-      <DependentUpon>FrmPackList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\06_relatorios\FrmPlanoPintura.resx">
-      <DependentUpon>FrmPlanoPintura.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\06_relatorios\FrmProcessoFabricacao.resx">
-      <DependentUpon>FrmProcessoFabricacao.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\06_relatorios\FrmReportWorks.resx">
-      <DependentUpon>FrmReportWorks.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\07_integrador\FrmConfigIntegrador.resx">
-      <DependentUpon>FrmConfigIntegrador.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="02_formularios\07_integrador\FrmProdutoImport.resx">
-      <DependentUpon>FrmProdutoImport.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -642,6 +430,175 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <Page Include="02_formularios\00_login\ViewLogin.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\00_login\ViewLogin.xaml.cs">
+      <DependentUpon>ViewLogin.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\05_cadastros\ViewAlterarSenha.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\05_cadastros\ViewAlterarSenha.xaml.cs">
+      <DependentUpon>ViewAlterarSenha.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\05_cadastros\ViewMaterialCad.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\05_cadastros\ViewMaterialCad.xaml.cs">
+      <DependentUpon>ViewMaterialCad.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\05_cadastros\ViewMateriaPrimaCad.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\05_cadastros\ViewMateriaPrimaCad.xaml.cs">
+      <DependentUpon>ViewMateriaPrimaCad.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\05_cadastros\ViewPerfil.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\05_cadastros\ViewPerfil.xaml.cs">
+      <DependentUpon>ViewPerfil.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\05_cadastros\ViewUsuarioCad.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\05_cadastros\ViewUsuarioCad.xaml.cs">
+      <DependentUpon>ViewUsuarioCad.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\05_cadastros\WindowPermissao.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\05_cadastros\WindowPermissao.xaml.cs">
+      <DependentUpon>WindowPermissao.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\05_cadastros\WindowSelecionarPerfil.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\05_cadastros\WindowSelecionarPerfil.xaml.cs">
+      <DependentUpon>WindowSelecionarPerfil.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="07_helper\Aparencia.cs" />
+    <Compile Include="07_helper\ImagemWpf.cs" />
+    <Compile Include="07_helper\JanelaView.cs" />
+    <Resource Include="Resources\logo_fundo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="02_formularios\01_aplicacao_materia_prima\ViewMateriaPrimaApl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\01_aplicacao_materia_prima\ViewMateriaPrimaApl.xaml.cs">
+      <DependentUpon>ViewMateriaPrimaApl.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\02_propriedades\ViewFileProperties.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\02_propriedades\ViewFileProperties.xaml.cs">
+      <DependentUpon>ViewFileProperties.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\03_desenhos\ViewDesenho.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\03_desenhos\ViewDesenho.xaml.cs">
+      <DependentUpon>ViewDesenho.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\03_desenhos\ViewFormatosAtualizar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\03_desenhos\ViewFormatosAtualizar.xaml.cs">
+      <DependentUpon>ViewFormatosAtualizar.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\04_exportar\ViewExportarDXF.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\04_exportar\ViewExportarDXF.xaml.cs">
+      <DependentUpon>ViewExportarDXF.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\04_exportar\ViewExportarPDF.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\04_exportar\ViewExportarPDF.xaml.cs">
+      <DependentUpon>ViewExportarPDF.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\06_relatorios\ViewManutProps.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\06_relatorios\ViewManutProps.xaml.cs">
+      <DependentUpon>ViewManutProps.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\06_relatorios\ViewPackList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\06_relatorios\ViewPackList.xaml.cs">
+      <DependentUpon>ViewPackList.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\06_relatorios\ViewPlanoPintura.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\06_relatorios\ViewPlanoPintura.xaml.cs">
+      <DependentUpon>ViewPlanoPintura.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\06_relatorios\ViewProcessoFabricacao.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\06_relatorios\ViewProcessoFabricacao.xaml.cs">
+      <DependentUpon>ViewProcessoFabricacao.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\06_relatorios\WindowReportWorks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\06_relatorios\WindowReportWorks.xaml.cs">
+      <DependentUpon>WindowReportWorks.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\07_integrador\ViewProcessoCad.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\07_integrador\ViewProcessoCad.xaml.cs">
+      <DependentUpon>ViewProcessoCad.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\07_integrador\ViewProdutoImport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\07_integrador\ViewProdutoImport.xaml.cs">
+      <DependentUpon>ViewProdutoImport.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\07_integrador\WindowConfigIntegrador.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\07_integrador\WindowConfigIntegrador.xaml.cs">
+      <DependentUpon>WindowConfigIntegrador.xaml</DependentUpon>
+    </Compile>
+    <Page Include="02_formularios\99_configuracoes\WindowConfigTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\99_configuracoes\WindowConfigTemplate.xaml.cs">
+      <DependentUpon>WindowConfigTemplate.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\de" /s/q
@@ -669,4 +626,4 @@ call  "C:\repositorio_corbie\00_CLIENTES\addin-artama\Instalador\axion addin\Atu
     <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
-</Project>
+</Project>

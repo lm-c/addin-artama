@@ -67,6 +67,11 @@ namespace AddinArtama {
     private void UISetup() {
       string icon = @"C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\01 - Addin LM\IconTaskpanel.png";
       mTaskpaneView = mSWApplication.CreateTaskpaneView2(icon, "Addin Artama Axion");
+
+      // Janelas WPF (LmWindow, MsgBox) abrem centralizadas e na frente do SolidWorks.
+      var frame = (Frame)mSWApplication.Frame();
+      LmCorbieUI.Wpf.LmWindow.DefinirDonoPadrao(new IntPtr(frame.GetHWndx64()));
+
       mPainelTarefas = (UcPainelTarefas)mTaskpaneView.AddControl(UcPainelTarefas.SWTASKPANE_PROGID, "");
     }
 

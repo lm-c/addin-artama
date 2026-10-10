@@ -1,0 +1,25 @@
+<lm:LmWindow x:Class="AxionConnect.Wpf.Views.LoginWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+             Title="Axion Connect Artama" Width="380" Height="440"
+             Icon="/AxionConnect;component/Assets/logo_axion_connect.png"
+             ResizeMode="NoResize" MostrarMaximizar="False">
+  <lm:LmView x:Name="View" MostrarCabecalho="False" FecharComEsc="False"
+             Carregando="{Binding Ocupado}" TextoCarregando="{Binding MensagemOcupado}">
+    <StackPanel Width="260" VerticalAlignment="Center" HorizontalAlignment="Center">
+      <Image Source="/AxionConnect;component/Assets/logo_axion_connect_64px.png" Width="64" Height="64" HorizontalAlignment="Center"
+             RenderOptions.BitmapScalingMode="HighQuality" />
+      <lm:LmLabel Content="Axion Connect" Tamanho="Huge" Negrito="True" HorizontalAlignment="Center" Margin="0,6,0,0" />
+      <lm:LmLabel Content="Engenharia de produto · Artama" HorizontalAlignment="Center" Margin="0,0,0,24" />
+
+      <lm:LmTextBox x:Name="TxtUsuario" Text="{Binding Usuario, UpdateSourceTrigger=PropertyChanged}"
+                    Watermark="Usuário" CampoObrigatorio="True" Height="32" />
+
+      <lm:LmPasswordBox x:Name="TxtSenha" Watermark="Senha" CampoObrigatorio="True" Height="32" Margin="0,8,0,0" />
+
+      <lm:LmButton Content="Entrar" Icone="&#xE72A;" IsDefault="True" Height="32" Margin="0,18,0,0"
+                   Click="BtnEntrar_Click" />
+    </StackPanel>
+  </lm:LmView>
+</lm:LmWindow>

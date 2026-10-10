@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 // As informações gerais sobre um assembly são controladas por
 // conjunto de atributos. Altere estes valores de atributo para modificar as informações
 // associadas a um assembly.
+// O app WPF (AxionConnect.exe) usa as classes de negócio, que são internal.
+[assembly: InternalsVisibleTo("AxionConnect")]
+
 [assembly: AssemblyTitle(InfoAssembly.TitleView)]
 [assembly: AssemblyDescription(InfoAssembly.DescrView)]
 [assembly: AssemblyConfiguration(InfoAssembly.Configuration)]
@@ -26,7 +29,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion(InfoAssembly.Version)]
 
 public class InfoAssembly {
-  public const string Version = "4.0.0.5";
+  public const bool EhAmbienteOficial = true;
+
+  public const string Version = "5.0.1";
 
   public const string TitleView = "Axion Connect Leonardo Michalak";
 
