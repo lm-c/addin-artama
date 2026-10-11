@@ -2,6 +2,7 @@
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   public class FormatoPadrao {
@@ -398,7 +399,7 @@ namespace AddinArtama {
 
         swModel.ForceRebuild3(TopOnly: true);
       } catch (Exception ex) {
-        Toast.Error($"Erro ao alterar propriedades do desenho\n\n{ex.Message}");
+        Wpf.Toast.Error($"Erro ao alterar propriedades do desenho\n\n{ex.Message}");
       }
     }
 
@@ -597,7 +598,7 @@ namespace AddinArtama {
         swDetailingAngleTrailingZeroTolerance = swModelTemplate.Extension.GetUserPreferenceInteger((int)swUserPreferenceIntegerValue_e.swDetailingAngleTrailingZeroTolerance, (int)swUserPreferenceOption_e.swDetailingAngleDimension);
 
       } catch (Exception ex) {
-        Toast.Error($"Erro ao pegar propriedades do desenho\n\n{ex.Message}");
+        Wpf.Toast.Error($"Erro ao pegar propriedades do desenho\n\n{ex.Message}");
       }
     }
 

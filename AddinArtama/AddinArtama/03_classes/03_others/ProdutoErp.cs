@@ -19,9 +19,27 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static AddinArtama.Api;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
-  internal class ProdutoErp {
+  internal class ProdutoErp : INotifyPropertyChanged {
+
+    /// <summary>Avisa a grade WPF da troca do código e do status de cadastro (mostra na hora, durante o cadastro).</summary>
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private void Notificar(string propriedade) {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propriedade));
+    }
+
+    string _codProduto;
+    bool? _cadastrado;
+
+    /// <summary>Resultado do último cadastro: true = cadastrado (linha verde), false = erro (linha vermelha), null = ainda não cadastrado.</summary>
+    [Browsable(false)]
+    public bool? Cadastrado {
+      get { return _cadastrado; }
+      set { if (_cadastrado != value) { _cadastrado = value; Notificar(nameof(Cadastrado)); } }
+    }
 
     [LarguraColunaGrid(25)]
     [DisplayName(" "), ToolTipGrid("Abrir 3D")]
@@ -59,7 +77,10 @@ namespace AddinArtama {
 
     [DisplayName("Cód Produto")]
     [LarguraColunaGrid(120)]
-    public string CodProduto { get; set; }
+    public string CodProduto {
+      get { return _codProduto; }
+      set { if (_codProduto != value) { _codProduto = value; Notificar(nameof(CodProduto)); } }
+    }
 
     [DisplayName("Descrição Produto")]
     [LarguraColunaGrid(350)]
@@ -173,7 +194,7 @@ namespace AddinArtama {
             produtoErp.Name = produtoErp.Name.Substring(0, 50);
 
           //if (produtoErp.Name.Length > 50 && !produtoErp.Name.StartsWith("4")) {
-          //  Toast.Warning($"O nome do componente '{produtoErp.Name}' é muito longo, altere o nome para prosseguir.");
+          //  Wpf.Toast.Warning($"O nome do componente '{produtoErp.Name}' é muito longo, altere o nome para prosseguir.");
           //  return new SortableBindingList<ProdutoErp>();
           //}
 
@@ -207,17 +228,15 @@ namespace AddinArtama {
           if (pathName.ToUpper().Contains("BIBLIOTECA") ||
             produtoErp.CodComponente.StartsWith("1") ||
             produtoErp.CodComponente.StartsWith("2")) {
-            MsgBox.Show($"Recurso indisponivel para o componentes de biblioteca.",
-              "Ação não Permitida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //Toast.Warning("Recurso indisponivel para o componentes de biblioteca.");
+            Msg.Aviso($"Recurso indisponivel para o componentes de biblioteca.", "Ação não Permitida");
+            //Wpf.Toast.Warning("Recurso indisponivel para o componentes de biblioteca.");
             return new SortableBindingList<ProdutoErp>();
           }
 
           if (produtoErp.CodComponente.StartsWith("3") || produtoErp.CodComponente.StartsWith("4")) {
             var eng = await Api.GetEngenhariaAsync(produtoErp.CodComponente);
             if (eng != null && eng.statusEngenharia != StatusEngenharia.EmDesenvolvimento) {
-              MsgBox.Show($"A Engenharia {produtoErp.CodComponente} está com status '{eng.statusEngenharia.ObterDescricaoEnum()}', só pode ser importada se estiver 'Em Desenvolvimento'.",
-                "Ação não Permitida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+              Msg.Aviso($"A Engenharia {produtoErp.CodComponente} está com status '{eng.statusEngenharia.ObterDescricaoEnum()}', só pode ser importada se estiver 'Em Desenvolvimento'.", "Ação não Permitida");
               return new SortableBindingList<ProdutoErp>();
             } else {
               produtoErp.CodProduto = produtoErp.CodComponente;
@@ -261,7 +280,7 @@ namespace AddinArtama {
             int BomTypeGeral = (int)swBomType_e.swBomType_Indented;
             int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
             bool DetailedCutList = true;
-            var swBOMAnnotationGeral = swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList);
+            var swBOMAnnotationGeral = Sw.ExigirLista(swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList), templateGeral);
             await PegaDadosListaGeralAsync(swBOMAnnotationGeral, rootNode, progress, token);
             ListaCorte.ExcluirLista(swModel);
           } else {  // =========================== INICIO PEÇA
@@ -389,8 +408,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar lista produtos\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar lista produtos");
       }
 
       if (!string.IsNullOrEmpty(mensagemAtencao)) {
@@ -428,7 +446,7 @@ namespace AddinArtama {
           if (token.IsCancellationRequested) {
             rootNode.Nodes.Clear();
             mensagemAtencao = string.Empty;
-            MsgBox.Show("Operação cancelada pelo usuário.", "Cancelado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            Msg.Aviso("Operação cancelada pelo usuário.", "Cancelado");
             return;
           }
 
@@ -527,8 +545,7 @@ namespace AddinArtama {
 
             if (produtoErp.TipoComponente == TipoComponente.Peca) {
               if (swModel == null) {
-                MsgBox.Show($"Erro ao abrir o arquivo {produtoErp.PathName}", "Addin LM Projetos",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Msg.Erro($"Erro ao abrir o arquivo {produtoErp.PathName}");
                 continue;
               }
 
@@ -608,8 +625,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar dados da Lista\n\nItem: {nameShort}\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, $"Erro ao pegar dados da Lista\n\nItem: {nameShort}");
       }
     }
 
@@ -703,9 +719,8 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao fazer análise.\r\nItem: {produtoErp?.Name}\n\n{ex.Message}.",
-          "Ação não Permitida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //Toast.Error($"Erro ao fazer análise.\r\nItem: {produtoErp?.Name}\n\n{ex.Message}");
+        Msg.Erro(ex, $"Erro ao fazer análise.\r\nItem: {produtoErp?.Name}", "Ação não Permitida");
+        //Wpf.Toast.Error($"Erro ao fazer análise.\r\nItem: {produtoErp?.Name}\n\n{ex.Message}");
       }
     }
 
@@ -778,8 +793,8 @@ namespace AddinArtama {
         } else if (itens.Count > 1) {
           string msg = string.Join("\r\n", itens.Select(item => $"- {item.codigo}"));
 
-          MsgBox.Show($"Foram encontrados mais de um código para este item {produtoErp.Name}.\r\n" +
-            $"{msg}", "Item em Duplicidade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+          Msg.Aviso($"Foram encontrados mais de um código para este item {produtoErp.Name}.\r\n" +
+            $"{msg}", "Item em Duplicidade");
         }
 
         if (string.IsNullOrEmpty(produtoErp.CodProduto)) {
@@ -867,7 +882,7 @@ namespace AddinArtama {
           produtoErp.CodProduto = string.Empty;
       } catch (Exception ex) {
         throw new Exception(ex.Message);
-        //LmException.ShowException(ex, "Erro ao analisar produto");
+        //Msg.Erro(ex, "Erro ao analisar produto");
       }
     }
 

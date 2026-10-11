@@ -13,6 +13,16 @@
       <Setter Property="Margin" Value="0,0,28,6" />
       <Setter Property="MaxWidth" Value="420" />
     </Style>
+
+    <!-- Ícone da barra do visualizador (fonte de ícones do Windows), no tamanho das imagens 20x20 -->
+    <Style x:Key="IconeBarra" TargetType="TextBlock">
+      <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="Width" Value="20" />
+      <Setter Property="Height" Value="20" />
+      <Setter Property="TextAlignment" Value="Center" />
+      <Setter Property="Padding" Value="0,2,0,0" />
+    </Style>
   </lm:LmView.Resources>
 
   <Grid>
@@ -31,7 +41,7 @@
       </Grid.RowDefinitions>
 
       <!-- Informações do componente selecionado (flpInfos) -->
-      <Border Style="{StaticResource Cartao}" Padding="14,10,14,4"
+      <Border x:Name="CartaoInfo" Style="{StaticResource Cartao}" Padding="14,10,14,4"
               Visibility="{Binding ProdutoSelecionado, Converter={StaticResource NullToVisibility}}">
         <WrapPanel>
           <StackPanel Style="{StaticResource BlocoInfo}">
@@ -69,12 +79,6 @@
             <TextBlock Text="Peso" Style="{StaticResource RotuloCampo}" />
             <TextBlock Text="{Binding Peso}" Style="{StaticResource InfoValor}" />
           </StackPanel>
-          <StackPanel Style="{StaticResource BlocoInfo}">
-            <TextBlock Text="SM Largura / SM Comprim." Style="{StaticResource RotuloCampo}" />
-            <TextBlock Style="{StaticResource InfoValor}">
-              <Run Text="{Binding SmLargura, Mode=OneWay}" /> / <Run Text="{Binding SmComprimento, Mode=OneWay}" />
-            </TextBlock>
-          </StackPanel>
         </WrapPanel>
       </Border>
 
@@ -83,16 +87,54 @@
         <lm:LmButton x:Name="BtnAlternar" Estilo="Gray" Padding="6,0" Margin="0,0,4,0" Click="BtnAlternar_Click">
           <Image x:Name="ImgAlternar" Width="20" Height="20" />
         </lm:LmButton>
-        <lm:LmButton x:Name="BtnProximaFolha" Estilo="Gray" Padding="6,0" Margin="0,0,4,0" Click="BtnProximaFolha_Click" ToolTip="Próxima folha">
-          <Image x:Name="ImgProximaFolha" Width="20" Height="20" />
+        <lm:LmButton x:Name="BtnPdf" Estilo="Gray" Padding="6,0" Margin="0,0,4,0" Click="BtnPdf_Click" ToolTip="Abrir PDF">
+          <!-- Folha com a etiqueta vermelha "PDF" (desenhada aqui: não há ícone de PDF nos Assets) -->
+          <Viewbox Width="20" Height="20">
+            <Canvas Width="20" Height="20">
+              <Path Fill="White" Data="M4,1 H12 L17,6 V19 H4 Z" />
+              <Path Fill="#D0D0D0" Data="M12,1 V6 H17 Z" />
+              <Border Canvas.Left="1" Canvas.Top="9" Width="15" Height="7.5" Background="#D32F2F" CornerRadius="1">
+                <TextBlock Text="PDF" FontSize="5.6" FontWeight="Bold" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+              </Border>
+            </Canvas>
+          </Viewbox>
         </lm:LmButton>
-        <lm:LmButton x:Name="BtnZoom" Estilo="Gray" Padding="6,0" Margin="0,0,4,0" Click="BtnZoom_Click" ToolTip="Ajustar visualização">
-          <Image x:Name="ImgZoom" Width="20" Height="20" />
-        </lm:LmButton>
+        <!-- Botões que só fazem sentido no eDrawings (somem com o PDF na tela) -->
+        <StackPanel x:Name="BotoesEDrawings" Orientation="Horizontal">
+          <lm:LmButton x:Name="BtnProximaFolha" Estilo="Gray" Padding="6,0" Margin="0,0,4,0" Click="BtnProximaFolha_Click" ToolTip="Próxima folha">
+            <Image x:Name="ImgProximaFolha" Width="20" Height="20" />
+          </lm:LmButton>
+          <lm:LmButton Estilo="Gray" Padding="6,0" Margin="0,0,4,0" Click="BtnPosicaoInicial_Click" ToolTip="Posição inicial (ajustar visualização)">
+            <TextBlock Text="&#xE80F;" Style="{StaticResource IconeBarra}" />
+          </lm:LmButton>
+
+          <!-- Ferramentas do mouse: a ativa fica destacada; clicar de novo volta ao Selecionar (Tag = EMVOperators) -->
+          <lm:LmButton x:Name="BtnZoomArea" Tag="eMVOperatorZoomToArea" Estilo="Gray" Padding="6,0" Margin="8,0,4,0"
+                       Click="BtnFerramenta_Click" ToolTip="Zoom por área">
+            <TextBlock Text="&#xE8A3;" Style="{StaticResource IconeBarra}" />
+          </lm:LmButton>
+          <lm:LmButton x:Name="BtnZoomContinuo" Tag="eMVOperatorZoom" Estilo="Gray" Padding="6,0" Margin="0,0,4,0"
+                       Click="BtnFerramenta_Click" ToolTip="Zoom contínuo (arraste para aproximar/afastar)">
+            <TextBlock Text="&#xE71E;" Style="{StaticResource IconeBarra}" />
+          </lm:LmButton>
+          <lm:LmButton x:Name="BtnGirar" Tag="eMVOperatorRotate" Estilo="Gray" Padding="6,0" Margin="0,0,4,0"
+                       Click="BtnFerramenta_Click" ToolTip="Girar">
+            <TextBlock Text="&#xE7AD;" Style="{StaticResource IconeBarra}" />
+          </lm:LmButton>
+          <lm:LmButton x:Name="BtnMover" Tag="eMVOperatorPan" Estilo="Gray" Padding="6,0" Margin="0,0,4,0"
+                       Click="BtnFerramenta_Click" ToolTip="Mover">
+            <!-- Quatro setas (desenhadas aqui: o glifo "Move" da fonte de ícones não aparece em todas as versões do Windows) -->
+            <Path Width="20" Height="20" StrokeThickness="1.4" StrokeLineJoin="Round"
+                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                  Stroke="{Binding (TextElement.Foreground), RelativeSource={RelativeSource Self}}"
+                  Data="M10,3 V17 M3,10 H17 M7.5,5.5 L10,3 L12.5,5.5 M7.5,14.5 L10,17 L12.5,14.5 M5.5,7.5 L3,10 L5.5,12.5 M14.5,7.5 L17,10 L14.5,12.5" />
+          </lm:LmButton>
+        </StackPanel>
         <TextBlock x:Name="TxtFolha" VerticalAlignment="Center" Margin="8,0,0,0" Style="{StaticResource TextoDica}" FontSize="12" />
       </StackPanel>
 
-      <Border Grid.Row="2" BorderThickness="1" ClipToBounds="True"
+      <Border x:Name="AreaDesenho" Grid.Row="2" BorderThickness="1" ClipToBounds="True"
               BorderBrush="{DynamicResource {x:Static lm:LmCor.Bc_Btn_Disabled}}"
               Background="{DynamicResource {x:Static lm:LmCor.Bc_Txt_Normal}}">
         <Grid>
@@ -101,6 +143,8 @@
                      Style="{StaticResource TextoDica}" FontSize="13" />
           <!-- Visibilidade controlada no code-behind (AtualizarVisibilidadeViewer) -->
           <ctl:EDrawingsViewer x:Name="Viewer" />
+          <!-- Mesmo lugar do eDrawings; os dois ficam carregados e só um aparece por vez -->
+          <ctl:PdfViewer x:Name="VisualizadorPdf" Visibility="Hidden" />
         </Grid>
       </Border>
     </Grid>
@@ -139,10 +183,10 @@
                           PreviewKeyDown="TxtCodigo_PreviewKeyDown" />
           </StackPanel>
 
-          <lm:LmButton Grid.Row="2" Content="Salvar Engenharia" Icone="&#xE74E;"
+          <lm:LmButton x:Name="BtnSalvar" Grid.Row="2" Content="Salvar Engenharia" Icone="&#xE74E;"
                        Command="{Binding SalvarCommand}" IsEnabled="{Binding BotoesHabilitados}"
                        ToolTip="Envia ao ERP a engenharia do componente selecionado e de todos os seus filhos" />
-          <lm:LmButton Grid.Row="2" Grid.Column="2" Content="Nova Engenharia" Icone="&#xE710;" Estilo="Gray"
+          <lm:LmButton x:Name="BtnNova" Grid.Row="2" Grid.Column="2" Content="Nova Engenharia" Icone="&#xE710;" Estilo="Gray"
                        Command="{Binding NovaEngenhariaCommand}" IsEnabled="{Binding BotoesHabilitados}" />
         </Grid>
       </Border>
@@ -160,7 +204,7 @@
         </Border>
 
         <!-- Pendências do componente (lblWarning) -->
-        <Border Margin="0,8,0,0" Visibility="{Binding Alerta, Converter={StaticResource NullToVisibility}}">
+        <Border x:Name="FaixaPendencias" Margin="0,8,0,0" Visibility="{Binding Alerta, Converter={StaticResource NullToVisibility}}">
           <Border.Style>
             <Style TargetType="Border" BasedOn="{StaticResource FaixaAlerta}">
               <Style.Triggers>
@@ -234,7 +278,7 @@
         <!-- Operações -->
         <TabItem Header="Operações">
           <DockPanel>
-            <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
+            <Grid x:Name="FormOperacao" DockPanel.Dock="Top" Margin="0,0,0,10">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="8" />
@@ -279,7 +323,7 @@
                              Command="{Binding ProximoCommand}" ToolTip="Próximo componente (→ no campo Operação)" />
                 <lm:LmButton DockPanel.Dock="Right" Icone="&#xE76B;" Padding="8,0" Margin="8,0,0,0"
                              Command="{Binding AnteriorCommand}" ToolTip="Componente anterior (← no campo Operação)" />
-                <lm:LmCheckBox DockPanel.Dock="Right" Content="Produto Fantasma" IsChecked="{Binding Fantasma}"
+                <lm:LmCheckBox x:Name="ChkFantasma" DockPanel.Dock="Right" Content="Produto Fantasma" IsChecked="{Binding Fantasma}"
                                VerticalAlignment="Center" Margin="12,0,0,0" />
                 <lm:LmButton Content="Inserir Processo" Icone="&#xE73E;" Command="{Binding InserirOperacaoCommand}" HorizontalAlignment="Left" />
               </DockPanel>

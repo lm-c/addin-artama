@@ -4,7 +4,6 @@ using LmCorbieUI.Metodos;
 using LmCorbieUI.Wpf.Controls;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -36,6 +35,8 @@ namespace AddinArtama {
       if (!Corbie_Admin.TemPermissao(PermissoesSistema.PerfilUsuarioCad))
         btnSelPerfil.Visibility = btnAltPerfil.Visibility = Visibility.Collapsed;
 
+      DefinirAssistente(RoteiroAssistente);
+
       Loaded += (s, e) => {
         if (idUsuario > 0) {
           txtID.Text = idUsuario.ToString();
@@ -45,6 +46,87 @@ namespace AddinArtama {
         }
       };
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      // Cada passo seleciona a aba onde está o controle destacado.
+      Wpf.LmPassoAssistente Passo(int aba, string titulo, string texto, FrameworkElement alvo, FrameworkElement alvoAte = null) {
+        var passo = Wpf.LmPassoAssistente.Info(titulo, texto, alvo, alvoAte);
+        passo.AoEntrar = () => tbcUsuario.SelectedIndex = aba;
+        return passo;
+      }
+
+      yield return Wpf.LmPassoAssistente.Info("Cadastro de Usuário",
+        "Aqui você cadastra quem usa o sistema e define o que cada um pode acessar, por meio dos perfis.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Passo(0, "1. Código",
+        "Para um usuário NOVO, deixe o código em branco: ele é gerado ao salvar.\n\n" +
+        "Para ALTERAR um usuário, digite o código e tecle Enter, ou use F7 para pesquisar.\n\n" +
+        "Regra: depois de carregado ou salvo, o código fica bloqueado. Use Limpar para trocar de usuário.",
+        txtID);
+
+      yield return Passo(0, "2. Nome",
+        "Nome completo do usuário. É obrigatório.",
+        txtNome);
+
+      yield return Passo(0, "3. Login",
+        "É o nome que o usuário digita para entrar no sistema. Obrigatório, com até 10 caracteres.\n\n" +
+        "Regra: ao sair do campo, o sistema avisa se já existe outro usuário com o mesmo login.",
+        txtLogin);
+
+      yield return Passo(0, "4. E-mail",
+        "E-mail do usuário. É opcional, mas recomendado.\n\n" +
+        "Regra: é para este e-mail que vai o código do botão Redefinir Senha, na tela de login. Sem e-mail cadastrado, o usuário não consegue redefinir a senha sozinho.",
+        txtEmail);
+
+      yield return Passo(0, "5. Senha",
+        "Senha de acesso do usuário. É obrigatória.\n\n" +
+        "Regra: a senha é gravada criptografada no banco de dados.",
+        txtSenha);
+
+      yield return Passo(0, "6. Situação",
+        "Desmarque \"Ativo\" para desativar o usuário sem excluir o cadastro.\n\n" +
+        "Regra: usuários inativos deixam de aparecer nas listas de Projetista e Desenhista da tela Propriedades Personalizadas.",
+        pnlSituacao);
+
+      yield return Passo(1, "7. Perfis do usuário",
+        "Na aba Perfil você define o que o usuário pode acessar.\n\n" +
+        "• Selecionar: escolhe um ou mais perfis para o usuário.\n" +
+        "• Alterar: abre o cadastro do perfil selecionado na lista.\n" +
+        "• Perfil: cadastra um perfil novo.\n\n" +
+        "Regras: o usuário precisa de pelo menos UM perfil para ser salvo. " +
+        "Selecionar e Alterar só aparecem para quem tem permissão no Cadastro de Perfil.",
+        pnlBotoesPerfil);
+
+      yield return Passo(1, "8. Perfis selecionados",
+        "Lista os perfis atribuídos ao usuário. A escolha só é gravada quando você clica em Salvar, na aba Cadastro.",
+        dgvPerfil);
+
+      yield return Passo(1, "9. Permissões",
+        "Mostra tudo o que o usuário pode acessar: a soma das permissões de todos os perfis dele, sem repetir. " +
+        "O ícone indica o tipo: menu, tela ou configuração.\n\n" +
+        "Regra: esta lista é atualizada ao carregar ou salvar o usuário — depois de trocar os perfis, salve para ver as permissões novas.",
+        dgvPermis);
+
+      yield return Passo(0, "10. Salvar",
+        "Grava o usuário e os perfis.\n\n" +
+        "Regras: nome, login e senha são obrigatórios, e é preciso ter pelo menos um perfil — se faltar, a tela leva você até o que está pendente.",
+        btnSalvar);
+
+      yield return Passo(0, "11. Limpar e Excluir",
+        "Limpar esvazia a tela para um novo cadastro (não apaga nada do banco).\n\n" +
+        "Excluir remove o usuário carregado, depois de pedir confirmação. Só fica disponível com um usuário carregado ou salvo.",
+        btnLimpar, btnExcluir);
+
+      yield return Wpf.LmPassoAssistente.Info("Pronto!",
+        "O ciclo é: preencher os dados → escolher os perfis → Salvar.\n\n" +
+        "Para rever este passo a passo, clique no \"?\" no topo da tela.");
+    }
+
+    #endregion
 
     #region Cadastro
 
@@ -57,7 +139,7 @@ namespace AddinArtama {
       btnExcluir.IsEnabled = false;
 
       txtID.IsReadOnly = false;
-      txtID.Text = txtNome.Text = txtLogin.Text = string.Empty;
+      txtID.Text = txtNome.Text = txtLogin.Text = txtEmail.Text = string.Empty;
       txtSenha.Clear();
 
       ckbSituacao.IsChecked = true;
@@ -77,9 +159,19 @@ namespace AddinArtama {
         return;
       }
 
+      // O e-mail é opcional, mas sem ele o usuário não consegue redefinir a senha pelo login.
+      var email = txtEmail.Text.Trim();
+      if (email.Length > 0 && !System.Text.RegularExpressions.Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$")) {
+        Wpf.Toast.Warning("E-mail inválido!");
+        tbcUsuario.SelectedIndex = 0;
+        txtEmail.Focus();
+        return;
+      }
+
       try {
         model.nome = txtNome.Text;
         model.login = txtLogin.Text;
+        model.email = email;
         model.senha = txtSenha.Senha.CriptografarAES();
         model.ativo = ckbSituacao.IsChecked == true;
 
@@ -99,7 +191,7 @@ namespace AddinArtama {
           btnExcluir.IsEnabled = true;
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Cadastrar Usuário");
+        Msg.Erro(ex, "Erro ao Cadastrar Usuário");
       }
     }
 
@@ -112,7 +204,7 @@ namespace AddinArtama {
           Limpar();
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Excluir Usuário");
+        Msg.Erro(ex, "Erro ao Excluir Usuário");
       }
     }
 
@@ -133,7 +225,7 @@ namespace AddinArtama {
             Wpf.Toast.Warning($"Usuário \"{login}\" já cadastrado");
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao verificar Login");
+        Msg.Erro(ex, "Erro ao verificar Login");
       }
     }
 
@@ -186,6 +278,7 @@ namespace AddinArtama {
         txtID.Text = model.id.ToString();
         txtNome.Text = model.nome;
         txtLogin.Text = model.login;
+        txtEmail.Text = model.email;
         txtSenha.Senha = model.senha.DescriptografarAES();
 
         ckbSituacao.IsChecked = model.ativo;
@@ -195,7 +288,7 @@ namespace AddinArtama {
         txtID.IsReadOnly = true;
         btnExcluir.IsEnabled = true;
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Carregar Usuário");
+        Msg.Erro(ex, "Erro ao Carregar Usuário");
       }
     }
 
@@ -270,7 +363,7 @@ namespace AddinArtama {
 
         dgvPermis.ItemsSource = permissoes;
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Carregar Perfis");
+        Msg.Erro(ex, "Erro ao Carregar Perfis");
       }
     }
 
@@ -284,9 +377,5 @@ namespace AddinArtama {
     }
 
     #endregion
-
-    private void LmView_AjudaClick(object sender, EventArgs e) {
-      Process.Start("https://youtu.be/B_oJWzABF_A");
-    }
   }
 }

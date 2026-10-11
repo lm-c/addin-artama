@@ -21,7 +21,55 @@ namespace AddinArtama {
 
     public ViewExportarDXF() {
       InitializeComponent();
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Exportar DXF",
+        "Esta tela gera o DXF da planificação das peças de chapa de uma montagem, já separado em pastas por material — pronto para o corte.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Aguardar("1. Abra a montagem",
+        "No SolidWorks, abra (e deixe ativa) a montagem do projeto.\n\n" +
+        "Regra: esta tela só funciona com uma MONTAGEM ativa.",
+        ViewFormatosAtualizar.TemMontagemAtiva);
+
+      yield return Wpf.LmPassoAssistente.Aguardar("2. Carregar as peças",
+        "Clique em Carregar e aguarde a leitura da montagem.",
+        () => dgv.Items.Count > 0, btnCarregar);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Escolha o que exportar",
+        "Cada linha é uma peça, com a espessura e o código do material. A caixa \"Sel\" define se o DXF será gerado.\n\n" +
+        "Com o botão direito você marca ou desmarca todas, e abre o 3D ou o 2D da linha.",
+        dgv);
+
+      yield return Wpf.LmPassoAssistente.Info("4. Pesquisar",
+        "Digite parte do código ou da denominação e tecle Enter (ou F7) para ir ao próximo resultado.",
+        txtPesquisar);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Gerar os DXF",
+        "Para cada peça marcada, o sistema abre a peça, planifica, gera o DXF da vista \"Padrão plano\" com o código do componente e fecha.\n\n" +
+        "Regras:\n" +
+        "• A geração começa na LINHA SELECIONADA e vai até o fim da lista. Para gerar tudo, selecione a primeira linha.\n" +
+        "• Só peças (.SLDPRT) com planificação geram DXF.\n" +
+        "• Os arquivos vão para a pasta \"CÓDIGO_DXF\" ao lado da montagem, dentro de uma subpasta por material (\"código - descrição do material\").\n\n" +
+        "Durante a geração aparece o botão Cancelar; ao terminar, uma mensagem mostra a pasta.",
+        btnExportar);
+
+      yield return Wpf.LmPassoAssistente.Info("6. Progresso",
+        "Mostra em qual peça a geração está e o percentual concluído.",
+        lblPercDesenho);
+
+      yield return Wpf.LmPassoAssistente.Info("Pronto!",
+        "Como os DXF ficam separados por material, cada pasta já corresponde a um tipo de chapa.\n\n" +
+        "Para rever este passo a passo, clique no \"?\" no topo da tela.");
+    }
+
+    #endregion
 
     DxfExport Atual => dgv.SelectedItem as DxfExport;
 
@@ -57,7 +105,7 @@ namespace AddinArtama {
             dgv.SelectedIndex = 0;
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao carregar desenhos\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao carregar desenhos");
       }
     }
 
@@ -87,7 +135,7 @@ namespace AddinArtama {
         Thread t = new Thread(() => { IniciarExportacao(pastaDXF, inicio, formatoNovo); }) { IsBackground = true };
         t.Start();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao exportar arquivos\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao exportar arquivos");
       }
     }
 
@@ -139,7 +187,7 @@ namespace AddinArtama {
           Wpf.MsgBox.Show($"Rotina cancelada pelo usuário antes do término!", "Cancelado", MessageBoxButton.OK, MessageBoxImage.Information);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao exportar arquivos\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao exportar arquivos");
       }
     }
 
@@ -223,12 +271,12 @@ namespace AddinArtama {
           arquivoAbert = swModel.GetPathName();
           Sw.App.CloseDoc(arquivoAbert);
         } catch (Exception ex) {
-          Wpf.MsgBox.Show($"Erro ao gerar DXF da peça '{item.PathName}'\n" + ex.Message, "Gerar DXF", MessageBoxButton.OK, MessageBoxImage.Error);
+          Msg.Erro(ex, $"Erro ao gerar DXF da peça '{item.PathName}'", "Gerar DXF");
         } finally {
           if (swFeat != null) Marshal.ReleaseComObject(swFeat);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show("Erro ao gerar DXF\n" + ex.Message, "Gerar DXF", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao gerar DXF", "Gerar DXF");
       }
     }
 
@@ -278,7 +326,7 @@ namespace AddinArtama {
           Sw.App.ActivateDoc2(openFileNameAssembly, false, (int)errors);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao abrir arquivo 3D\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao abrir arquivo 3D");
       }
     }
 
@@ -297,7 +345,7 @@ namespace AddinArtama {
           Sw.App.ActivateDoc2(fileName, false, (int)errors);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao abrir arquivo 2D\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao abrir arquivo 2D");
       }
     }
 
@@ -334,7 +382,7 @@ namespace AddinArtama {
               if (SelectRow(h)) break;
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao pesquisar\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao pesquisar");
       }
     }
 

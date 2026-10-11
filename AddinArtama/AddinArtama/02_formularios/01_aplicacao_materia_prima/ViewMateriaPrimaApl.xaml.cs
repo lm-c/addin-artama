@@ -74,7 +74,90 @@ namespace AddinArtama {
       tmrInicioLocalizar.Tick += (s, e) => IniciarLocalizar();
 
       CarregarControlesProcessos();
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Aplicação de Processos/Matéria Prima",
+        "Nesta tela você define, componente por componente, as operações de fabricação e a matéria prima. " +
+        "Tudo fica gravado nas propriedades do próprio arquivo do SolidWorks.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Aguardar("1. Abra a peça ou a montagem",
+        "No SolidWorks, abra (e deixe ativa) a peça ou a montagem principal do projeto.\n\n" +
+        "Regra: o carregamento só funciona com peça ou montagem ativa; com um desenho ativo ele é recusado.",
+        ViewDesenho.TemModeloAtivo);
+
+      yield return Wpf.LmPassoAssistente.Aguardar("2. Carregar os componentes",
+        "Clique em Carregar e aguarde a leitura da montagem e de todos os componentes dela (pode levar um tempo em montagens grandes).\n\n" +
+        "Regra: a montagem carregada vira a \"montagem geral\" da sessão e continua aberta enquanto você passa pelas peças.",
+        () => dgv.Items.Count > 0, btnCarregar);
+
+      var lista = Wpf.LmPassoAssistente.Info("3. Lista de componentes",
+        "A aba Lista Componentes mostra tudo o que foi carregado. Os ícones indicam o 3D, o 2D, item fantasma e pendências.\n\n" +
+        "Regras: a linha em vermelho é um componente SEM operação (itens de biblioteca não entram nessa regra). " +
+        "Ao selecionar uma linha, o componente que estava aberto é salvo e fechado, e o da linha é aberto no SolidWorks.",
+        tbcOperacoes);
+      lista.AoEntrar = () => tbcOperacoes.SelectedIndex = 1;
+      yield return lista;
+
+      yield return Wpf.LmPassoAssistente.Info("4. Código do componente",
+        "É o código gravado na propriedade \"Componente\" do arquivo.\n\n" +
+        "Regra: o campo fica vermelho quando o código não corresponde ao nome do arquivo.\n\n" +
+        "F7 corrige o código, copiando o nome do arquivo. F8 faz o Salvar Como da peça ou montagem (o desenho vai junto) e pergunta se o arquivo antigo deve ser excluído.",
+        txtComponente);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Denominação",
+        "Descrição do componente, com até 50 caracteres.\n\n" +
+        "Regra: é gravada na propriedade \"Denominação\" do arquivo quando você clica em Salvar.",
+        txtDescricao);
+
+      yield return Wpf.LmPassoAssistente.Info("6. Dados do componente",
+        "Dimensão, material, código e descrição da matéria prima, peso e os processos já aplicados. São lidos do modelo e, nas peças, do item da lista de corte.\n\n" +
+        "Regra: código e descrição do material aparecem em vermelho quando a matéria prima está incorreta.",
+        grdInfo);
+
+      yield return Wpf.LmPassoAssistente.Info("7. Matéria prima da chapa",
+        "Usado só em peças de chapa metálica, onde é obrigatório.\n\n" +
+        "Regras: a lista traz apenas as matérias primas ativas com a mesma espessura da peça. " +
+        "O sistema tenta escolher sozinho a que tem a mesma descrição do material; " +
+        "se não encontrar, ou se o código for diferente do que está na peça, ele avisa — selecione a correta e salve.",
+        txtMaterial);
+
+      var operacoesPasso = Wpf.LmPassoAssistente.Info("8. Operações",
+        "Marque as operações de fabricação do componente. As marcadas ficam em verde e o campo Procurar filtra a lista.\n\n" +
+        "Regra: a ORDEM em que você marca é a ordem gravada (ex.: 101/205). Para mudar a sequência, desmarque e marque de novo na ordem certa.",
+        tbcOperacoes);
+      operacoesPasso.AoEntrar = () => tbcOperacoes.SelectedIndex = 0;
+      yield return operacoesPasso;
+
+      yield return Wpf.LmPassoAssistente.Info("9. Salvar",
+        "Grava no arquivo a denominação, as operações e a matéria prima escolhida, e salva o documento.\n\n" +
+        "Regras: em peça com lista de corte, as operações e a matéria prima vão para o item da lista de corte; nos demais, vão para a propriedade \"Operação\". " +
+        "Sem nenhuma operação marcada, o componente continua com pendência (vermelho na lista).\n\n" +
+        "Importante: as operações marcadas só são gravadas pelo Salvar — salve antes de trocar de componente.",
+        btnSalvar);
+
+      yield return Wpf.LmPassoAssistente.Info("10. Componente anterior e próximo",
+        "Navegam pela lista sem precisar voltar à aba Lista Componentes.\n\n" +
+        "Regra: ao trocar, o componente aberto é salvo e fechado (arquivo somente leitura não é salvo, e você é avisado) e o próximo é aberto. " +
+        "No último componente, o Próximo volta para o primeiro.",
+        btnAnterior, btnProximo);
+
+      yield return Wpf.LmPassoAssistente.Info("11. Progresso",
+        "Mostra em qual componente você está e o percentual já percorrido.",
+        lblPecasProc);
+
+      yield return Wpf.LmPassoAssistente.Info("Pronto!",
+        "O ciclo é: conferir os dados → marcar as operações → Salvar → Próximo, até o fim da lista.\n\n" +
+        "Para rever este passo a passo, clique no \"?\" no topo da tela.");
+    }
+
+    #endregion
 
     ProdutoErp Atual => dgv.SelectedItem as ProdutoErp;
 
@@ -101,7 +184,7 @@ namespace AddinArtama {
           operacoes.Add(item);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao Carregar Controles Processos..\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao Carregar Controles Processos..");
       }
     }
 
@@ -135,7 +218,7 @@ namespace AddinArtama {
           Wpf.Toast.Warning("Comando apenas para Peças e Montagens");
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao Carregar Componentes..\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao Carregar Componentes..");
       }
     }
 
@@ -213,7 +296,7 @@ namespace AddinArtama {
         Destacar(lblDescMat, false);
         Destacar(lblProcess, false);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao salvar..\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao salvar..");
       }
     }
 
@@ -235,7 +318,7 @@ namespace AddinArtama {
           SalvarFechar(swModel);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao voltar peça\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao voltar peça");
       }
     }
 
@@ -256,7 +339,7 @@ namespace AddinArtama {
           SelecionarLinha(0);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao avançar peça\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao avançar peça");
       }
     }
 
@@ -279,7 +362,7 @@ namespace AddinArtama {
 
         AtualizarComponente();
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao atualizar dados Componente");
+        Msg.Erro(ex, "Erro ao atualizar dados Componente");
       }
     }
 
@@ -344,7 +427,7 @@ namespace AddinArtama {
         AtualizarInformacoes(produtoERP);
         GetProcess(produtoERP);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao Atualizar Dados\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao Atualizar Dados");
       }
     }
 
@@ -408,7 +491,7 @@ namespace AddinArtama {
           operacoes.Where(x => x.Codigo == operacao.processo_id).ToList().ForEach(x => x.Marcado = true);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao retornar Processos\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao retornar Processos");
       }
     }
 
@@ -439,7 +522,7 @@ namespace AddinArtama {
         var swCustPropMgr = swModelDocExt.get_CustomPropertyManager("");
         swCustPropMgr.Add3("Componente", (int)swCustomInfoType_e.swCustomInfoText, txtComponente.Text, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao atualizar componente\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao atualizar componente");
       }
     }
 
@@ -537,7 +620,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao salvar cópia do componente\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao salvar cópia do componente");
       }
     }
 
@@ -572,7 +655,7 @@ namespace AddinArtama {
 
         swCustPropMngr.Add3("Denominação", (int)swCustomInfoType_e.swCustomInfoText, produtoERP.Denominacao, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show("Falha ao Atualizar Denominação: \n" + ex.Message);
+        Msg.Erro(ex, "Falha ao Atualizar Denominação");
       }
     }
 
@@ -621,7 +704,7 @@ namespace AddinArtama {
         foreach (var x in operacoes)
           x.Visivel = x.Marcado || x.Texto.ToLower().RemoverCaracteresEspeciais().Contains(procurar);
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Filtrar Operações");
+        Msg.Erro(ex, "Erro ao Filtrar Operações");
       }
     }
 

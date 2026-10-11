@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using static AddinArtama.Api;
 using LmCorbieUI;
 using System.Windows.Forms;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal partial class Api {
@@ -94,7 +95,7 @@ namespace AddinArtama {
           throw new Exception($"Item: {produtoErp.Name}\n\nErro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
-        Toast.Error($"{ex.Message}");
+        Wpf.Toast.Error($"{ex.Message}");
       }
 
     }
@@ -112,7 +113,7 @@ namespace AddinArtama {
           throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
-        // Toast.Error($"Erro ao Cadastrar Produto: {ex.Message}");
+        // Wpf.Toast.Error($"Erro ao Cadastrar Produto: {ex.Message}");
         return false;
       }
 
@@ -158,7 +159,7 @@ namespace AddinArtama {
           throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, $"Item código: {codigo} | Erro ao pesquisar item genérico");
+        Msg.Erro(ex, $"Item código: {codigo} | Erro ao pesquisar item genérico");
       }
 
       return _return;
@@ -230,7 +231,7 @@ namespace AddinArtama {
           throw new Exception($"Erro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, $"Item nome: {nomeItem} | Erro ao pesquisar item genérico");
+        Msg.Erro(ex, $"Item nome: {nomeItem} | Erro ao pesquisar item genérico");
       }
 
       return _return;

@@ -48,6 +48,8 @@
     <!-- Mesma versão usada pelo CORE (a API mudou nas versões seguintes) -->
     <PackageReference Include="RestSharp" Version="106.15.0" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.5" />
+    <!-- Visualizador de PDF (leitor do Edge; o runtime WebView2 já vem no Windows 10/11) -->
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
   </ItemGroup>
 
   <!-- Componentes visuais LM (multi-target net48;net10.0-windows: aqui entra a versão .NET 10) -->
@@ -78,6 +80,9 @@
     <Resource Include="Assets\*.png" />
     <!-- Ícone solto na pasta do app: usado pelos atalhos do instalador -->
     <None Include="Assets\axion_connect.ico" Link="axion_connect.ico"
+          CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <!-- Conta de envio de e-mails (SMTP_*): o mesmo .env do Addin Artama, que não vai para o Git -->
+    <None Include="..\..\AddinArtama\AddinArtama\.env" Link=".env" Condition="Exists('..\..\AddinArtama\AddinArtama\.env')"
           CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System;
 using System.Linq.Dynamic.Core;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal class materiais {
@@ -33,17 +34,17 @@ namespace AddinArtama {
         using (ContextoDados db = new ContextoDados()) {
           if (material.id == 0) {
             if (db.materiais.Any(x => x.descricao == material.descricao)) {
-              Toast.Warning("Já existe um material cadastradao com esta descrição");
+              Wpf.Toast.Warning("Já existe um material cadastradao com esta descrição");
               return false;
             }
 
             db.materiais.Add(material);
             db.SaveChanges();
 
-            Toast.Success("Material Cadastrado com Sucesso!");
+            Wpf.Toast.Success("Material Cadastrado com Sucesso!");
           } else {
             if (db.materiais.Any((x => x.descricao == material.descricao && x.id != material.id))) {
-              Toast.Warning("Já existe um material cadastrado com esta descrição");
+              Wpf.Toast.Warning("Já existe um material cadastrado com esta descrição");
               return false;
             }
 
@@ -52,12 +53,12 @@ namespace AddinArtama {
             modelAlt.ativo = material.ativo;
 
             db.SaveChanges();
-            Toast.Success("Material Alterado com Sucesso!");
+            Wpf.Toast.Success("Material Alterado com Sucesso!");
           }
           return true;
         }
       } catch (Exception ex) {
-        MsgBox.Show("Erro ao Salvar Material.", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao Salvar Material.");
         return false;
       }
     }
@@ -85,7 +86,7 @@ namespace AddinArtama {
           _return = Enumerable.ToList(db.materiais.Where(condicoes, valores).OrderBy(x => x.descricao));
         }
       } catch (Exception ex) {
-        Toast.Warning("Erro ao selecionar material.\n" +
+        Wpf.Toast.Warning("Erro ao selecionar material.\n" +
             "-------------------------------------\n" +
             "" + ex.Message);
         _return = new List<materiais>();
@@ -102,7 +103,7 @@ namespace AddinArtama {
           _return = Queryable.FirstOrDefault(db.materiais.Where(x => x.id == id));
         }
       } catch (Exception ex) {
-        Toast.Warning("Erro ao selecionar material.\n" +
+        Wpf.Toast.Warning("Erro ao selecionar material.\n" +
             "-------------------------------------\n" +
             "" + ex.Message);
         _return = null;

@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using System.IO;
 using static AddinArtama.Api;
 using System.Globalization;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal class Processo {
@@ -98,7 +99,7 @@ namespace AddinArtama {
         }
         ListaProcessos = ListaProcessos.OrderByDescending(x => x.descrOperacao).ToList();
       } catch (Exception ex) {
-        Toast.Error("Erro ao Selecionar Processos");
+        Wpf.Toast.Error("Erro ao Selecionar Processos");
       }
     }
 

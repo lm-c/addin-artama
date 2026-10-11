@@ -33,7 +33,7 @@
         <lm:LmTextBox x:Name="dtpDataDesenho" Grid.Row="3" Grid.Column="2" Valor="Data" Height="30" />
       </Grid>
 
-      <lm:LmGroupBox Header="Atualizar Somente" Padding="8" Margin="0,14,0,0">
+      <lm:LmGroupBox x:Name="grpAtualizar" Header="Atualizar Somente" Padding="8" Margin="0,14,0,0">
         <StackPanel>
           <lm:LmRadioButton x:Name="rdbPasta" Content="Na Mesma Pasta da Montagem" GroupName="Atualizar" IsChecked="True" />
           <DockPanel Margin="0,8,0,0">
@@ -43,7 +43,8 @@
         </StackPanel>
       </lm:LmGroupBox>
 
-      <lm:LmButton Content="Aplicar Propriedades"
+      <lm:LmButton x:Name="btnAplicar"
+                   Content="Aplicar Propriedades"
                    Icone="&#xE74E;"
                    Height="32"
                    Margin="0,14,0,0"

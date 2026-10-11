@@ -16,7 +16,57 @@ namespace AddinArtama {
 
     public ViewFormatosAtualizar() {
       InitializeComponent();
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private System.Collections.Generic.IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Atualizar Templates dos Desenhos",
+        "Quando o template (formato de folha) da empresa muda, esta tela troca o formato de todos os desenhos de uma montagem de uma vez, sem abrir um por um.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Aguardar("1. Abra a montagem",
+        "No SolidWorks, abra (e deixe ativa) a montagem do projeto.\n\n" +
+        "Regra: esta tela só funciona com uma MONTAGEM ativa; com peça ou desenho o carregamento é recusado.",
+        TemMontagemAtiva);
+
+      yield return Wpf.LmPassoAssistente.Aguardar("2. Carregar os desenhos",
+        "Clique em Carregar Desenhos e aguarde a leitura dos componentes da montagem (pode levar um tempo em montagens grandes).",
+        () => dgv.Items.Count > 0, btnCarregar);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Escolha o que atualizar",
+        "Cada linha é um desenho. A caixa da primeira coluna define se ele será atualizado.\n\n" +
+        "Com o botão direito você marca ou desmarca todos de uma vez, e abre o 3D ou o 2D da linha.",
+        dgv);
+
+      yield return Wpf.LmPassoAssistente.Info("4. Pesquisar",
+        "Digite parte do código do componente ou da denominação e tecle Enter (ou F7) para ir ao próximo resultado. No fim da lista a busca volta ao início.",
+        txtPesquisar);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Iniciar a atualização",
+        "Para cada desenho marcado, o sistema abre o desenho, troca o formato de TODAS as folhas pelo template configurado para o tamanho de cada uma, salva e fecha.\n\n" +
+        "Regras:\n" +
+        "• A atualização começa na LINHA SELECIONADA e vai até o fim da lista — as linhas acima dela não são processadas. Para atualizar tudo, selecione a primeira linha.\n" +
+        "• Se o desenho tinha lista de materiais, ela é reinserida: a geral na primeira folha e a da posição nas folhas P1, P2...\n" +
+        "• O andamento aparece na tela e pode ser cancelado.\n\n" +
+        "Os templates usados são os de Configuração > Configurar Templates.",
+        btnAtualizar);
+
+      yield return Wpf.LmPassoAssistente.Info("Pronto!",
+        "Ao terminar, aparece a mensagem de sucesso e os desenhos já estão salvos com o novo formato.\n\n" +
+        "Para rever este passo a passo, clique no \"?\" no topo da tela.");
+    }
+
+    /// <summary>Há uma montagem ativa no SolidWorks (também usado pelos assistentes das outras telas).</summary>
+    internal static bool TemMontagemAtiva() {
+      var swModel = Sw.App.ActiveDoc as ModelDoc2;
+      return swModel != null && swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY;
+    }
+
+    #endregion
 
     DesenhosAtualizar Atual => dgv.SelectedItem as DesenhosAtualizar;
 
@@ -45,7 +95,7 @@ namespace AddinArtama {
 
         CarregarGrid();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao carregar desenhos\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao carregar desenhos");
       } finally {
         btnCarregar.IsEnabled = btnAtualizar.IsEnabled = true;
       }
@@ -119,7 +169,7 @@ namespace AddinArtama {
 
         Wpf.MsgBox.Show($"Formatos de folha atualizados com sucesso!\n", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao atualizar template\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao atualizar template");
       } finally {
         btnCarregar.IsEnabled = btnAtualizar.IsEnabled = true;
       }
@@ -161,7 +211,7 @@ namespace AddinArtama {
           Sw.App.ActivateDoc2(openFileNameAssembly, false, (int)errors);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao abrir arquivo 3D\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao abrir arquivo 3D");
       }
     }
 
@@ -180,7 +230,7 @@ namespace AddinArtama {
           Sw.App.ActivateDoc2(fileName, false, (int)errors);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao abrir arquivo 2D\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao abrir arquivo 2D");
       }
     }
 
@@ -270,7 +320,7 @@ namespace AddinArtama {
 
         swModel.ViewZoomtofit2();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao atualizar formato de folhas do desenho\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao atualizar formato de folhas do desenho");
       }
     }
 

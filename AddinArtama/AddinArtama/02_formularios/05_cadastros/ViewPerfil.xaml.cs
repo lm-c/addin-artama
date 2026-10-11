@@ -3,7 +3,6 @@ using LmCorbieUI.LmForms;
 using LmCorbieUI.Wpf.Controls;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -27,7 +26,60 @@ namespace AddinArtama {
           Limpar();
         }
       };
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Cadastro de Perfil do Usuário",
+        "Um perfil é um conjunto de permissões (menus, telas e configurações) com um nome, como \"Projetista\" ou \"Administrador\". " +
+        "Você monta o perfil uma vez e depois o atribui aos usuários no Cadastro de Usuário.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Info("1. Código",
+        "Para um perfil NOVO, deixe o código em branco: ele é gerado ao salvar.\n\n" +
+        "Para ALTERAR um perfil, digite o código e tecle Enter, ou use F7 para pesquisar.\n\n" +
+        "Regra: depois de carregado ou salvo, o código fica bloqueado. Use Limpar para trocar de perfil.",
+        txtID);
+
+      yield return Wpf.LmPassoAssistente.Info("2. Descrição",
+        "Nome do perfil, com até 80 caracteres. É obrigatório.",
+        txtDescricao);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Observação",
+        "Campo livre, opcional, para explicar para que serve o perfil (até 250 caracteres).",
+        txtObservacao);
+
+      yield return Wpf.LmPassoAssistente.Info("4. Salvar",
+        "Grava a descrição e a observação do perfil.\n\n" +
+        "Regra: o perfil precisa ser salvo ANTES de definir as permissões — é o Salvar que libera o botão Definir Permissões.",
+        btnSalvar);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Definir permissões",
+        "Abre a árvore de permissões, onde você marca os menus, as telas e as configurações que o perfil pode acessar.\n\n" +
+        "Regras: só fica disponível com o perfil já salvo. Ao confirmar na árvore, as permissões são gravadas na hora — não é preciso clicar em Salvar de novo.",
+        btnPermissao);
+
+      yield return Wpf.LmPassoAssistente.Info("6. Usuários do perfil",
+        "Lista os usuários ATIVOS que têm este perfil. Aparece ao carregar um perfil existente.\n\n" +
+        "Serve para saber quem será afetado antes de mudar as permissões.",
+        grpUsuarios);
+
+      yield return Wpf.LmPassoAssistente.Info("7. Limpar e Excluir",
+        "Limpar esvazia a tela para um novo cadastro (não apaga nada do banco).\n\n" +
+        "Excluir remove o perfil carregado, depois de pedir confirmação.\n\n" +
+        "Regra: um perfil em uso por algum usuário ativo NÃO pode ser excluído — a tela mostra quem está usando. Tire o perfil desses usuários antes.",
+        btnLimpar, btnExcluir);
+
+      yield return Wpf.LmPassoAssistente.Info("Pronto!",
+        "O ciclo é: descrição → Salvar → Definir Permissões. Depois, atribua o perfil aos usuários no Cadastro de Usuário.\n\n" +
+        "Para rever este passo a passo, clique no \"?\" no topo da tela.");
+    }
+
+    #endregion
 
     #region Cadastro
 
@@ -87,7 +139,7 @@ namespace AddinArtama {
         if (perfis.Excluir(model.id))
           Limpar();
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao excluir perfil");
+        Msg.Erro(ex, "Erro ao excluir perfil");
       }
     }
 
@@ -139,7 +191,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao consultar perfis");
+        Msg.Erro(ex, "Erro ao consultar perfis");
       }
     }
 
@@ -173,7 +225,7 @@ namespace AddinArtama {
 
         lstUsuarios.ItemsSource = UsuariosDoPerfil();
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao carregar perfil");
+        Msg.Erro(ex, "Erro ao carregar perfil");
       }
     }
 
@@ -192,10 +244,6 @@ namespace AddinArtama {
 
       model.permissoes = janela.Permissoes;
       Salvar();
-    }
-
-    private void LmView_AjudaClick(object sender, EventArgs e) {
-      Process.Start("https://youtu.be/vOrGxa57-jc");
     }
   }
 }

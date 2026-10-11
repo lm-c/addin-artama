@@ -17,6 +17,7 @@ using System.IO;
 using static AddinArtama.Api;
 using System.Globalization;
 using System.Data.Entity.Infrastructure;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal class ProcessoNaoSeriado {
@@ -73,7 +74,7 @@ namespace AddinArtama {
         }
 
       } catch (Exception ex) {
-        Toast.Error("Erro ao Selecionar Processos");
+        Wpf.Toast.Error("Erro ao Selecionar Processos");
       }
     }
 
@@ -140,7 +141,7 @@ namespace AddinArtama {
           if (pathName.ToUpper().Contains("BIBLIOTECA") ||
             produtoErp.CodComponente.StartsWith("1") ||
             produtoErp.CodComponente.StartsWith("2")) {
-            Toast.Warning("Recurso indisponivel para o componentes de biblioteca.");
+            Wpf.Toast.Warning("Recurso indisponivel para o componentes de biblioteca.");
             return new SortableBindingList<ProdutoErp>();
           }
 
@@ -179,7 +180,7 @@ namespace AddinArtama {
             int BomTypeGeral = (int)swBomType_e.swBomType_Indented;
             int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
             bool DetailedCutList = false;
-            var swBOMAnnotationGeral = swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList);
+            var swBOMAnnotationGeral = Sw.ExigirLista(swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList), templateGeral);
             await PegaDadosListaGeralAsync(db, swBOMAnnotationGeral, _listaProduto, progress, token);
             ListaCorte.ExcluirLista(swModel);
           } else {
@@ -226,8 +227,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao carregar componentes.\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao carregar componentes.");
       } finally {
       }
       return new SortableBindingList<ProdutoErp>(_listaProduto);
@@ -254,7 +254,7 @@ namespace AddinArtama {
         var total = swTableAnnotation.TotalRowCount;
         for (int i = lStartRow; i < swTableAnnotation.TotalRowCount; i++) {
           if (token.IsCancellationRequested) {
-            MsgBox.Show("Operação cancelada pelo usuário.", "Cancelado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            Msg.Aviso("Operação cancelada pelo usuário.", "Cancelado");
             return;
           }
 
@@ -362,8 +362,7 @@ namespace AddinArtama {
         }
 
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar dados da Lista\n\nItem: {nameShort}\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, $"Erro ao pegar dados da Lista\n\nItem: {nameShort}");
       }
     }
 

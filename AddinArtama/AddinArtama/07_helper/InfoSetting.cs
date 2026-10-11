@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   public class InfoSetting {
@@ -62,7 +63,7 @@ namespace AddinArtama {
 
         SerializadorXML<InfoSetting>.Serializar(pathName, info);
       } catch (Exception ex) {
-        Toast.Error($"Erro ao Salvar Configurações!\r\n{ex.Message}");
+        Wpf.Toast.Error($"Erro ao Salvar Configurações!\r\n{ex.Message}");
       }
     }
 
@@ -74,7 +75,7 @@ namespace AddinArtama {
           info = (InfoSetting)SerializadorXML<InfoSetting>.Deserializar(pathName);
         }
       } catch (Exception ex) {
-        Toast.Error($"Erro ao Carregar Configurações!\r\n{ex.Message}");
+        Wpf.Toast.Error($"Erro ao Carregar Configurações!\r\n{ex.Message}");
       }
     }
 

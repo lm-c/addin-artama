@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Windows.Forms;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal class processos {
@@ -38,17 +39,17 @@ namespace AddinArtama {
         using (ContextoDados db = new ContextoDados()) {
           if (processo.id == 0) {
             if (db.processos.Any(x => x.codigo_operacao == processo.codigo_operacao && x.codigo_maquina == processo.codigo_maquina)) {
-              Toast.Warning("Já existe um registro com este processo vinculado a uma máquina");
+              Wpf.Toast.Warning("Já existe um registro com este processo vinculado a uma máquina");
               return false;
             }
 
             db.processos.Add(processo);
             db.SaveChanges();
 
-            Toast.Success("Processo Cadastrado com Sucesso!");
+            Wpf.Toast.Success("Processo Cadastrado com Sucesso!");
           } else {
             if (db.processos.Any((x => x.id != processo.id && x.codigo_operacao == processo.codigo_operacao && x.codigo_maquina == processo.codigo_maquina))) {
-              Toast.Warning("Já existe um registro com este processo vinculado a uma máquina");
+              Wpf.Toast.Warning("Já existe um registro com este processo vinculado a uma máquina");
               return false;
             }
 
@@ -60,13 +61,13 @@ namespace AddinArtama {
 
             db.SaveChanges();
 
-            Toast.Success("Processo Alterado com Sucesso!");
+            Wpf.Toast.Success("Processo Alterado com Sucesso!");
           }
 
           return true;
         }
       } catch (Exception ex) {
-        MsgBox.Show("Erro ao Salvar Processo.", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao Salvar Processo.");
         return false;
       }
     }
@@ -78,7 +79,7 @@ namespace AddinArtama {
           db.SaveChanges();
         }
       } catch (Exception ex) {
-        MsgBox.Show("Erro ao Excluir Usuario.", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao Excluir Processo.");
       }
     }
 
@@ -91,7 +92,7 @@ namespace AddinArtama {
            db.processos);
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Retornar Processos");
+        Msg.Erro(ex, "Erro ao Retornar Processos");
       }
 
       return _return;
@@ -106,7 +107,7 @@ namespace AddinArtama {
            db.processos.Where(x => x.id == id));
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Retornar Processo");
+        Msg.Erro(ex, "Erro ao Retornar Processo");
       }
 
       return _return;

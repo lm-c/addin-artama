@@ -40,7 +40,7 @@ namespace AddinArtama {
         txtLocalizEntrada.Text = model.localizacaoEntrada.ToString();
         txtLocalizSaida.Text = model.localizacaoSaida.ToString();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao Carregar Dados\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao Carregar Dados");
       }
     }
 

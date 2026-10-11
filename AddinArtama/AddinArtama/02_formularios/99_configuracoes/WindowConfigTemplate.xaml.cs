@@ -56,7 +56,7 @@ namespace AddinArtama {
           model = new templates();
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao Carregar Dados\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao Carregar Dados");
       }
     }
 

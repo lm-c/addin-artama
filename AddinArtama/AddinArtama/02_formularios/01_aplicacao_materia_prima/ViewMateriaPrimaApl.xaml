@@ -46,7 +46,7 @@
       <lm:LmLabel Content="DENOMINAÇÃO" Margin="0,8,0,4" />
       <lm:LmTextBox x:Name="txtDescricao" MaxLength="50" Height="30" LostFocus="TxtDenominacao_LostFocus" />
 
-      <Grid Margin="0,8,0,0">
+      <Grid x:Name="grdInfo" Margin="0,8,0,0">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition />
@@ -91,10 +91,10 @@
 
     <!-- Carregar, salvar e navegar entre componentes. -->
     <DockPanel Grid.Row="1" Margin="0,8,0,0">
-      <lm:LmButton Style="{StaticResource BotaoIcone}" Icone="&#xE72C;" ToolTip="Carregar componentes para inserir processos" Click="BtnCarrProcess_Click" />
-      <lm:LmButton Style="{StaticResource BotaoIcone}" Icone="&#xE74E;" ToolTip="Salvar Processos" Click="BtnSalvar_Click" />
-      <lm:LmButton Style="{StaticResource BotaoIcone}" Icone="&#xE72B;" ToolTip="Peça anterior" Click="BtnVoltar_Click" />
-      <lm:LmButton Style="{StaticResource BotaoIcone}" Icone="&#xE72A;" ToolTip="Próxima peça" Click="BtnProximo_Click" />
+      <lm:LmButton x:Name="btnCarregar" Style="{StaticResource BotaoIcone}" Icone="&#xE72C;" ToolTip="Carregar componentes para inserir processos" Click="BtnCarrProcess_Click" />
+      <lm:LmButton x:Name="btnSalvar" Style="{StaticResource BotaoIcone}" Icone="&#xE74E;" ToolTip="Salvar Processos" Click="BtnSalvar_Click" />
+      <lm:LmButton x:Name="btnAnterior" Style="{StaticResource BotaoIcone}" Icone="&#xE72B;" ToolTip="Peça anterior" Click="BtnVoltar_Click" />
+      <lm:LmButton x:Name="btnProximo" Style="{StaticResource BotaoIcone}" Icone="&#xE72A;" ToolTip="Próxima peça" Click="BtnProximo_Click" />
       <lm:LmLabel x:Name="lblPecasProc" Content="Peça 0 de 0 - %" VerticalAlignment="Center" Margin="6,0,0,0" />
     </DockPanel>
 
@@ -141,43 +141,46 @@
                        IsReadOnly="True"
                        SelectionMode="Single"
                        CanUserSortColumns="False"
+                       CanUserResizeColumns="True"
+                       HorizontalScrollBarVisibility="Auto"
+                       MinRowHeight="30"
                        TextoSemRegistros="Clique em 'Carregar' com uma peça ou montagem aberta."
                        LoadingRow="Dgv_LoadingRow"
                        SelectionChanged="Dgv_SelectionChanged">
           <lm:LmDataGrid.Columns>
-            <DataGridTemplateColumn Header=" " Width="28" CanUserResize="False">
+            <DataGridTemplateColumn Header=" " Width="38" CanUserResize="False">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <Image Source="{Binding Img3D, Converter={StaticResource BitmapParaImagem}}" Width="18" Height="18" ToolTip="Abrir 3D" />
+                  <Image Source="{Binding Img3D, Converter={StaticResource BitmapParaImagem}}" Width="22" Height="22" ToolTip="Abrir 3D" />
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn Header=" " Width="28" CanUserResize="False">
+            <DataGridTemplateColumn Header=" " Width="38" CanUserResize="False">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <Image Source="{Binding Img2D, Converter={StaticResource BitmapParaImagem}}" Width="18" Height="18" ToolTip="Abrir 2D" />
+                  <Image Source="{Binding Img2D, Converter={StaticResource BitmapParaImagem}}" Width="22" Height="22" ToolTip="Abrir 2D" />
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn Header=" " Width="28" CanUserResize="False">
+            <DataGridTemplateColumn Header=" " Width="38" CanUserResize="False">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <Image Source="{Binding ImgFantasma, Converter={StaticResource BitmapParaImagem}}" Width="18" Height="18" ToolTip="Item Fantasma" />
+                  <Image Source="{Binding ImgFantasma, Converter={StaticResource BitmapParaImagem}}" Width="22" Height="22" ToolTip="Item Fantasma" />
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn Header=" " Width="28" CanUserResize="False">
+            <DataGridTemplateColumn Header=" " Width="38" CanUserResize="False">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <Image Source="{Binding ImgPendencia, Converter={StaticResource BitmapParaImagem}}" Width="18" Height="18" ToolTip="Pendências" />
+                  <Image Source="{Binding ImgPendencia, Converter={StaticResource BitmapParaImagem}}" Width="22" Height="22" ToolTip="Pendências" />
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTextColumn Header="Nível" Binding="{Binding Nivel}" Width="60" />
-            <DataGridTextColumn Header="Nome Componente" Binding="{Binding Name}" Width="120" />
-            <DataGridTextColumn Header="Cód Produto" Binding="{Binding CodProduto}" Width="120" />
-            <DataGridTextColumn Header="Descrição Produto" Binding="{Binding Denominacao}" Width="*" MinWidth="200" />
-            <DataGridTextColumn Header="Referência" Binding="{Binding Referencia}" Width="150" />
+            <DataGridTextColumn Header="Nível" Binding="{Binding Nivel}" Width="80" MinWidth="50" />
+            <DataGridTextColumn Header="Nome Componente" Binding="{Binding Name}" Width="180" MinWidth="80" />
+            <DataGridTextColumn Header="Cód Produto" Binding="{Binding CodProduto}" Width="130" MinWidth="80" />
+            <DataGridTextColumn Header="Descrição Produto" Binding="{Binding Denominacao}" Width="320" MinWidth="120" />
+            <DataGridTextColumn Header="Referência" Binding="{Binding Referencia}" Width="200" MinWidth="80" />
           </lm:LmDataGrid.Columns>
         </lm:LmDataGrid>
       </TabItem>

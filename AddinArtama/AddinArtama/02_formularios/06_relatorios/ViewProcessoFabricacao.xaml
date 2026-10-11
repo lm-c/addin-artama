@@ -23,9 +23,9 @@
       <lm:LmTextBox x:Name="txtQtd" Grid.Row="1" Grid.Column="2" Valor="Num_Inteiro" CampoObrigatorio="True" Height="30" />
 
       <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal" Margin="8,0,0,0">
-        <lm:LmButton Icone="&#xE72C;" Width="36" Height="30" Padding="0"
+        <lm:LmButton x:Name="btnCarregar" Icone="&#xE72C;" Width="36" Height="30" Padding="0"
                      ToolTip="Carregar componentes da montagem" Click="BtnCarrProcess_Click" />
-        <lm:LmButton Icone="&#xEA90;" Width="36" Height="30" Padding="0" Margin="6,0,0,0"
+        <lm:LmButton x:Name="btnGerar" Icone="&#xEA90;" Width="36" Height="30" Padding="0" Margin="6,0,0,0"
                      ToolTip="Gerar processos de fabricação (PDF e CSV)" Click="BtnSalvar_Click" />
       </StackPanel>
     </Grid>

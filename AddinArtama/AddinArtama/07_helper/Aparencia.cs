@@ -32,25 +32,17 @@ namespace AddinArtama {
       new Opcao("Grafite", Color.FromRgb(55, 60, 66)),
     };
 
-    /// <summary>No banco de teste a cor fica fixa em vermelho (aviso visual).</summary>
+    /// <summary>Banco de teste (homologação): o rodapé do painel avisa.</summary>
     public static bool AmbienteTeste => ConexaoMySql.Database.StartsWith("teste");
 
     static string LocalConfig => Path.Combine(ValPadrao.PastaConfig, "aparencia.lm");
 
     /// <summary>Aplica a cor salva (chamar depois de ValPadrao.DefinirPadrao).</summary>
     public static void AplicarSalva() {
-      if (AmbienteTeste) {
-        Definir(Colors.Red);
-        return;
-      }
-
       Definir(Carregar() ?? LmPaleta.CorPrimariaPadrao);
     }
 
     public static void Alterar(Color cor) {
-      if (AmbienteTeste)
-        return;
-
       Definir(cor);
       Salvar(cor);
     }

@@ -39,14 +39,14 @@
                      Watermark="Carregando máquinas..."
                      Height="30" />
 
-      <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+      <StackPanel x:Name="pnlSituacao" Orientation="Horizontal" Margin="0,12,0,0">
         <lm:LmLabel Content="Situação" Tamanho="Medium" VerticalAlignment="Center" Margin="0,0,12,0" />
         <lm:LmCheckBox x:Name="ckbSituacao" Content="Ativo" IsChecked="True" VerticalAlignment="Center" />
       </StackPanel>
 
       <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
-        <lm:LmButton Content="_Salvar" Icone="&#xE74E;" Width="100" IsDefault="True" Click="BtnSalvar_Click" />
-        <lm:LmButton Content="_Limpar" Icone="&#xE894;" Estilo="Gray" Width="100" Margin="6,0,0,0" Click="BtnLimpar_Click" />
+        <lm:LmButton x:Name="btnSalvar" Content="_Salvar" Icone="&#xE74E;" Width="100" IsDefault="True" Click="BtnSalvar_Click" />
+        <lm:LmButton x:Name="btnLimpar" Content="_Limpar" Icone="&#xE894;" Estilo="Gray" Width="100" Margin="6,0,0,0" Click="BtnLimpar_Click" />
         <lm:LmButton x:Name="btnExcluir" Content="E_xcluir" Icone="&#xE74D;" Estilo="Gray" Width="100" Margin="6,0,0,0"
                      IsEnabled="False" Click="BtnExcluir_Click" />
       </StackPanel>

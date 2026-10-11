@@ -21,6 +21,9 @@ namespace AddinArtama {
     public static readonly string User = Env.TryGetValue("DB_USER", out var user) ? user : "";
     public static readonly string Pass = Env.TryGetValue("DB_PASS", out var pass) ? pass : "";
 
+    /// <summary>Valor de uma chave do .env (vazio se não existir).</summary>
+    internal static string LerEnv(string chave) => Env.TryGetValue(chave, out var valor) ? valor : "";
+
     private static Dictionary<string, string> CarregarEnv() {
       var valores = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
       var caminho = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ".env");

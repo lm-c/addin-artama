@@ -27,7 +27,52 @@ namespace AddinArtama {
           Limpar();
         }
       };
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private System.Collections.Generic.IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Cadastro de Processo",
+        "Um processo é a ligação entre uma OPERAÇÃO e uma MÁQUINA do ERP. " +
+        "São estes processos que aparecem para marcar na tela Aplicação de Processos/Matéria Prima e que vão para a engenharia do produto.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Info("1. Código",
+        "Para um processo NOVO, deixe o código em branco: ele é gerado ao salvar.\n\n" +
+        "Para ALTERAR um processo, digite o código e tecle Enter, ou use F7 para pesquisar.\n\n" +
+        "Regra: depois de carregado, o código fica bloqueado. Use Limpar para trocar de processo.",
+        txtID);
+
+      yield return Wpf.LmPassoAssistente.Info("2. Operação",
+        "Escolha a operação. É obrigatória e precisa ser um item da lista.\n\n" +
+        "Regra: a lista vem do ERP no momento em que a tela abre (enquanto carrega, o campo mostra \"Carregando operações...\"). " +
+        "O tipo da operação — interna ou externa — também vem do ERP.",
+        cmbOperacao);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Máquina",
+        "Escolha a máquina que executa a operação. A lista também vem do ERP.\n\n" +
+        "Regra: operação INTERNA exige máquina. Operação EXTERNA não usa máquina — o campo é bloqueado e limpo sozinho.",
+        cmbMaquina);
+
+      yield return Wpf.LmPassoAssistente.Info("4. Situação",
+        "Desmarque \"Ativo\" para desativar o processo sem apagar o cadastro.",
+        pnlSituacao);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Salvar",
+        "Grava o processo.\n\n" +
+        "Regra: depois de salvar, a tela é limpa para o próximo cadastro e a lista de processos do sistema é recarregada — o processo novo já fica disponível nas outras telas.",
+        btnSalvar);
+
+      yield return Wpf.LmPassoAssistente.Info("6. Limpar e Excluir",
+        "Limpar esvazia a tela para um novo cadastro (não apaga nada do banco).\n\n" +
+        "Excluir remove o processo carregado, depois de pedir confirmação. Só fica disponível com um processo carregado.",
+        btnLimpar, btnExcluir);
+    }
+
+    #endregion
 
     private void Limpar() {
       txtID.IsReadOnly = false;
@@ -66,7 +111,7 @@ namespace AddinArtama {
 
         await Processo.Carregar();
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Cadastrar Operação");
+        Msg.Erro(ex, "Erro ao Cadastrar Operação");
       }
     }
 
@@ -80,7 +125,7 @@ namespace AddinArtama {
           _ = Processo.Carregar();
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Excluir Processo");
+        Msg.Erro(ex, "Erro ao Excluir Processo");
       }
     }
 
@@ -128,7 +173,7 @@ namespace AddinArtama {
           txtID.IsReadOnly = true;
         } else model = new processos();
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Carregar Processo");
+        Msg.Erro(ex, "Erro ao Carregar Processo");
       }
     }
 
@@ -165,7 +210,7 @@ namespace AddinArtama {
         cmbMaquina.CampoObrigatorio = !externa;
         lblMaquina.Content = externa ? "Máquina" : "Máquina *";
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao selecionar Máquinas");
+        Msg.Erro(ex, "Erro ao selecionar Máquinas");
       }
     }
 

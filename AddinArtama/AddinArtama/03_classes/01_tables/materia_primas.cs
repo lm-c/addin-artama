@@ -10,6 +10,7 @@ using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal class materia_primas {
@@ -52,17 +53,17 @@ namespace AddinArtama {
         using (ContextoDados db = new ContextoDados()) {
           if (materiaPrima.id == 0) {
             if (db.materia_primas.Any(x => x.descricao == materiaPrima.descricao)) {
-              Toast.Warning("Já existe uma matéria prima cadastrada com esta descrição");
+              Wpf.Toast.Warning("Já existe uma matéria prima cadastrada com esta descrição");
               return false;
             }
 
             db.materia_primas.Add(materiaPrima);
             db.SaveChanges();
 
-            Toast.Success("Matéria Prima Cadastrada com Sucesso!");
+            Wpf.Toast.Success("Matéria Prima Cadastrada com Sucesso!");
           } else {
             if (db.materia_primas.Any((x => x.descricao == materiaPrima.descricao && x.id != materiaPrima.id))) {
-              Toast.Warning("Já existe uma matéria prima cadastrada com esta descrição");
+              Wpf.Toast.Warning("Já existe uma matéria prima cadastrada com esta descrição");
               return false;
             }
 
@@ -74,12 +75,12 @@ namespace AddinArtama {
             modelAlt.ativo = materiaPrima.ativo;
 
             db.SaveChanges();
-            Toast.Success("Matéria Prima Alterada com Sucesso!");
+            Wpf.Toast.Success("Matéria Prima Alterada com Sucesso!");
           }
           return true;
         }
       } catch (Exception ex) {
-        MsgBox.Show("Erro ao Salvar Material.", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao Salvar Material.");
         return false;
       }
     }
@@ -172,7 +173,7 @@ namespace AddinArtama {
           });
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Retornar Descrição Processo");
+        Msg.Erro(ex, "Erro ao Retornar Descrição Processo");
       }
 
       return _return;
@@ -187,7 +188,7 @@ namespace AddinArtama {
            db.materia_primas.Where(x => x.id == id));
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Retornar Descrição Processo");
+        Msg.Erro(ex, "Erro ao Retornar Descrição Processo");
       }
 
       return _return;

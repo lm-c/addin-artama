@@ -2,10 +2,10 @@ using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
@@ -14,8 +14,96 @@ namespace AddinArtama {
     List<Desenho> dadosDesenho = new List<Desenho>();
     string montagemGeral = "";
 
+    // Monitora o disco: quando o desenho de um componente passa a existir, a linha deixa de ficar vermelha.
+    readonly DispatcherTimer tmrStatus2D = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+
     public ViewDesenho() {
       InitializeComponent();
+
+      tmrStatus2D.Tick += (s, e) => AtualizarStatus2D();
+      Loaded += (s, e) => tmrStatus2D.IsEnabled = dadosDesenho.Count > 0;
+      Unloaded += (s, e) => tmrStatus2D.Stop();
+
+      DefinirAssistente(RoteiroAssistente);
+    }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Criar/Detalhar Desenhos",
+        "Esta tela percorre, um a um, os componentes de uma peça ou montagem para você criar ou revisar o desenho 2D de cada um.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Aguardar("1. Abra a peça ou a montagem",
+        "No SolidWorks, abra (e deixe ativa) a peça ou a montagem principal do projeto.\n\n" +
+        "Regra: o carregamento só funciona com peça ou montagem ativa; com um desenho ativo ele é recusado.",
+        TemModeloAtivo);
+
+      yield return Wpf.LmPassoAssistente.Clique("2. Carregar os componentes",
+        "Clique em Carregar para listar a montagem ativa e todos os componentes dela.\n\n" +
+        "Regra: a montagem carregada vira a \"montagem geral\" da sessão. Ela continua aberta enquanto você avança pelas peças.",
+        btnCarregar);
+
+      yield return Wpf.LmPassoAssistente.Info("3. A lista de componentes",
+        "Cada linha é um componente. O primeiro ícone mostra o tipo (peça ou montagem) e o segundo se já existe desenho.\n\n" +
+        "Regra: o nome em vermelho indica componente SEM desenho — o desenho é o arquivo .SLDDRW com o mesmo nome, na mesma pasta do modelo. " +
+        "Quando o desenho passa a existir, o destaque em vermelho é removido e o ícone de desenho é atualizado.\n\n" +
+        "Com o botão direito você abre o 3D ou o 2D da linha.",
+        dgv);
+
+      yield return Wpf.LmPassoAssistente.Clique("4. Avançar para o componente",
+        "Clique em Avançar para abrir o componente da linha selecionada. Se ele já tiver desenho, o desenho abre junto; se não, o modelo fica em vista isométrica.\n\n" +
+        "Regra: antes de abrir, os documentos abertos (menos a montagem geral) são SALVOS e fechados. " +
+        "Depois de abrir, a seleção já passa para a próxima linha.",
+        btnAvancar);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Formato da folha",
+        "Com a peça ou montagem ativa (sem desenho), clique em um formato para CRIAR o desenho nele: " +
+        "peça recebe as vistas \"Padrão plano\" e isométrica; montagem recebe a isométrica. A lista de materiais é inserida junto.\n\n" +
+        "Regras: se o desenho já existir, ele apenas é aberto. Com um desenho ativo, o botão TROCA o formato da folha atual e reinsere a lista.\n\n" +
+        "Os templates de cada formato vêm de Configuração > Configurar Templates.",
+        btnA4R, btnA1);
+
+      yield return Wpf.LmPassoAssistente.Info("6. Folhas do desenho",
+        "Com um desenho ativo, estes botões vão para a folha anterior e para a próxima.",
+        btnFolhaAnterior, btnFolhaPosterior);
+
+      yield return Wpf.LmPassoAssistente.Info("7. Nome da folha",
+        "Mostra o nome da folha ativa do desenho. Para renomear, digite o novo nome e use o botão do campo ou a tecla F7.\n\n" +
+        "Regra: folhas chamadas P1, P2, P3... recebem a lista de materiais daquela posição; a primeira folha recebe a lista geral.",
+        txtName);
+
+      yield return Wpf.LmPassoAssistente.Info("8. Inserir lista",
+        "Refaz as listas de materiais do desenho ativo.\n\n" +
+        "Regra: as tabelas existentes são apagadas em todas as folhas e inseridas de novo — a geral na primeira folha e a da posição nas folhas P1, P2...",
+        btnInserirLista);
+
+      yield return Wpf.LmPassoAssistente.Info("9. Progresso",
+        "Aqui você acompanha em qual componente está e o percentual já percorrido.",
+        lblPercDesenho);
+
+      yield return Wpf.LmPassoAssistente.Info("Pronto!",
+        "O ciclo é: Avançar → criar ou revisar o desenho → Avançar de novo, até o fim da lista.\n\n" +
+        "Para rever este passo a passo, clique no \"?\" no topo da tela.");
+    }
+
+    /// <summary>Há uma peça ou montagem ativa no SolidWorks (também usado pelos assistentes das outras telas).</summary>
+    internal static bool TemModeloAtivo() {
+      var swModel = Sw.App.ActiveDoc as ModelDoc2;
+      return swModel != null && swModel.GetType() != (int)swDocumentTypes_e.swDocDRAWING;
+    }
+
+    #endregion
+
+    private void AtualizarStatus2D() {
+      try {
+        foreach (var desenho in dadosDesenho)
+          desenho.AtualizarTemDesenho();
+      } catch (Exception ex) {
+        tmrStatus2D.Stop();
+        Msg.Erro(ex, "Erro ao atualizar status dos desenhos");
+      }
     }
 
     Desenho Atual => dgv.SelectedItem as Desenho;
@@ -46,9 +134,11 @@ namespace AddinArtama {
         if (dadosDesenho.Count > 0)
           dgv.SelectedIndex = 0;
 
+        tmrStatus2D.IsEnabled = dadosDesenho.Count > 0;
+
         montagemGeral = swModel.GetPathName();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao carregar componentes\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao carregar componentes");
       }
     }
 
@@ -97,7 +187,7 @@ namespace AddinArtama {
           dgv.ScrollIntoView(dgv.SelectedItem);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao avançar peça para desenho\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao avançar peça para desenho");
       }
     }
 
@@ -286,7 +376,7 @@ namespace AddinArtama {
         if (!string.IsNullOrEmpty(activeSheetName))
           swDraw.ActivateSheet(activeSheetName);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao inserir lista de soldagem\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao inserir lista de soldagem");
       }
     }
 
@@ -305,7 +395,7 @@ namespace AddinArtama {
           cont++;
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao fechar documentos\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao fechar documentos");
       }
     }
 
@@ -407,7 +497,7 @@ namespace AddinArtama {
           dgv.Items.Refresh();
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao criar novo desenho\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao criar novo desenho");
       }
     }
 
@@ -432,7 +522,7 @@ namespace AddinArtama {
           Sw.App.ActivateDoc2(openFileName, false, (int)errors);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao abrir arquivo\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao abrir arquivo");
       }
     }
 
@@ -460,7 +550,7 @@ namespace AddinArtama {
           Sw.App.ActivateDoc2(openFileName, false, (int)errors);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao abrir desenho\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao abrir desenho");
       }
     }
 
@@ -487,7 +577,7 @@ namespace AddinArtama {
         swModel.Save();
         Sw.App.CloseDoc(swModel.GetPathName());
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao atualizar código\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao atualizar código");
       }
     }
 
@@ -510,7 +600,7 @@ namespace AddinArtama {
           AttachEventHandlers();
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao mudar Folha para anterior\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao mudar Folha para anterior");
       }
     }
 
@@ -529,7 +619,7 @@ namespace AddinArtama {
           AttachEventHandlers();
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao mudar folha para posterior\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao mudar folha para posterior");
       }
     }
 
@@ -550,7 +640,7 @@ namespace AddinArtama {
 
         swModel.Rebuild(0);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao Renomear Folha\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao Renomear Folha");
       }
     }
 
@@ -581,14 +671,10 @@ namespace AddinArtama {
         txtName.Text = string.Empty;
         txtName.Text = swSheet.GetName();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao Retornar Nome Folha\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao Retornar Nome Folha");
       }
     }
 
     #endregion
-
-    private void LmView_AjudaClick(object sender, EventArgs e) {
-      Process.Start("https://youtu.be/YTJtQPIa8wU");
-    }
   }
 }

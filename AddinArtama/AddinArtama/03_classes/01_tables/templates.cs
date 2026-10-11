@@ -45,8 +45,7 @@ namespace AddinArtama {
           return true;
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao salvar\n\n{ex.Message}", "Addin LM Projetos",
-          MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao salvar");
         return false;
       }
     }
@@ -81,8 +80,7 @@ namespace AddinArtama {
             return false;
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao alterar\n\n{ex.Message}", "Addin LM Projetos",
-          MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao alterar");
         return false;
       }
     }

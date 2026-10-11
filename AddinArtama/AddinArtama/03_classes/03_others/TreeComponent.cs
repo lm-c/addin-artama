@@ -142,7 +142,7 @@ namespace AddinArtama {
             int BomTypeGeral = (int)swBomType_e.swBomType_Indented;
             int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
             bool DetailedCutList = true;
-            var swBOMAnnotationGeral = swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, Hidden: false, NumberingType, DetailedCutList);
+            var swBOMAnnotationGeral = Sw.ExigirLista(swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, Hidden: false, NumberingType, DetailedCutList), templateGeral);
             PegaDadosListaGeral(swApp, swBOMAnnotationGeral, rootNode, swModel);
             ListaCorte.ExcluirLista(swModel);
             return Task.CompletedTask;
@@ -152,8 +152,7 @@ namespace AddinArtama {
         rootNode.ExpandAll();
 
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao ler componente para Processos\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao ler componente para Processos");
       }
     }
 
@@ -214,8 +213,8 @@ namespace AddinArtama {
                 qtd1 = Math.Round(Convert.ToDouble(peso.Replace(".", ",")), 4);
                 um1 = "KG";
               } catch (Exception) {
-                MsgBox.Show($"Erro ao ler propriedade 'sgl_Dimensoes' da chapa.\r\n\r\n" +
-                  $"{pathName}", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Msg.Erro($"Erro ao ler propriedade 'sgl_Dimensoes' da chapa.\r\n\r\n" +
+                  $"{pathName}");
                 throw;
               }
             } else if (tipoMaterial.ToLower() == "laminados") {
@@ -224,8 +223,8 @@ namespace AddinArtama {
                 qtd1 = Math.Round(comp / 1000, 4);
                 um1 = "M";
               } catch (Exception) {
-                MsgBox.Show($"Erro ao ler propriedade 'sgl_Dimensoes' do laminado.\r\n\r\n" +
-                  $"{pathName}", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Msg.Erro($"Erro ao ler propriedade 'sgl_Dimensoes' do laminado.\r\n\r\n" +
+                  $"{pathName}");
                 throw;
               }
             }
@@ -313,8 +312,7 @@ namespace AddinArtama {
         }
 
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar dados da Lista\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar dados da Lista");
       }
     }
 

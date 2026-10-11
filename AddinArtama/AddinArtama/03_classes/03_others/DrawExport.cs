@@ -41,7 +41,7 @@ namespace AddinArtama {
         try {
           PathNameDraw = swModel.GetPathName().ToUpper().Replace("SLDASM", "SLDDRW");
         } catch (Exception ex) {
-          LmException.ShowException(ex, $"E-DE-001:\r\n{ex.Message}");
+          Msg.Erro(ex, "E-DE-001");
         }
 
         ConfigurationManager swConfMgr;
@@ -73,14 +73,14 @@ namespace AddinArtama {
             drawExport.CodComponente = "001 - " + resolvedValOut;
             drawExport.Tipo = swDocumentTypes_e.swDocASSEMBLY;
           } catch (Exception ex) {
-            LmException.ShowException(ex, $"E-DE-003:\r\n{ex.Message}");
+            Msg.Erro(ex, "E-DE-003");
           }
 
 
           try {
             listaDraw.Add(drawExport);
           } catch (Exception ex) {
-            LmException.ShowException(ex, $"E-DE-004:\r\n{ex.Message}");
+            Msg.Erro(ex, "E-DE-004");
           }
 
         }
@@ -90,27 +90,26 @@ namespace AddinArtama {
         try {
           lista = $"{Application.StartupPath}\\01 - Addin LM\\ListaCompleta.sldbomtbt";
         } catch (Exception ex) {
-          LmException.ShowException(ex, $"E-DE-005:\r\n{ex.Message}");
+          Msg.Erro(ex, "E-DE-005");
         }
 
         try {
           int BomType = (int)swBomType_e.swBomType_Indented;
           int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
-          var swBOMAnnotation = swModelDocExt.InsertBomTable3(lista, 0, 1, BomType, swConf.Name, false, NumberingType, DetailedCutList: false);
+          var swBOMAnnotation = Sw.ExigirLista(swModelDocExt.InsertBomTable3(lista, 0, 1, BomType, swConf.Name, false, NumberingType, DetailedCutList: false), lista);
           PegaDadosLista(swBOMAnnotation, listaDraw);
         } catch (Exception ex) {
-          LmException.ShowException(ex, $"E-DE-006:\r\n{ex.Message}");
+          Msg.Erro(ex, "E-DE-006");
         }
 
         try {
           ListaCorte.ExcluirLista(swModel);
         } catch (Exception ex) {
-          LmException.ShowException(ex, $"E-DE-007:\r\n{ex.Message}");
+          Msg.Erro(ex, "E-DE-007");
         }
 
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar desenho\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar desenho");
       }
 
       return listaDraw;
@@ -151,7 +150,7 @@ namespace AddinArtama {
           try {
             drawExport.CodComponente = swTableAnnotation.get_Text(i, 3);
           } catch (Exception ex) {
-            LmException.ShowException(ex, $"E-DE-008:\r\n{ex.Message}");
+            Msg.Erro(ex, "E-DE-008");
           }
 
           //if (string.IsNullOrEmpty(drawExport.CodComponente))
@@ -160,7 +159,7 @@ namespace AddinArtama {
           try {
             drawExport.Denominacao = swTableAnnotation.get_Text(i, 6);
           } catch (Exception ex) {
-            LmException.ShowException(ex, $"E-DE-009:\r\n{ex.Message}");
+            Msg.Erro(ex, "E-DE-009");
           }
 
           try {
@@ -170,13 +169,12 @@ namespace AddinArtama {
               listaDraw.Add(drawExport);
             }
           } catch (Exception ex) {
-            LmException.ShowException(ex, $"E-DE-010:\r\n{ex.Message}");
+            Msg.Erro(ex, "E-DE-010");
           }
 
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar dados da Lista Pack List\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar dados da Lista Pack List");
       }
     }
 
@@ -199,8 +197,7 @@ namespace AddinArtama {
         _return = Path.GetDirectoryName(swModel.GetPathName()) + "\\" + codComponente + sufixo + "\\";
 
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao retornar pasta PDF\n\n{ex.Message}", "Addin LM Projetos",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao retornar pasta PDF");
       }
 
       return _return;

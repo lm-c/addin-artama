@@ -25,7 +25,53 @@ namespace AddinArtama {
       InitializeComponent();
 
       Loaded += (s, e) => CarregarUsuarios();
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Propriedades Personalizadas",
+        "Esta tela grava, de uma vez, quem projetou e quem desenhou — e as datas — nas propriedades dos arquivos do SolidWorks.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Aguardar("1. Abra a peça ou a montagem",
+        "No SolidWorks, abra (e deixe ativa) a peça ou a montagem que vai receber as propriedades.\n\n" +
+        "Regra: com uma PEÇA ativa, só ela é atualizada. Com uma MONTAGEM ativa, são atualizados a montagem e os componentes dela que passarem no filtro. " +
+        "Com um desenho ativo, nada é aplicado.",
+        ViewDesenho.TemModeloAtivo);
+
+      yield return Wpf.LmPassoAssistente.Info("2. Projetista e data do projeto",
+        "Escolha quem projetou e informe a data do projeto.\n\n" +
+        "Regras: a lista traz os usuários ativos e já vem com o usuário logado. " +
+        "Os valores são gravados nas propriedades \"Projetista\" e \"Data do Projeto\".",
+        cmbProjetista, dtpDataProjeto);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Desenhista e data do desenho",
+        "Escolha quem fez o desenho e informe a data.\n\n" +
+        "Regra: os valores são gravados nas propriedades \"Desenhista\" e \"Data do Desenho\".",
+        cmbDesenhista, dtpDataDesenho);
+
+      yield return Wpf.LmPassoAssistente.Info("4. Quais componentes atualizar",
+        "Vale só quando uma montagem está ativa. Escolha o filtro dos componentes:\n\n" +
+        "• Na Mesma Pasta da Montagem: atualiza os componentes salvos na pasta da montagem (incluindo as subpastas). Peças de outras pastas, como biblioteca, ficam de fora.\n\n" +
+        "• Nome Começa Com: atualiza só os componentes cujo nome de arquivo começa com o texto informado.\n\n" +
+        "Regra: componentes suprimidos ou excluídos da lista de materiais são ignorados, junto com os filhos deles.",
+        grpAtualizar);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Aplicar",
+        "Grava as quatro propriedades e SALVA cada arquivo atualizado. Em montagens grandes pode demorar; o andamento aparece na tela e pode ser cancelado.\n\n" +
+        "Regras: o valor que já existia na propriedade é substituído. Cada componente é atualizado uma única vez, mesmo que apareça várias vezes na montagem.",
+        btnAplicar);
+
+      yield return Wpf.LmPassoAssistente.Info("Pronto!",
+        "Depois de aplicar, o projetista, o desenhista e as datas ficam gravados em cada arquivo atualizado.\n\n" +
+        "Para rever este passo a passo, clique no \"?\" no topo da tela.");
+    }
+
+    #endregion
 
     private void CarregarUsuarios() {
       try {
@@ -39,7 +85,7 @@ namespace AddinArtama {
         cmbProjetista.SelectedValue = usuario_alocados.model.usuario.id;
         cmbDesenhista.SelectedValue = usuario_alocados.model.usuario.id;
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao carregar usuários");
+        Msg.Erro(ex, "Erro ao carregar usuários");
       }
     }
 
@@ -89,7 +135,7 @@ namespace AddinArtama {
           AddPropriedades(swModel, dados);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao atualizar componentes\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao atualizar componentes");
       }
     }
 
@@ -109,7 +155,7 @@ namespace AddinArtama {
           TraverseComponent(swRootComp, 1, dados, progress, token);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao atualizar propriedades\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao atualizar propriedades");
       }
     }
 
@@ -165,7 +211,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao carregar componente [{nameShort}]\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, $"Erro ao carregar componente [{nameShort}]");
       }
     }
 
@@ -181,7 +227,7 @@ namespace AddinArtama {
 
         swModel.Save();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao adicionar propriedade\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao adicionar propriedade");
       }
     }
   }

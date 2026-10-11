@@ -85,7 +85,7 @@ namespace AddinArtama {
         int BomType = (int)swBomType_e.swBomType_Indented;
         int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
 
-        var swBOMAnnotation = swModelDocExt.InsertBomTable3(lista, 0, 1, BomType, activeConfig, false, NumberingType, DetailedCutList: true);
+        var swBOMAnnotation = Sw.ExigirLista(swModelDocExt.InsertBomTable3(lista, 0, 1, BomType, activeConfig, false, NumberingType, DetailedCutList: true), lista);
 
         PegaDadosLista(swBOMAnnotation, listaReportWorks);
         ListaCorte.ExcluirLista(swModel);
@@ -192,8 +192,7 @@ namespace AddinArtama {
           Sw.App.CloseDoc(item.PathName);
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao retornar Report\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao retornar Report");
       }
 
       EliminarObsoletos(listaReportWorks);
@@ -245,8 +244,7 @@ namespace AddinArtama {
           listaReportWorks.Add(reportWorks);
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar dados da Lista Reportworks\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar dados da Lista Reportworks");
       }
     }
 
@@ -275,8 +273,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao eliminar obsoletos\n\n{ex.Message}", "Addin LM Projetos",
-              MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao eliminar obsoletos");
       }
     }
 
@@ -341,8 +338,7 @@ namespace AddinArtama {
           swFeat = (Feature)swFeat.GetNextFeature();
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao atualizar Lista de corte\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao atualizar Lista de corte");
         return false;
       }
       return false;

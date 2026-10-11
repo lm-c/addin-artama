@@ -23,7 +23,56 @@ namespace AddinArtama {
 
     public ViewProcessoFabricacao() {
       InitializeComponent();
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Processo de Fabricação",
+        "Esta tela separa os itens da montagem por processo de fabricação e gera, para cada processo, um PDF com os desenhos e uma planilha (CSV) com a lista de itens.\n\n" +
+        "Antes de começar: os processos precisam estar aplicados nos componentes (tela Aplicação de Processos/Matéria Prima) e os PDFs dos desenhos precisam estar gerados (tela Exportar PDF/DWG).\n\n" +
+        "Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Aguardar("1. Abra a montagem",
+        "No SolidWorks, abra (e deixe ativa) a montagem do projeto.\n\n" +
+        "Regra: esta tela só funciona com uma MONTAGEM ativa.",
+        ViewFormatosAtualizar.TemMontagemAtiva);
+
+      yield return Wpf.LmPassoAssistente.Aguardar("2. Carregar os componentes",
+        "Clique em Carregar e aguarde a leitura da montagem.",
+        () => dgv.Items.Count > 0, btnCarregar);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Itens por processo",
+        "Cada linha é um item em um processo, com o código, a denominação, a espessura e a quantidade.\n\n" +
+        "Um item com vários processos aparece uma vez em cada um.",
+        dgv);
+
+      yield return Wpf.LmPassoAssistente.Info("4. Pedido",
+        "Número do pedido. É obrigatório.\n\n" +
+        "Regra: ele dá nome às pastas geradas e sai no cabeçalho de cada planilha.",
+        txtPedido);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Quantidade",
+        "Quantos equipamentos serão fabricados. É obrigatória.\n\n" +
+        "Regra: a quantidade de cada item é MULTIPLICADA por este número, tanto na planilha quanto na nota carimbada no desenho.",
+        txtQtd);
+
+      yield return Wpf.LmPassoAssistente.Info("6. Gerar os processos",
+        "Gera os arquivos e abre a pasta ao terminar.\n\n" +
+        "Regras:\n" +
+        "• Os arquivos vão para a pasta \"CÓDIGO_PROCESSO\", ao lado da montagem, em duas subpastas: \"Ped.pedido_PDF\" e \"Ped.pedido_CSV\".\n" +
+        "• Sai um PDF e um CSV por processo, com os itens em ordem de espessura.\n" +
+        "• Cada desenho recebe uma nota em azul com o processo e a quantidade.\n" +
+        "• Se a pasta de PDF da montagem não existir, a geração é recusada.\n" +
+        "• Item sem PDF na pasta entra na planilha, mas não no PDF.\n\n" +
+        "A geração pode ser cancelada.",
+        btnGerar);
+    }
+
+    #endregion
 
     private async void BtnCarrProcess_Click(object sender, RoutedEventArgs e) {
       try {
@@ -53,7 +102,7 @@ namespace AddinArtama {
           Wpf.MsgBox.Show($"Comando apenas para Montagens", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Information);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao carregar componentes\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao carregar componentes");
       }
     }
 
@@ -100,7 +149,7 @@ namespace AddinArtama {
 
         Process.Start("explorer.exe", pastaProcessoFabricacao);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao imprimir Processo de Fabricacao\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao imprimir Processo de Fabricacao");
       }
     }
 
@@ -213,7 +262,7 @@ namespace AddinArtama {
         GC.SuppressFinalize(readers);
         GC.Collect();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao mesclar PDF\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao mesclar PDF");
       }
     }
 
@@ -287,7 +336,7 @@ namespace AddinArtama {
         }
         File.WriteAllBytes(targetPDF, bytes);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao inserir número de página\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao inserir número de página");
       }
     }
   }

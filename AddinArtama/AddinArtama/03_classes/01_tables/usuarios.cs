@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Forms;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal class usuarios {
@@ -52,7 +53,7 @@ namespace AddinArtama {
         using (ContextoDados db = new ContextoDados()) {
           if (usuario.id == 0) {
             if (db.usuarios.Any(x => x.login == usuario.login)) {
-              Toast.Warning("Já existe um usuário cadastrado com este Login");
+              Wpf.Toast.Warning("Já existe um usuário cadastrado com este Login");
               return false;
             }
 
@@ -61,10 +62,10 @@ namespace AddinArtama {
             db.usuarios.Add(usuario);
             db.SaveChanges();
 
-            Toast.Success("Usuario Cadastrado com Sucesso!");
+            Wpf.Toast.Success("Usuario Cadastrado com Sucesso!");
           } else {
             if (db.usuarios.Any(x => x.login == usuario.login && x.id != usuario.id)) {
-              Toast.Warning("Já existe um usuário cadastrado com este Login");
+              Wpf.Toast.Warning("Já existe um usuário cadastrado com este Login");
               return false;
             }
 
@@ -72,15 +73,16 @@ namespace AddinArtama {
             modelAlt.nome = usuario.nome;
             modelAlt.login = usuario.login;
             modelAlt.senha = usuario.senha;
+            modelAlt.email = usuario.email;
             modelAlt.ativo = usuario.ativo;
 
             db.SaveChanges();
-            Toast.Success("Usuario Alterado com Sucesso!");
+            Wpf.Toast.Success("Usuario Alterado com Sucesso!");
           }
           return true;
         }
       } catch (Exception ex) {
-        MsgBox.Show("Erro ao Salvar Usuario.", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao Salvar Usuario.");
         return false;
       }
     }
@@ -92,7 +94,7 @@ namespace AddinArtama {
           db.SaveChanges();
         }
       } catch (Exception ex) {
-        MsgBox.Show("Erro ao Excluir Usuario.", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao Excluir Usuario.");
       }
     }
 
@@ -118,7 +120,7 @@ namespace AddinArtama {
           return db.usuarios.Where(condicoes, valores).OrderBy(x=>x.login).ToList();
         }
       } catch (Exception ex) {
-        Toast.Error("Erro ao Listar Usuarios.\r\n" + ex.Message);
+        Wpf.Toast.Error("Erro ao Listar Usuarios.\r\n" + ex.Message);
         return new List<usuarios>();
       }
     }
@@ -129,7 +131,7 @@ namespace AddinArtama {
           return db.usuarios.FirstOrDefault(x => x.id == id);
         }
       } catch (Exception ex) {
-        Toast.Error("Erro ao Selecionar Usuario.\r\n" + ex.Message);
+        Wpf.Toast.Error("Erro ao Selecionar Usuario.\r\n" + ex.Message);
         return new usuarios();
       }
     }

@@ -47,5 +47,18 @@ namespace AxionConnect.Wpf.Views {
 
       await _vm.EntrarAsync(TxtSenha.Senha);
     }
+
+    /// <summary>Redefinição por código enviado ao e-mail do usuário; ao concluir, entra direto com a nova senha.</summary>
+    private async void BtnRedefinirSenha_Click(object sender, RoutedEventArgs e) {
+      var janela = new WindowResetSenha { Owner = this };
+      janela.ShowDialog();
+
+      if (string.IsNullOrEmpty(janela.NovaSenha))
+        return;
+
+      _vm.Usuario = janela.UsuarioLogin;
+      TxtSenha.Senha = janela.NovaSenha;
+      await _vm.EntrarAsync(janela.NovaSenha);
+    }
   }
 }

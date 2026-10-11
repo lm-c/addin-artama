@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using static AddinArtama.Api;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal partial class Api {
@@ -185,7 +186,7 @@ namespace AddinArtama {
         }
       } catch (Exception ex) {
         if (!ignorarMsgError)
-          LmException.ShowException(ex, $"Erro ao retornar engenharia: {codigo}");
+          Msg.Erro(ex, $"Erro ao retornar engenharia: {codigo}");
       }
 
       return _return;
@@ -253,7 +254,7 @@ namespace AddinArtama {
           throw new Exception($"Erro ao Duplicar Item: {itemGenerico.refTecnica}\n\nErro: {response.StatusCode}\r\n{errorMessage}");
         }
       } catch (Exception ex) {
-        Toast.Error($"{ex.Message}");
+        Wpf.Toast.Error($"{ex.Message}");
         return string.Empty;
       }
 

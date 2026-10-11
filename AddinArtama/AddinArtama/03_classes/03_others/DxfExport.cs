@@ -54,8 +54,7 @@ namespace AddinArtama {
             TraverseComponent(db, listaDxf, swRootComp, 0);
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar desenho\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar desenho");
       }
 
       BubbleSort(listaDxf);
@@ -117,9 +116,7 @@ namespace AddinArtama {
           TraverseComponent(db, listaDxf, swChildComp, nLevel + 1);
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao Carregar Desenhos Para Exportar. + [{nameShort}]\n" +
-            $"\n" +
-            $"{ex.Message}", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, $"Erro ao Carregar Desenhos Para Exportar. + [{nameShort}]");
       }
     }
 
@@ -136,8 +133,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao ordenar\n\n{ex.Message}", "Addin LM Projetos",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao ordenar");
       }
     }
 
@@ -193,8 +189,7 @@ namespace AddinArtama {
 
         return operacao;
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao verificar CheckList\n\n{ex.Message}", "Addin LM Projetos",
-           MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao verificar CheckList");
         return "";
       }
     }
@@ -280,8 +275,7 @@ namespace AddinArtama {
           swFeat = (Feature)swFeat.GetNextFeature();
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar lista corte\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar lista corte");
       }
 
       foreach (var processo in processos)

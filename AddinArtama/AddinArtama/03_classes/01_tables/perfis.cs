@@ -11,6 +11,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System;
 using System.Data;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal class perfis {
@@ -42,7 +43,7 @@ namespace AddinArtama {
         try {
           if (model.id == 0) {
             if (db.perfis.Any(x => x.descricao == model.descricao)) {
-              Toast.Warning("Já existe um perfil com esta descrição");
+              Wpf.Toast.Warning("Já existe um perfil com esta descrição");
               transaction.Rollback();
               return false;
             }
@@ -50,10 +51,10 @@ namespace AddinArtama {
             db.perfis.Add(model);
             db.SaveChanges();
             transaction.Commit();
-            Toast.Success("Salvo com Sucesso!");
+            Wpf.Toast.Success("Salvo com Sucesso!");
           } else {
             if (db.perfis.Any(x => x.descricao == model.descricao && x.id != model.id)) {
-              Toast.Warning("Já existe um perfil com esta descrição");
+              Wpf.Toast.Warning("Já existe um perfil com esta descrição");
               transaction.Rollback();
               return false;
             }
@@ -65,7 +66,7 @@ namespace AddinArtama {
 
             db.SaveChanges();
             transaction.Commit();
-            Toast.Success("Alterado com Sucesso!");
+            Wpf.Toast.Success("Alterado com Sucesso!");
           }
 
           db.SaveChanges();
@@ -73,7 +74,7 @@ namespace AddinArtama {
           return true;
         } catch (Exception ex) {
           transaction.Rollback();
-          Toast.Error($"Erro ao Salvar Perfil.\r\n" + ex.Message);
+          Wpf.Toast.Error($"Erro ao Salvar Perfil.\r\n" + ex.Message);
 
           return false;
         }
@@ -92,14 +93,14 @@ namespace AddinArtama {
 
           db.SaveChanges();
           transaction.Commit();
-          Toast.Success("Alterado com Sucesso!");
+          Wpf.Toast.Success("Alterado com Sucesso!");
 
           db.SaveChanges();
 
           return true;
         } catch (Exception ex) {
           transaction.Rollback();
-          Toast.Error($"Erro ao Salvar Perfil.\r\n" + ex.Message);
+          Wpf.Toast.Error($"Erro ao Salvar Perfil.\r\n" + ex.Message);
 
           return false;
         }
