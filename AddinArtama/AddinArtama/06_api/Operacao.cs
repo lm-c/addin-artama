@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using LmCorbieUI.Metodos.AtributosCustomizados;
 using System.ComponentModel;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal partial class Api {
@@ -48,11 +49,11 @@ namespace AddinArtama {
 
         } else {
           var errorMessage = ApiError.Parse(response.Content);
-          Toast.Error($"Erro: {response.StatusCode}\r\n{errorMessage}");
+          Wpf.Toast.Error($"Erro: {response.StatusCode}\r\n{errorMessage}");
         }
 
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao carregar operações");
+        Msg.Erro(ex, "Erro ao carregar operações");
       }
 
       return _return;

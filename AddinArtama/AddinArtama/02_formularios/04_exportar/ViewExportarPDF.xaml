@@ -6,20 +6,20 @@
   <DockPanel>
     <StackPanel DockPanel.Dock="Top" Margin="0,4,0,8">
       <WrapPanel>
-        <lm:LmButton x:Name="btnCarregar" Icone="&#xE72C;" Width="36" Height="30" Padding="0" Margin="0,0,6,0"
+        <lm:LmButton x:Name="btnCarregar" Icone="&#xE72C;" Width="36" Height="30" Padding="0" Margin="0,0,6,6"
                      ToolTip="Carregar desenhos da montagem" Click="BtnCarregar_Click" />
-        <lm:LmButton x:Name="btnExportar" Icone="&#xEDE1;" Width="36" Height="30" Padding="0" Margin="0,0,6,0"
+        <lm:LmButton x:Name="btnExportar" Icone="&#xEDE1;" Width="36" Height="30" Padding="0" Margin="0,0,6,6"
                      ToolTip="Exportar os desenhos marcados" Click="BtnExportar_Click" />
-        <lm:LmButton x:Name="btnCancelar" Content="Cancelar" Icone="&#xE711;" Estilo="Gray" Height="30" Margin="0,0,12,0"
+        <lm:LmButton x:Name="btnCancelar" Content="Cancelar" Icone="&#xE711;" Estilo="Gray" Height="30" Margin="0,0,12,6"
                      Visibility="Collapsed" Click="BtnCancelar_Click" />
 
-        <lm:LmCheckBox x:Name="ckbPdf" Content="PDF" IsChecked="True" VerticalAlignment="Center" Margin="0,0,10,0" />
-        <lm:LmCheckBox x:Name="ckbDwg" Content="DWG" VerticalAlignment="Center" Margin="0,0,16,0" />
+        <lm:LmCheckBox x:Name="ckbPdf" Content="PDF" IsChecked="True" VerticalAlignment="Center" Margin="0,0,10,6" />
+        <lm:LmCheckBox x:Name="ckbDwg" Content="DWG" VerticalAlignment="Center" Margin="0,0,16,6" />
 
         <lm:LmRadioButton x:Name="rdbOrdemCodigo" Content="ORDEM CÓDIGO" GroupName="Ordem" IsChecked="True"
-                          VerticalAlignment="Center" Margin="0,0,10,0" Checked="RdbOrdem_Checked" />
+                          VerticalAlignment="Center" Margin="0,0,10,6" Checked="RdbOrdem_Checked" />
         <lm:LmRadioButton x:Name="rdbOrdemArvore" Content="ORDEM ÁRVORE" GroupName="Ordem"
-                          VerticalAlignment="Center" Checked="RdbOrdem_Checked" />
+                          VerticalAlignment="Center" Margin="0,0,0,6" Checked="RdbOrdem_Checked" />
       </WrapPanel>
 
       <lm:LmTextBox x:Name="txtPesquisar"
@@ -27,7 +27,7 @@
                     IconeF7="&#xE721;"
                     ToolTipF7="Próximo resultado [F7]"
                     Height="30"
-                    Margin="0,8,0,0"
+                    Margin="0,2,0,0"
                     BotaoF7Click="TxtPesquisar_BotaoF7Click"
                     PreviewKeyDown="TxtPesquisar_PreviewKeyDown" />
     </StackPanel>

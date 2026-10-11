@@ -33,6 +33,13 @@
                    Height="32"
                    Margin="0,16,0,0"
                    Click="BtnLogin_Click" />
+
+      <lm:LmButton Content="Redefinir Senha"
+                   Icone="&#xE8D7;"
+                   Estilo="Gray"
+                   Height="32"
+                   Margin="0,8,0,0"
+                   Click="BtnResetPassword_Click" />
     </StackPanel>
   </ScrollViewer>
 </lm:LmView>

@@ -45,7 +45,7 @@ namespace AddinArtama {
     //      return true;
     //    }
     //  } catch (Exception ex) {
-    //    MsgBox.Show("Erro ao Salvar Processo.", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //    Msg.Erro("Erro ao Salvar Processo.");
     //    return false;
     //  }
     //}
@@ -57,7 +57,7 @@ namespace AddinArtama {
     //      db.SaveChanges();
     //    }
     //  } catch (Exception ex) {
-    //    MsgBox.Show("Erro ao Excluir Usuario.", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //    Msg.Erro("Erro ao Excluir Usuario.");
     //  }
     //}
 
@@ -72,7 +72,7 @@ namespace AddinArtama {
     //      produtoErp.Operacoes = ops;
     //    }
     //  } catch (Exception ex) {
-    //    LmException.ShowException(ex, "Erro ao Retornar Processos");
+    //    Msg.Erro(ex, "Erro ao Retornar Processos");
     //  }
     //}
 

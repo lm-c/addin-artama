@@ -25,7 +25,7 @@
 
     <!-- Dados do componente atual. -->
     <StackPanel x:Name="pnlDados">
-      <Grid>
+      <Grid x:Name="grdInfo">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition />
@@ -116,7 +116,6 @@
                          HorizontalScrollBarVisibility="Auto"
                          MinRowHeight="30"
                          TextoSemRegistros="Clique em 'Carregar' com uma peça ou montagem aberta."
-                         LoadingRow="Dgv_LoadingRow"
                          SelectionChanged="Dgv_SelectionChanged">
             <lm:LmDataGrid.Columns>
               <DataGridTemplateColumn Header=" " Width="38" CanUserResize="False">

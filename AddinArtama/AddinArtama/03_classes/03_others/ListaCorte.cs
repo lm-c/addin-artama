@@ -170,8 +170,7 @@ namespace AddinArtama {
           VerificarSobremetal(swModel, _return[0], configAtiva);
 
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar lista corte\n\nItem: {nomePeca}\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, $"Erro ao pegar lista corte\n\nItem: {nomePeca}");
       }
 
       return _return;
@@ -366,8 +365,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar lista corte\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar lista corte");
       }
 
     }
@@ -423,8 +421,7 @@ namespace AddinArtama {
           swFeat = (Feature)swFeat.GetNextFeature();
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao Excluir Lista\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao Excluir Lista");
       }
     }
   }

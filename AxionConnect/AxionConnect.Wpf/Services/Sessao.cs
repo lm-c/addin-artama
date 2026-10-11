@@ -24,6 +24,9 @@ namespace AxionConnect.Wpf.Services {
       // Ignorar erros de certificado SSL
       ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
+      // Conta de envio de e-mails (código de redefinição de senha), lida do .env
+      EmailSistema.Configurar();
+
       DefinirVariaveisAmbiente();
       Aparencia.AplicarSalva();
     }

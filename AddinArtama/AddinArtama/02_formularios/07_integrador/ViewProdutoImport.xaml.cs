@@ -45,7 +45,13 @@ namespace AddinArtama {
     static readonly ImageSource imgAlerta = ImagemWpf.Converter(Properties.Resources.warning);
 
     static readonly Brush corErro = Brushes.Red;
-    static readonly Brush corSucesso = Brushes.Green;
+    static readonly Brush corSucesso = CriarCorSucesso();
+
+    static Brush CriarCorSucesso() {
+      var cor = new SolidColorBrush(Color.FromRgb(0x22, 0xA0, 0x45));
+      cor.Freeze();
+      return cor;
+    }
 
     string _montageGeralNome = string.Empty;
     SortableBindingList<ProdutoErp> _produtos = new SortableBindingList<ProdutoErp>();
@@ -57,8 +63,9 @@ namespace AddinArtama {
 
     ListCollectionView visao;
 
-    /// <summary>Cor da linha após o cadastro (verde = sucesso, vermelho = erro).</summary>
-    readonly Dictionary<ProdutoErp, Brush> coresLinha = new Dictionary<ProdutoErp, Brush>();
+    /// <summary>Contador do andamento da geração da engenharia (percentual no aguarde).</summary>
+    int _engAtual;
+    int _engTotal;
 
     /// <summary>Pisca o ícone de material errado.</summary>
     readonly DispatcherTimer tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1000) };
@@ -69,7 +76,90 @@ namespace AddinArtama {
 
       tmr.Tick += Tmr_Tick;
       Unloaded += (s, e) => tmr.Stop();
+
+      AplicarCorCadastro();
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      // Cada passo seleciona a aba onde está o controle destacado.
+      Wpf.LmPassoAssistente Passo(int aba, string titulo, string texto, FrameworkElement alvo, FrameworkElement alvoAte = null) {
+        var passo = Wpf.LmPassoAssistente.Info(titulo, texto, alvo, alvoAte);
+        passo.AoEntrar = () => tbcOperacoes.SelectedIndex = aba;
+        return passo;
+      }
+
+      yield return Wpf.LmPassoAssistente.Info("Cadastro de Produto/Engenharia",
+        "Esta tela envia o projeto para o ERP: cadastra (ou atualiza) cada componente como produto e depois monta a engenharia — a estrutura de componentes e as operações.\n\n" +
+        "Antes de começar: aplique os processos e a matéria prima nos componentes (tela Aplicação de Processos/Matéria Prima).\n\n" +
+        "Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Aguardar("1. Abra a peça ou a montagem",
+        "No SolidWorks, abra (e deixe ativa) a peça ou a montagem principal do projeto.\n\n" +
+        "Regra: o carregamento só funciona com peça ou montagem ativa; com um desenho ativo ele é recusado.",
+        ViewDesenho.TemModeloAtivo);
+
+      yield return Wpf.LmPassoAssistente.Aguardar("2. Carregar os componentes",
+        "Clique em Carregar e aguarde a leitura da montagem e de todos os componentes (pode levar um tempo em montagens grandes).\n\n" +
+        "Regra: se já houver componentes carregados, o sistema pergunta antes de substituir.",
+        () => dgv.Items.Count > 0, btnCarrProcess);
+
+      yield return Passo(0, "3. Lista de componentes",
+        "Cada linha é um componente, com o nível na estrutura, o nome, o código do produto no ERP (quando já existe), a descrição e a referência. " +
+        "Os ícones indicam o 3D, o 2D, item fantasma e pendências.\n\n" +
+        "Regras: ao selecionar uma linha, o componente que estava aberto é salvo e fechado, e o da linha é aberto no SolidWorks. " +
+        "Depois de um cadastro, a linha fica VERDE quando deu certo e VERMELHA quando deu erro.",
+        dgv);
+
+      yield return Passo(0, "4. Procurar",
+        "Filtra a lista por nível, nome, código, descrição ou referência.\n\n" +
+        "Regra: com filtro ativo o Salvar é bloqueado — limpe o campo antes de salvar.",
+        txtProcurar);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Dados do componente",
+        "Mostra o código do produto (clique nele para copiar), a dimensão, o material e os pesos do componente selecionado.\n\n" +
+        "Regra: quando a matéria prima está errada, um ícone pisca ao lado do material. Clique nele para escolher a chapa correta — ela é gravada na peça na hora.",
+        grdInfo);
+
+      yield return Wpf.LmPassoAssistente.Info("6. Denominação",
+        "Descrição do produto, com até 50 caracteres.\n\n" +
+        "Regra: TODOS os componentes da lista precisam ter denominação; se faltar em algum, o Salvar é bloqueado.",
+        txtDescricao);
+
+      yield return Wpf.LmPassoAssistente.Info("7. Sobremetal",
+        "Material a mais na largura e no comprimento da chapa, em milímetros.\n\n" +
+        "Regras: o valor é somado às dimensões que vão para o ERP e o peso é recalculado. O máximo é 500.",
+        txtSmLarg, txtSmCompr);
+
+      yield return Wpf.LmPassoAssistente.Info("8. Pendências",
+        "Aqui aparecem as pendências do componente selecionado: em vermelho as críticas, em amarelo as demais.\n\n" +
+        "Regra: enquanto o componente a salvar, ou qualquer filho dele, tiver pendência, o Salvar é bloqueado.",
+        lblWarning);
+
+      yield return Passo(1, "9. Engenharia",
+        "A aba Engenharia mostra a estrutura do componente selecionado: ele e tudo o que está abaixo dele. É exatamente isso que será enviado como engenharia.",
+        tbcOperacoes);
+
+      yield return Passo(0, "10. Salvar",
+        "Envia para o ERP o componente SELECIONADO e todos os filhos dele: primeiro os produtos, depois a engenharia. Para enviar o projeto inteiro, selecione a primeira linha.\n\n" +
+        "Regras:\n" +
+        "• Itens de biblioteca não podem ser o ponto de partida.\n" +
+        "• O código gerado pelo ERP é gravado na propriedade \"Código Produto\" de cada arquivo.\n" +
+        "• A engenharia só é gravada se ainda não existir no ERP ou se estiver \"Em desenvolvimento\".\n" +
+        "• Um item com quantidade zero interrompe a engenharia, com aviso.\n\n" +
+        "O andamento aparece na tela e pode ser cancelado. Ao final, uma mensagem informa se terminou com sucesso ou com erro.",
+        btnSalvar);
+
+      yield return Wpf.LmPassoAssistente.Info("Pronto!",
+        "O ciclo é: Carregar → conferir os dados e resolver as pendências → selecionar o item → Salvar.\n\n" +
+        "Para rever este passo a passo, clique no \"?\" no topo da tela.");
+    }
+
+    #endregion
 
     ProdutoErp Atual => dgv.SelectedItem as ProdutoErp;
 
@@ -99,7 +189,6 @@ namespace AddinArtama {
           _noEngenharia = null;
 
           _produtos = new SortableBindingList<ProdutoErp>();
-          coresLinha.Clear();
           CarregarGrid();
 
           _montageGeralNome = Path.GetFileNameWithoutExtension(swModel.GetPathName());
@@ -128,7 +217,7 @@ namespace AddinArtama {
           Wpf.Toast.Warning("Comando apenas para Peças e Montagens");
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao Carregar Componentes..\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao Carregar Componentes..");
       }
     }
 
@@ -208,7 +297,7 @@ namespace AddinArtama {
 
         await CadastrarNovo(produtoERP);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao salvar..\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao salvar..");
       }
     }
 
@@ -235,6 +324,12 @@ namespace AddinArtama {
 
               var config = db.configuracao_api.FirstOrDefault();
 
+              // Total de produtos a cadastrar: o selecionado e os filhos dele (linhas seguintes da grade).
+              var indiceInicial = startIndex;
+              var totalCadastro = 1;
+              while (indiceInicial + totalCadastro < _produtos.Count && _produtos[indiceInicial + totalCadastro].Nivel.Contains(nivelPai + "."))
+                totalCadastro++;
+
               while (true) {
                 if (token.IsCancellationRequested) {
                   Wpf.MsgBox.Show($"Cadastro de produtos cancelado pelo usuário.", "Ação não Permitida", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -243,7 +338,7 @@ namespace AddinArtama {
 
                 nomeProduto = produtoErp.Name;
 
-                progress.Report(($"Cadastrando produto '{nomeProduto}'!", 0, 0));
+                progress.Report(($"Cadastrando produto...\r\n{nomeProduto}", startIndex - indiceInicial + 1, totalCadastro));
 
                 int tipo = produtoErp.PathName.EndsWith("SLDASM")
                 ? (int)swDocumentTypes_e.swDocASSEMBLY
@@ -315,11 +410,11 @@ namespace AddinArtama {
                 var cadastrado = produtoErp;
                 if (!string.IsNullOrEmpty(produtoErp.CodProduto)) {
                   produtoErp.ImgPendencia = new System.Drawing.Bitmap(20, 20);
-                  Dispatcher.Invoke(() => PintarLinha(cadastrado, corSucesso));
+                  Dispatcher.Invoke(() => MarcarCadastro(cadastrado, true));
                 } else {
                   produtoErp.ImgPendencia = Properties.Resources.error;
                   produtoErp.Pendencias.Add(PendenciasEngenharia.ErroAoCadastrarCod);
-                  Dispatcher.Invoke(() => PintarLinha(cadastrado, corErro));
+                  Dispatcher.Invoke(() => MarcarCadastro(cadastrado, false));
                 }
 
                 Dispatcher.Invoke(() => AtualizarInfoAlerta(cadastrado));
@@ -342,8 +437,11 @@ namespace AddinArtama {
               progress.Report(("Criando Engenharia de Produto...", 0, 0));
               var configApi = configuracao_api.Selecionar();
 
-              if (noEngenharia != null)
+              if (noEngenharia != null) {
+                _engAtual = 0;
+                _engTotal = Math.Max(1, ContarNosEngenharia(noEngenharia));
                 await PercorrerTreeViewSalvarEngAsync(db, noEngenharia, configApi, progress, token);
+              }
 
               swModel = (ModelDoc2)Sw.App.ActiveDoc;
 
@@ -361,10 +459,24 @@ namespace AddinArtama {
         else
           Wpf.MsgBox.Show("Cadastro de produtos e engenharia finalizado com Erro", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao cadastrar produto\n\nItem: {nomeProduto}\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, $"Erro ao cadastrar produto\n\nItem: {nomeProduto}");
       } finally {
         btnSalvar.IsEnabled = btnCarrProcess.IsEnabled = true;
       }
+    }
+
+    /// <summary>Quantos nós a geração da engenharia vai percorrer (base do percentual).</summary>
+    static int ContarNosEngenharia(TreeNode node) {
+      int total = node.Tag is ProdutoErp ? 1 : 0;
+
+      // Lista de material e item de biblioteca não descem para os filhos (mesma regra do PercorrerTreeViewSalvarEngAsync).
+      if (node.Tag is ProdutoErp p && (p.TipoComponente == TipoComponente.ListaMaterial || p.TipoComponente == TipoComponente.ItemBiblioteca))
+        return total;
+
+      foreach (TreeNode filho in node.Nodes)
+        total += ContarNosEngenharia(filho);
+
+      return total;
     }
 
     private async Task PercorrerTreeViewSalvarEngAsync(ContextoDados db, TreeNode node, configuracao_api configApi, IProgress<(string message, int current, int max)> progress, System.Threading.CancellationToken token) {
@@ -381,7 +493,7 @@ namespace AddinArtama {
         var produtoErp = node.Tag as ProdutoErp;
 
         if (produtoErp != null) {
-          progress.Report(($"Gerando Engenharia '{produtoErp.Name}'", 0, 0));
+          progress.Report(($"Gerando Engenharia...\r\n{produtoErp.Name}", ++_engAtual, _engTotal));
 
           if (produtoErp.TipoComponente != TipoComponente.ListaMaterial && produtoErp.TipoComponente != TipoComponente.ItemBiblioteca) {
             foreach (TreeNode nodeFilho in node.Nodes) {
@@ -581,7 +693,7 @@ namespace AddinArtama {
         db.produto_erp.Add(produtoERP);
         db.SaveChanges();
       } catch (Exception ex) {
-        LmException.ShowException(ex, $"Item: {item.Name} | Erro ao cadastrar");
+        Msg.Erro(ex, $"Item: {item.Name} | Erro ao cadastrar");
       }
     }
 
@@ -601,7 +713,7 @@ namespace AddinArtama {
         var codProd = Convert.ToInt64(item.CodProduto);
         var produtoErp = db.produto_erp.FirstOrDefault(x => x.codigo_produto == codProd);
         if (produtoErp == null) {
-          LmException.ShowException(new Exception("Produto não encontrado no Axion"), "Erro ao atualizar produto no Axion");
+          Msg.Erro("Produto não encontrado no Axion", "Erro ao atualizar produto no Axion");
           return;
         }
 
@@ -625,7 +737,7 @@ namespace AddinArtama {
         produtoErp.alterado_em = DateTime.Now;
         db.SaveChanges();
       } catch (Exception ex) {
-        LmException.ShowException(ex, $"Item: {item.Name} | Erro ao atualizar");
+        Msg.Erro(ex, $"Item: {item.Name} | Erro ao atualizar");
       }
     }
 
@@ -644,7 +756,7 @@ namespace AddinArtama {
 
         AtualizarComponente();
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao atualizar dados Componente");
+        Msg.Erro(ex, "Erro ao atualizar dados Componente");
       }
     }
 
@@ -704,7 +816,7 @@ namespace AddinArtama {
         _noEngenharia = (TreeNode)node.Clone();
         trvProduto.ItemsSource = new[] { CriarNo(_noEngenharia) };
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao Atualizar Dados\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao Atualizar Dados");
       }
     }
 
@@ -911,20 +1023,29 @@ namespace AddinArtama {
 
     #region Cores da grade
 
-    private void Dgv_LoadingRow(object sender, DataGridRowEventArgs e) {
-      if (e.Row.Item is ProdutoErp produto && coresLinha.TryGetValue(produto, out var cor))
-        e.Row.Foreground = cor;
-      else
-        e.Row.ClearValue(ForegroundProperty);
+    /// <summary>
+    /// Linha cadastrada fica com o texto verde (erro = vermelho), normal e selecionada.
+    /// Estende o estilo de célula do LmDataGrid; os gatilhos vêm depois do IsSelected, então vencem a cor de seleção.
+    /// </summary>
+    private void AplicarCorCadastro() {
+      var estilo = new Style(typeof(DataGridCell), dgv.CellStyle);
+
+      var sucesso = new DataTrigger { Binding = new Binding(nameof(ProdutoErp.Cadastrado)), Value = true };
+      sucesso.Setters.Add(new Setter(Control.ForegroundProperty, corSucesso));
+      estilo.Triggers.Add(sucesso);
+
+      var erro = new DataTrigger { Binding = new Binding(nameof(ProdutoErp.Cadastrado)), Value = false };
+      erro.Setters.Add(new Setter(Control.ForegroundProperty, corErro));
+      estilo.Triggers.Add(erro);
+
+      dgv.CellStyle = estilo;
     }
 
-    /// <summary>Pinta a linha do produto e redesenha (ícone de pendência).</summary>
-    private void PintarLinha(ProdutoErp produto, Brush cor) {
-      coresLinha[produto] = cor;
+    /// <summary>Marca o resultado do cadastro (cor da linha) e redesenha a linha (ícone de pendência).</summary>
+    private void MarcarCadastro(ProdutoErp produto, bool sucesso) {
+      produto.Cadastrado = sucesso;
 
       if (dgv.ItemContainerGenerator.ContainerFromItem(produto) is DataGridRow linha) {
-        linha.Foreground = cor;
-
         var contexto = linha.DataContext;
         linha.DataContext = null;
         linha.DataContext = contexto;

@@ -27,7 +27,56 @@ namespace AddinArtama {
           Limpar();
         }
       };
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private System.Collections.Generic.IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Cadastro de Matéria Prima",
+        "Aqui você cadastra as chapas: cada uma é a combinação de um material com uma espessura. " +
+        "É desta lista que sai a matéria prima oferecida na tela Aplicação de Processos/Matéria Prima.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Info("1. Código",
+        "Para uma matéria prima NOVA, deixe o código em branco: ele é gerado ao salvar.\n\n" +
+        "Para ALTERAR, digite o código e tecle Enter, ou use F7 para pesquisar.\n\n" +
+        "Regra: depois de carregado ou salvo, o código fica bloqueado. Use Limpar para trocar de registro.",
+        txtID);
+
+      yield return Wpf.LmPassoAssistente.Info("2. Código da chapa",
+        "Código numérico da chapa. É obrigatório.\n\n" +
+        "Regra: é este código que é gravado na peça quando a matéria prima é aplicada, e que é comparado para avisar \"matéria prima incorreta\".",
+        txtCodigoChapa);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Espessura",
+        "Espessura da chapa, com até 4 casas decimais. É obrigatória.\n\n" +
+        "Regra: na aplicação de matéria prima, só são oferecidas as chapas com a MESMA espessura da peça.",
+        txtEspessura);
+
+      yield return Wpf.LmPassoAssistente.Info("4. Material",
+        "Escolha o material da chapa. É obrigatório e precisa ser um item da lista.\n\n" +
+        "Regra: a lista traz só os materiais ativos do Cadastro de Material.",
+        cmbMaterial);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Descrição da chapa",
+        "Descrição completa da chapa. É obrigatória.\n\n" +
+        "Regra: na aplicação de matéria prima, o sistema escolhe a chapa sozinho quando esta descrição é igual à do material da peça.",
+        txtDescricao);
+
+      yield return Wpf.LmPassoAssistente.Info("6. Situação",
+        "Desmarque \"Ativo\" para desativar a chapa sem apagar o cadastro.\n\n" +
+        "Regra: chapas inativas não são oferecidas na aplicação de matéria prima.",
+        pnlSituacao);
+
+      yield return Wpf.LmPassoAssistente.Info("7. Salvar e Limpar",
+        "Salvar grava a matéria prima. Limpar esvazia a tela para um novo cadastro (não apaga nada do banco).",
+        btnSalvar, btnLimpar);
+    }
+
+    #endregion
 
     private void Limpar() {
       txtID.IsReadOnly = false;
@@ -65,7 +114,7 @@ namespace AddinArtama {
           txtID.IsReadOnly = true;
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Cadastrar Matéria Prima");
+        Msg.Erro(ex, "Erro ao Cadastrar Matéria Prima");
       }
     }
 
@@ -117,7 +166,7 @@ namespace AddinArtama {
           txtID.IsReadOnly = true;
         } else model = new materia_primas();
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Carregar Matéria Prima");
+        Msg.Erro(ex, "Erro ao Carregar Matéria Prima");
       }
     }
 
@@ -127,7 +176,7 @@ namespace AddinArtama {
       try {
         cmbMaterial.ItemsSource = materiais.Selecionar(ativo: true).OrderBy(x => x.descricao).ToList();
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao carregar lista de Material");
+        Msg.Erro(ex, "Erro ao carregar lista de Material");
       }
     }
   }

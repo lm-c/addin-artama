@@ -438,6 +438,13 @@
     <Compile Include="02_formularios\00_login\ViewLogin.xaml.cs">
       <DependentUpon>ViewLogin.xaml</DependentUpon>
     </Compile>
+    <Page Include="02_formularios\00_login\WindowResetSenha.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="02_formularios\00_login\WindowResetSenha.xaml.cs">
+      <DependentUpon>WindowResetSenha.xaml</DependentUpon>
+    </Compile>
     <Page Include="02_formularios\05_cadastros\ViewAlterarSenha.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -488,8 +495,10 @@
       <DependentUpon>WindowSelecionarPerfil.xaml</DependentUpon>
     </Compile>
     <Compile Include="07_helper\Aparencia.cs" />
+    <Compile Include="07_helper\EmailSistema.cs" />
     <Compile Include="07_helper\ImagemWpf.cs" />
     <Compile Include="07_helper\JanelaView.cs" />
+    <Compile Include="07_helper\Msg.cs" />
     <Resource Include="Resources\logo_fundo.png" />
   </ItemGroup>
   <ItemGroup>
@@ -613,7 +622,6 @@ rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\D
 rd "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\zh-CHT" /s/q
 
 del "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\LmCorbieUI.pdb"
-del "C:\repositorio_corbie\00_CLIENTES\addin-artama\AddinArtama\AddinArtama\bin\Debug\AddinArtama.pdb"
 
 xcopy "C:\repositorio_corbie\00_CLIENTES\addin-artama\Instalador\axion addin\Atualizador\AtualizarAddin.bat" "C:\Temp" /Y /A /V
 call  "C:\repositorio_corbie\00_CLIENTES\addin-artama\Instalador\axion addin\Atualizador\AttOnBuildAddin.exe"</PostBuildEvent>

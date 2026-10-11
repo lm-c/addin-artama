@@ -69,12 +69,11 @@ namespace AddinArtama {
         int BomTypeGeral = (int)swBomType_e.swBomType_Indented;
         int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
         bool DetailedCutList = true;
-        var swBOMAnnotationGeral = swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList);
+        var swBOMAnnotationGeral = Sw.ExigirLista(swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, false, NumberingType, DetailedCutList), templateGeral);
         await PegaDadosListaGeralAsync(swBOMAnnotationGeral, listaDesenhos, progress, token);
         ListaCorte.ExcluirLista(swModel);
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar desenhos\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar desenhos");
       }
 
       return new SortableBindingList<DesenhosAtualizar>(listaDesenhos);
@@ -101,7 +100,7 @@ namespace AddinArtama {
         for (int i = lStartRow; i < swTableAnnotation.TotalRowCount; i++) {
           if (token.IsCancellationRequested) {
             listaDesenhos = new List<DesenhosAtualizar>();
-            MsgBox.Show("Operação cancelada pelo usuário.", "Cancelado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            Msg.Aviso("Operação cancelada pelo usuário.", "Cancelado");
             return;
           }
 
@@ -127,8 +126,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar dados da Lista Pack List\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar dados da Lista Pack List");
       }
     }
 

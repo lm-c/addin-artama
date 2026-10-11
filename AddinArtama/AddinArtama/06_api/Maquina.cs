@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal partial class Api {
@@ -58,12 +59,12 @@ namespace AddinArtama {
 
           } else {
             var errorMessage = ApiError.Parse(response.Content);
-            Toast.Error($"Erro: {response.StatusCode}\r\n{errorMessage}");
+            Wpf.Toast.Error($"Erro: {response.StatusCode}\r\n{errorMessage}");
             break;
           }
         } while (!string.IsNullOrEmpty(continuationToken));
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao carregar operações");
+        Msg.Erro(ex, "Erro ao carregar operações");
       }
 
       return _return;

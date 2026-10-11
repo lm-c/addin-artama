@@ -79,8 +79,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao retornar Processo de Fabricacao\n\n{ex.Message}", "Addin LM Projetos",
-          MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao retornar Processo de Fabricacao");
       }
 
       return listaProcessoFabricacao.OrderBy(x => x.DescricaoProcesso).ThenBy(x => x.CodigoItem).ToList();
@@ -149,8 +148,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao carregar componente. + [{nameShort}]\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, $"Erro ao carregar componente. + [{nameShort}]");
       }
     }
 
@@ -239,8 +237,7 @@ namespace AddinArtama {
           processoFabricacao.QtdItem = 1;
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao verificar CheckList\n\n{ex.Message}", "Addin LM Projetos",
-           MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao verificar CheckList");
       }
       return _return;
     }
@@ -313,8 +310,7 @@ namespace AddinArtama {
           swFeat = (Feature)swFeat.GetNextFeature();
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar lista corte\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar lista corte");
       }
 
       foreach (var processo in processos)
@@ -335,8 +331,7 @@ namespace AddinArtama {
             _return.Add(new Z_Padrao { Codigo = Convert.ToInt32(processo.IdProcesso), Descricao = processo.DescricaoProcesso });
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao retornar descrição processos\n\n{ex.Message}", "Addin LM Projetos",
-           MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao retornar descrição processos");
       }
 
       return _return;
@@ -356,8 +351,7 @@ namespace AddinArtama {
         swCustPropMgr.Get2("Denominação", out string valOut, out string resolvedValOut);
         _return = resolvedValOut;
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao retornar denominção\n\n{ex.Message}", "Addin LM Projetos",
-                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao retornar denominção");
       }
 
       return _return;

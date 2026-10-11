@@ -63,7 +63,7 @@ namespace AddinArtama {
           Wpf.Toast.Warning("Sem Internet");
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao inicializar login");
+        Msg.Erro(ex, "Erro ao inicializar login");
       } finally {
         Carregando = false;
       }
@@ -87,6 +87,17 @@ namespace AddinArtama {
 
     private void BtnLogin_Click(object sender, RoutedEventArgs e) {
       Logar();
+    }
+
+    /// <summary>Redefinição por código enviado ao e-mail do usuário; ao concluir, entra direto com a nova senha.</summary>
+    private void BtnResetPassword_Click(object sender, RoutedEventArgs e) {
+      var frm = new WindowResetSenha();
+      frm.ShowDialog();
+      if (!string.IsNullOrEmpty(frm._novaSenha)) {
+        txtUsuario.Text = frm._usuarioLogin;
+        txtSenha.Senha = frm._novaSenha;
+        Logar();
+      }
     }
 
     /// <summary>Limpa a senha para o próximo login (logout).</summary>
@@ -156,7 +167,7 @@ namespace AddinArtama {
 
           UcPainelTarefas.Instancia.LoginConcluido();
         } catch (Exception ex) {
-          LmException.ShowException(ex, "Erro ao Logar no Sistema");
+          Msg.Erro(ex, "Erro ao Logar no Sistema");
 
           txtUsuario.Focus();
         } finally {

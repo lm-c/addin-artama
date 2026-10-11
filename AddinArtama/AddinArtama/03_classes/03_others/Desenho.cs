@@ -9,12 +9,25 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace AddinArtama {
-  public class Desenho {
+  public class Desenho : INotifyPropertyChanged {
     [DisplayName("TP")]
     public string Tipo3D { get; set; }
 
+    string temDesenho;
+
     [DisplayName("DS")]
-    public string TemDesenho { get; set; }
+    public string TemDesenho {
+      get => temDesenho;
+      set {
+        if (temDesenho == value)
+          return;
+
+        temDesenho = value;
+        Notificar(nameof(TemDesenho));
+        Notificar(nameof(Imagem2D));
+        Notificar(nameof(Status2D));
+      }
+    }
 
     [DisplayName("COMPONENTE")]
     public string ShortName { get; set; }
@@ -27,6 +40,37 @@ namespace AddinArtama {
 
     [Browsable(false)]
     public string PathName { get; set; }
+
+    static readonly System.Windows.Media.ImageSource imgMontagem = ImagemWpf.Converter(Properties.Resources.assembly);
+    static readonly System.Windows.Media.ImageSource imgPeca = ImagemWpf.Converter(Properties.Resources.part);
+    static readonly System.Windows.Media.ImageSource imgCom2D = ImagemWpf.Converter(Properties.Resources.draw);
+    static readonly System.Windows.Media.ImageSource imgSem2D = ImagemWpf.Converter(Properties.Resources.not_draw);
+
+    // Colunas de imagem da grade (derivadas de Tipo3D/TemDesenho).
+    [Browsable(false)]
+    public System.Windows.Media.ImageSource Imagem3D => Tipo3D == "M" ? imgMontagem : imgPeca;
+
+    [Browsable(false)]
+    public string TipoTexto => Tipo3D == "M" ? "Montagem" : "Peça";
+
+    [Browsable(false)]
+    public System.Windows.Media.ImageSource Imagem2D => TemDesenho == "Sim" ? imgCom2D : imgSem2D;
+
+    [Browsable(false)]
+    public string Status2D => TemDesenho == "Sim" ? "Com desenho" : "Sem desenho";
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    void Notificar(string propriedade) =>
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propriedade));
+
+    /// <summary>Revalida no disco se o componente já tem desenho (a grade se atualiza sozinha).</summary>
+    public void AtualizarTemDesenho() {
+      if (string.IsNullOrEmpty(PathName) || PathName.Length < 6)
+        return;
+
+      TemDesenho = File.Exists(PathName.Substring(0, PathName.Length - 6) + "SLDDRW") ? "Sim" : "Não";
+    }
 
     static List<Desenho> listaDesenhos;
     static Desenho desenho;
@@ -48,13 +92,12 @@ namespace AddinArtama {
           string templateGeral = templates.model.lista_montagem;
           int BomTypeGeral = (int)swBomType_e.swBomType_Indented;
           int NumberingType = (int)swNumberingType_e.swNumberingType_Detailed;
-          var swBOMAnnotationGeral = swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, Hidden: false, NumberingType, DetailedCutList: false);
+          var swBOMAnnotationGeral = Sw.ExigirLista(swModelDocExt.InsertBomTable3(templateGeral, 0, 1, BomTypeGeral, swConf.Name, Hidden: false, NumberingType, DetailedCutList: false), templateGeral);
           PegaDadosListaGeral(swBOMAnnotationGeral, listaDesenhos);
           ListaCorte.ExcluirLista(swModel);
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar desenhos\n\n{ex.Message}", "Addin LM Projetos",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao pegar desenhos");
       }
 
       return listaDesenhos.OrderBy(x => x.Tipo3D).ThenBy(x => x.CompCodigo).ToList();
@@ -107,8 +150,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao pegar dados da Lista Pack List\n\n{ex.Message}", "Addin LM Projetos",
-             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao ler a lista de materiais da montagem");
       }
     }
 

@@ -20,6 +20,9 @@
 
       <lm:LmButton Content="Entrar" Icone="&#xE72A;" IsDefault="True" Height="32" Margin="0,18,0,0"
                    Click="BtnEntrar_Click" />
+
+      <lm:LmButton Content="Redefinir Senha" Icone="&#xE8D7;" Estilo="Gray" Height="32" Margin="0,8,0,0"
+                   Click="BtnRedefinirSenha_Click" />
     </StackPanel>
   </lm:LmView>
 </lm:LmWindow>

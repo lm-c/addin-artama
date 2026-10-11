@@ -51,8 +51,7 @@ namespace AddinArtama {
           TraverseComponent(swRootComp, listaPlanoPintura, 1);
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao retornar Plano de Pintura\n\n{ex.Message}", "Addin Artama",
-          System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao retornar Plano de Pintura");
       }
 
       BubbleSort(listaPlanoPintura);
@@ -113,8 +112,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao carregar componente. + [{nameShort}]\n\n{ex.Message}", "Addin Artama",
-             System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+        Msg.Erro(ex, $"Erro ao carregar componente. + [{nameShort}]");
       }
     }
 
@@ -199,8 +197,7 @@ namespace AddinArtama {
           planoPintura.QtdItem = 1;
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao verificar Plano de Pintura\n\n{ex.Message}", "Addin Artama",
-           System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao verificar Plano de Pintura");
       }
       return _return;
     }
@@ -248,8 +245,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao ordenar\n\n{ex.Message}", "Addin Artama",
-           System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao ordenar");
       }
     }
 
@@ -270,8 +266,7 @@ namespace AddinArtama {
         swCustPropMgr.Get2("Denominação", out valOut, out resolvedValOut);
         _return = resolvedValOut;
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao retornar denominção\n\n{ex.Message}", "Addin LM Projetos",
-                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao retornar denominção");
       }
 
       return _return;

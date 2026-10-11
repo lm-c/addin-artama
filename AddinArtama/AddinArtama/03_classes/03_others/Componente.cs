@@ -64,7 +64,7 @@ namespace AddinArtama {
 
         _return.ItensCorte = ListaCorte.GetCutList(swModel, _return.LongName);
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Caregar Componente");
+        Msg.Erro(ex, "Erro ao Caregar Componente");
       }
 
       return _return;

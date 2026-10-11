@@ -5,6 +5,7 @@ using RestSharp;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Linq;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal partial class Api {
@@ -43,13 +44,13 @@ namespace AddinArtama {
           } else {
             var errorResponse = JsonConvert.DeserializeObject<List<ApiErrorResponse>>(response.Content);
             var errorMessage = errorResponse?.FirstOrDefault()?.mensagem ?? "Erro desconhecido";
-            Toast.Error($"Erro: {response.StatusCode}\r\n{errorMessage}");
+            Wpf.Toast.Error($"Erro: {response.StatusCode}\r\n{errorMessage}");
           }
         } while (!string.IsNullOrEmpty(continuationToken));
 
 
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao carregar operações");
+        Msg.Erro(ex, "Erro ao carregar operações");
       }
 
       return _return;

@@ -24,7 +24,39 @@ namespace AddinArtama {
           Limpar();
         }
       };
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private System.Collections.Generic.IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Cadastro de Material",
+        "Aqui você cadastra os materiais (o tipo de material em si). Eles são usados depois no Cadastro de Matéria Prima, onde cada chapa é ligada a um material.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Info("1. Código",
+        "Para um material NOVO, deixe o código em branco: ele é gerado ao salvar.\n\n" +
+        "Para ALTERAR um material, digite o código e tecle Enter, ou use F7 para pesquisar.\n\n" +
+        "Regra: depois de carregado ou salvo, o código fica bloqueado. Use Limpar para trocar de material.",
+        txtID);
+
+      yield return Wpf.LmPassoAssistente.Info("2. Descrição",
+        "Nome do material. É obrigatório.",
+        txtDescricao);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Situação",
+        "Desmarque \"Ativo\" para desativar o material sem apagar o cadastro.\n\n" +
+        "Regra: só os materiais ativos aparecem na lista do Cadastro de Matéria Prima.",
+        pnlSituacao);
+
+      yield return Wpf.LmPassoAssistente.Info("4. Salvar e Limpar",
+        "Salvar grava o material. Limpar esvazia a tela para um novo cadastro (não apaga nada do banco).",
+        btnSalvar, btnLimpar);
+    }
+
+    #endregion
 
     private void Limpar() {
       txtID.IsReadOnly = false;
@@ -50,7 +82,7 @@ namespace AddinArtama {
           txtID.IsReadOnly = true;
         }
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Cadastrar Material");
+        Msg.Erro(ex, "Erro ao Cadastrar Material");
       }
     }
 
@@ -99,7 +131,7 @@ namespace AddinArtama {
           txtID.IsReadOnly = true;
         } else model = new materiais();
       } catch (Exception ex) {
-        LmException.ShowException(ex, "Erro ao Carregar Material");
+        Msg.Erro(ex, "Erro ao Carregar Material");
       }
     }
 

@@ -34,7 +34,67 @@ namespace AddinArtama {
 
       tmrExportar.Tick += TmrExportar_Tick;
       Unloaded += (s, e) => tmrExportar.Stop();
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Exportar PDF/DWG",
+        "Esta tela exporta os desenhos de uma montagem para PDF e/ou DWG, um arquivo por desenho, e ainda monta um PDF geral com todos.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Aguardar("1. Abra a montagem",
+        "No SolidWorks, abra (e deixe ativa) a montagem do projeto.\n\n" +
+        "Regra: esta tela só funciona com uma MONTAGEM ativa.",
+        ViewFormatosAtualizar.TemMontagemAtiva);
+
+      yield return Wpf.LmPassoAssistente.Info("2. Formatos",
+        "Marque o que deseja gerar: PDF, DWG ou os dois.\n\n" +
+        "Regra: os arquivos vão para pastas criadas ao lado da montagem, com o código dela: \"CÓDIGO_PDF\" e \"CÓDIGO_DWG\". " +
+        "O código vem da propriedade \"Componente\" da montagem.",
+        ckbPdf, ckbDwg);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Ordem da lista",
+        "Escolha como a lista é ordenada: pelo código do componente ou na ordem da árvore da montagem.",
+        rdbOrdemCodigo, rdbOrdemArvore);
+
+      yield return Wpf.LmPassoAssistente.Aguardar("4. Carregar os desenhos",
+        "Clique em Carregar e aguarde a leitura da montagem.\n\n" +
+        "Regra: só entram na lista os componentes que TÊM desenho (.SLDDRW com o mesmo nome, na mesma pasta). " +
+        "O desenho da própria montagem aparece como \"001 - código\".",
+        () => dgv.Items.Count > 0, btnCarregar);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Escolha o que exportar",
+        "A caixa \"Sel\" define se o desenho será exportado. Com o botão direito você marca ou desmarca todos, e abre o 3D ou o 2D da linha.",
+        dgv);
+
+      yield return Wpf.LmPassoAssistente.Info("6. Pesquisar",
+        "Digite parte do código ou da denominação e tecle Enter (ou F7) para ir ao próximo resultado.",
+        txtPesquisar);
+
+      yield return Wpf.LmPassoAssistente.Info("7. Exportar",
+        "Para cada desenho marcado, o sistema abre o desenho, reconstrói, salva o PDF e/ou DWG com o código do componente e fecha.\n\n" +
+        "Regras:\n" +
+        "• A exportação começa na LINHA SELECIONADA e vai até o fim da lista. Para exportar tudo, selecione a primeira linha.\n" +
+        "• Antes de começar, os arquivos da pasta que não correspondem a nenhum componente da lista são EXCLUÍDOS (desenhos obsoletos).\n" +
+        "• Arquivo aberto em outro programa não é atualizado, e você é avisado.\n" +
+        "• Ao chegar ao fim, é gerado e aberto o PDF geral (\"000 - código_GERAL.PDF\"), que junta todos os PDFs da pasta.\n\n" +
+        "Durante a exportação aparece o botão Cancelar.",
+        btnExportar);
+
+      yield return Wpf.LmPassoAssistente.Info("8. Progresso",
+        "Mostra em qual desenho a exportação está e o percentual concluído.",
+        lblPercDesenho);
+
+      yield return Wpf.LmPassoAssistente.Info("Pronto!",
+        "Os PDFs gerados aqui são usados depois nos relatórios (Processo de Fabricação, Pack List e Plano de Pintura), que exigem a pasta de PDF pronta.\n\n" +
+        "Para rever este passo a passo, clique no \"?\" no topo da tela.");
+    }
+
+    #endregion
 
     DrawExport Atual => dgv.SelectedItem as DrawExport;
 
@@ -89,7 +149,7 @@ namespace AddinArtama {
             Directory.CreateDirectory(pastaDwg);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao carregar desenhos\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao carregar desenhos");
       }
     }
 
@@ -99,7 +159,7 @@ namespace AddinArtama {
         return;
       }
 
-      if (ckbPdf.IsChecked != true && ckbPdf.IsChecked != true) {
+      if (ckbPdf.IsChecked != true && ckbDwg.IsChecked != true) {
         Wpf.MsgBox.Show($"Você Marcar 'PDF' ou 'DWG', para Salvar.", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Information);
         return;
       }
@@ -115,7 +175,7 @@ namespace AddinArtama {
         if (!Directory.Exists(pastaDwg) && ckbDwg.IsChecked == true) {
           Directory.CreateDirectory(pastaDwg);
         } else if (ckbDwg.IsChecked == true) {
-          string[] files = Directory.GetFiles(pastaPdf);
+          string[] files = Directory.GetFiles(pastaDwg);
           ExcluirObsoleto(files);
         }
 
@@ -124,7 +184,7 @@ namespace AddinArtama {
 
         tmrExportar.Start();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao exportar arquivos\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao exportar arquivos");
       }
     }
 
@@ -184,7 +244,7 @@ namespace AddinArtama {
           tmrExportar.Start();
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao Exportar\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao Exportar");
       }
     }
 
@@ -211,7 +271,7 @@ namespace AddinArtama {
             File.Delete(file);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao excluir\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao excluir");
       }
     }
 
@@ -229,7 +289,7 @@ namespace AddinArtama {
           SalvarComo(fileName, swModel);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao exportar\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao exportar");
       }
     }
 
@@ -259,7 +319,7 @@ namespace AddinArtama {
           pdfDoc.Close();
           pdfDoc.Dispose();
         } catch (Exception ex) {
-          Wpf.MsgBox.Show($"Erro ao mesclar PDF\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+          Msg.Erro(ex, "Erro ao mesclar PDF");
         }
       }
     }
@@ -298,7 +358,7 @@ namespace AddinArtama {
           Sw.App.ActivateDoc2(openFileNameAssembly, false, (int)errors);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao abrir arquivo 3D\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao abrir arquivo 3D");
       }
     }
 
@@ -317,7 +377,7 @@ namespace AddinArtama {
           Sw.App.ActivateDoc2(fileName, false, (int)errors);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao abrir arquivo 2D\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao abrir arquivo 2D");
       }
     }
 
@@ -354,7 +414,7 @@ namespace AddinArtama {
               if (SelectRow(h)) break;
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao pesquisar\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao pesquisar");
       }
     }
 

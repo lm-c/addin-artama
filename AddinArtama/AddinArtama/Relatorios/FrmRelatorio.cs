@@ -49,8 +49,7 @@ namespace AddinArtama {
           this.Close();
         }
       } catch (Exception ex) {
-        MsgBox.Show(ex.Message, "Erro ao inicializar relatório",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao inicializar relatório");
       }
     }
 

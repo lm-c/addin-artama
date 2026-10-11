@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Wpf = LmCorbieUI.Wpf;
 
 namespace AddinArtama {
   internal class configuracao_api {
@@ -105,7 +106,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao Salvar Configuração API.\r\n{ex.Message}", "Addin LM Projetos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao Salvar Configuração API.");
         return false;
       }
     }
@@ -118,7 +119,7 @@ namespace AddinArtama {
           _return = Queryable.FirstOrDefault(db.configuracao_api);
         }
       } catch (Exception ex) {
-        Toast.Warning("Erro ao selecionar Configuração API.\n" +
+        Wpf.Toast.Warning("Erro ao selecionar Configuração API.\n" +
             "-------------------------------------\n" +
             "" + ex.Message);
         _return = null;

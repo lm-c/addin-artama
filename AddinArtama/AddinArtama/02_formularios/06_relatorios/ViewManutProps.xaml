@@ -10,7 +10,8 @@
                Margin="0,10,0,0"
                Text="Esta manutenção removerá as propriedades &quot;PINTURA&quot; e &quot;CHECK&quot; da aba &quot;Específico da configuração&quot; da tela &quot;Propriedades do arquivo&quot;." />
 
-    <lm:LmButton Content="Iniciar Manutenção"
+    <lm:LmButton x:Name="btnIniciar"
+                 Content="Iniciar Manutenção"
                  Icone="&#xE90F;"
                  Height="34"
                  Margin="0,16,0,0"

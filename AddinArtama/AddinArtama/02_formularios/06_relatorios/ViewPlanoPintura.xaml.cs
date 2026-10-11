@@ -33,7 +33,61 @@ namespace AddinArtama {
 
     public ViewPlanoPintura() {
       InitializeComponent();
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Plano de Pintura",
+        "Esta tela gera o Plano de Pintura do pedido: um PDF único, separado por grupo de pintura, com a lista dos itens de cada grupo e os desenhos deles.\n\n" +
+        "Antes de começar: os PDFs dos desenhos precisam estar gerados (tela Exportar PDF/DWG) e os componentes precisam ter a propriedade \"PINTURA\" preenchida, que define o grupo de cada item.\n\n" +
+        "Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Aguardar("1. Abra a montagem",
+        "No SolidWorks, abra (e deixe ativa) a montagem do projeto.\n\n" +
+        "Regra: esta tela só funciona com uma MONTAGEM ativa.",
+        ViewFormatosAtualizar.TemMontagemAtiva);
+
+      yield return Wpf.LmPassoAssistente.Aguardar("2. Carregar os componentes",
+        "Clique em Carregar e aguarde a leitura da montagem.\n\n" +
+        "Regras: se a pasta de PDF da montagem não existir, o carregamento é recusado — gere os PDFs primeiro. " +
+        "Só entram na lista os itens com a propriedade \"PINTURA\" preenchida.",
+        () => dgv.Items.Count > 0, btnCarregar);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Itens por grupo",
+        "Cada linha é um item, com o grupo de pintura a que pertence (ID e descrição), o código, a denominação e a quantidade.\n\n" +
+        "Se a lista vier vazia, confira a propriedade \"PINTURA\" dos componentes.",
+        dgv);
+
+      yield return Wpf.LmPassoAssistente.Info("4. Descrição",
+        "Nome do equipamento que sai no cabeçalho do plano. É obrigatória.\n\n" +
+        "O botão do campo (F7) busca a denominação da montagem ativa.",
+        txtDescricao);
+
+      yield return Wpf.LmPassoAssistente.Info("5. Pedido",
+        "Número do pedido. É obrigatório.\n\n" +
+        "Regra: ele dá nome ao arquivo final e é carimbado em cada desenho.",
+        txtPedido);
+
+      yield return Wpf.LmPassoAssistente.Info("6. Observação e data",
+        "Opcionais. Saem no cabeçalho de cada grupo.",
+        txtObs, txtData);
+
+      yield return Wpf.LmPassoAssistente.Info("7. Gerar o Plano de Pintura",
+        "Monta o PDF e abre a pasta ao terminar.\n\n" +
+        "Regras:\n" +
+        "• O arquivo é salvo em \"PLANO DE PINTURA\", ao lado da montagem, com o nome \"pedido - PLANO DE PINTURA.PDF\".\n" +
+        "• Para cada grupo sai a folha com a lista dos itens e, em seguida, a primeira página do desenho de cada item.\n" +
+        "• Cada desenho recebe uma nota em azul com o pedido, o grupo e a quantidade.\n" +
+        "• Item sem PDF na pasta fica só na lista, sem o desenho.\n\n" +
+        "A geração pode ser cancelada.",
+        btnGerar);
+    }
+
+    #endregion
 
     private async void BtnCarrProcess_Click(object sender, RoutedEventArgs e) {
       try {
@@ -70,7 +124,7 @@ namespace AddinArtama {
           Wpf.MsgBox.Show($"Comando apenas para Montagens", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Information);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao carregar componentes\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao carregar componentes");
       }
     }
 
@@ -121,7 +175,7 @@ namespace AddinArtama {
 
         Process.Start(pastaPlano);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao imprimir Plano de Pintura\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao imprimir Plano de Pintura");
       }
     }
 
@@ -238,7 +292,7 @@ namespace AddinArtama {
 
         txtDescricao.Text = PlanoPintura.GetDenominacao(swModel);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao retornar descrição\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao retornar descrição");
       }
     }
 
@@ -290,7 +344,7 @@ namespace AddinArtama {
             arquivosExclusao.Add(targetPDF);
           }
         } catch (Exception ex) {
-          Wpf.MsgBox.Show($"Erro ao mesclar PDF\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+          Msg.Erro(ex, "Erro ao mesclar PDF");
         }
       }
 
@@ -369,7 +423,7 @@ namespace AddinArtama {
         }
         File.WriteAllBytes(targetPDF, bytes);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao inserir número de página\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao inserir número de página");
       }
     }
   }

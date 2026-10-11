@@ -14,7 +14,40 @@ namespace AddinArtama {
   public partial class ViewManutProps : Wpf.LmView {
     public ViewManutProps() {
       InitializeComponent();
+
+      DefinirAssistente(RoteiroAssistente);
     }
+
+    #region Assistente (botão "?")
+
+    /// <summary>Passo a passo da tela, com a regra de negócio de cada ação.</summary>
+    private IEnumerable<Wpf.LmPassoAssistente> RoteiroAssistente() {
+      yield return Wpf.LmPassoAssistente.Info("Manutenção Packlist e Plano de Pintura",
+        "Esta tela faz uma limpeza: apaga, de todos os componentes de uma montagem, as propriedades \"PINTURA\" e \"CHECK\" — " +
+        "as mesmas que o Plano de Pintura e o Pack List usam para separar os itens em volumes.\n\n" +
+        "Use quando quiser refazer essa separação do zero.\n\n" +
+        "Vou mostrar o caminho passo a passo. Você pode sair a qualquer momento com o X ou a tecla Esc.");
+
+      yield return Wpf.LmPassoAssistente.Aguardar("1. Abra a montagem",
+        "No SolidWorks, abra (e deixe ativa) a montagem do projeto.\n\n" +
+        "Regra: esta tela só funciona com uma MONTAGEM ativa.",
+        ViewFormatosAtualizar.TemMontagemAtiva);
+
+      yield return Wpf.LmPassoAssistente.Info("2. O que será removido",
+        "As propriedades ficam na aba \"Específico da configuração\" das Propriedades do arquivo de cada componente.",
+        lblInfo);
+
+      yield return Wpf.LmPassoAssistente.Info("3. Iniciar a manutenção",
+        "Percorre todos os componentes da montagem, remove as duas propriedades e SALVA cada arquivo.\n\n" +
+        "Regras:\n" +
+        "• Não há como desfazer: depois, os valores precisam ser preenchidos de novo.\n" +
+        "• Componentes suprimidos ou excluídos da lista de materiais são ignorados, junto com os filhos deles.\n" +
+        "• Cada componente é tratado uma única vez, mesmo que apareça várias vezes na montagem.\n\n" +
+        "Ao terminar, aparece a mensagem de conclusão.",
+        btnIniciar);
+    }
+
+    #endregion
 
     private async void BtnIniciar_Click(object sender, RoutedEventArgs e) {
       try {
@@ -49,7 +82,7 @@ namespace AddinArtama {
           Wpf.MsgBox.Show($"Comando apenas para Montagens", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Information);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao carregar componentes\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao carregar componentes");
       }
     }
 
@@ -92,8 +125,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao carregar componente. + [{nameShort}]\n\n{ex.Message}", "Addin LM Projetos",
-          MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, $"Erro ao carregar componente. + [{nameShort}]");
       }
     }
 
@@ -157,8 +189,7 @@ namespace AddinArtama {
         swModel = (ModelDoc2)Sw.App.ActiveDoc;
         swModel.Save();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao pegar dados da Lista Plano Pintura\n\n{ex.Message}", "Addin LM Projetos",
-          MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao pegar dados da Lista Plano Pintura");
       }
     }
   }

@@ -1,0 +1,72 @@
+<lm:LmWindow x:Class="AddinArtama.WindowResetSenha"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lm="http://schemas.lm.app.br/corbie-ui/wpf"
+             Title="Redefinir Senha"
+             Width="420"
+             Height="280"
+             MostrarMinimizar="False"
+             MostrarMaximizar="False"
+             ShowInTaskbar="False">
+  <lm:LmView MostrarCabecalho="False" FecharComEsc="False">
+    <Grid Margin="4">
+      <!-- ============ 1. LOGIN / E-MAIL ============ -->
+      <StackPanel x:Name="pnlStep1">
+        <lm:LmLabel Content="Informe seu Login ou Email para receber o código de redefinição."
+                    Tamanho="Medium"
+                    Margin="0,0,0,8" />
+        <lm:LmTextBox x:Name="txtLoginEmail"
+                      Watermark="Login ou Email"
+                      CampoObrigatorio="True"
+                      Height="32" />
+        <lm:LmButton x:Name="btnEnviarCodigo"
+                     Content="Enviar Código"
+                     Icone="&#xE724;"
+                     IsDefault="True"
+                     Height="32"
+                     Margin="0,16,0,0"
+                     Click="BtnEnviarCodigo_Click" />
+      </StackPanel>
+
+      <!-- ============ 2. CÓDIGO ============ -->
+      <StackPanel x:Name="pnlStep2" Visibility="Collapsed">
+        <lm:LmLabel Content="Informe o código de 6 dígitos enviado para o seu e-mail."
+                    Tamanho="Medium"
+                    Margin="0,0,0,8" />
+        <lm:LmTextBox x:Name="txtCodigo"
+                      Watermark="Código"
+                      CampoObrigatorio="True"
+                      MaxLength="6"
+                      Height="32" />
+        <lm:LmButton x:Name="btnVerificarCodigo"
+                     Content="Verificar Código"
+                     Icone="&#xE73E;"
+                     Height="32"
+                     Margin="0,16,0,0"
+                     Click="BtnVerificarCodigo_Click" />
+      </StackPanel>
+
+      <!-- ============ 3. NOVA SENHA ============ -->
+      <StackPanel x:Name="pnlStep3" Visibility="Collapsed">
+        <lm:LmLabel Content="Digite sua nova senha."
+                    Tamanho="Medium"
+                    Margin="0,0,0,8" />
+        <lm:LmPasswordBox x:Name="txtNovaSenha"
+                          Watermark="Nova senha"
+                          CampoObrigatorio="True"
+                          Height="32" />
+        <lm:LmPasswordBox x:Name="txtConfirmarSenha"
+                          Watermark="Confirmar senha"
+                          CampoObrigatorio="True"
+                          Height="32"
+                          Margin="0,8,0,0" />
+        <lm:LmButton x:Name="btnSalvarSenha"
+                     Content="Redefinir Senha"
+                     Icone="&#xE74E;"
+                     Height="32"
+                     Margin="0,16,0,0"
+                     Click="BtnSalvarSenha_Click" />
+      </StackPanel>
+    </Grid>
+  </lm:LmView>
+</lm:LmWindow>

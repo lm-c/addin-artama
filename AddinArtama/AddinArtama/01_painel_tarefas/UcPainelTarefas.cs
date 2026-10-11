@@ -57,7 +57,10 @@ namespace AddinArtama {
       // Variáveis de ambiente (também usadas pela cor do tema salva)
       ValPadrao.DefinirPadrao("LM Projetos Data", "Axion Artama", "Artama", "michalakleo@gmail.com");
 
-      // Cor do tema salva pelo usuário (no banco de teste fica fixa em vermelho)
+      // Conta de envio de e-mails (código de redefinição de senha), lida do .env
+      EmailSistema.Configurar();
+
+      // Cor do tema salva pelo usuário
       Aparencia.AplicarSalva();
 
       painel = new Wpf.LmPainel {
@@ -207,9 +210,7 @@ namespace AddinArtama {
 
         miConfig.Visivel = Corbie_Admin.TemPermissao(PermissoesSistema.Configuracao);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show("Erro Crítico!!!\nSuas Permissões do sistema precisa ser redefinida.",
-            "Erro Crítico", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-        LmException.ShowException(ex, "Erro Permissão.", true);
+        Msg.Erro(ex, "Erro Crítico!!!\nSuas Permissões do sistema precisa ser redefinida.", "Erro Crítico");
       }
     }
 
@@ -221,12 +222,6 @@ namespace AddinArtama {
         Style = (System.Windows.Style)painel.FindResource(Wpf.LmPainel.EstiloSubmenuKey),
       };
       Wpf.Design.LmTema.Aplicar(menu);
-
-      if (Aparencia.AmbienteTeste) {
-        AdicionarItemAparencia(menu, "Ambiente de teste: cor fixa em vermelho", null).IsEnabled = false;
-        menu.IsOpen = true;
-        return;
-      }
 
       var atual = Wpf.Design.LmTema.CorPrimaria;
       foreach (var opcao in Aparencia.Opcoes) {
@@ -309,7 +304,8 @@ namespace AddinArtama {
     }
 
     internal void Carregarrodape(string version, string user) {
-      painel.TextoRodape = $"Versão Atual: {version} | Usuário: {user}";
+      painel.TextoRodape = $"Versão Atual: {version} | Usuário: {user}"
+        + (Aparencia.AmbienteTeste ? $" | AMBIENTE DE HOMOLOGAÇÃO ({ConexaoMySql.Database})" : "");
     }
 
     void Logout() {

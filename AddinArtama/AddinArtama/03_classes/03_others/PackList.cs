@@ -54,8 +54,7 @@ namespace AddinArtama {
           TraverseComponent(swRootComp, listaPackList, 1);
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao retornar PackList\n\n{ex.Message}", "Addin Artama",
-          System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao retornar PackList");
       }
 
       BubbleSort(listaPackList);
@@ -114,8 +113,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao carregar componente. + [{nameShort}]\n\n{ex.Message}", "Addin Artama",
-             System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+        Msg.Erro(ex, $"Erro ao carregar componente. + [{nameShort}]");
       }
     }
 
@@ -200,8 +198,7 @@ namespace AddinArtama {
           packList.QtdItem = 1;
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao verificar CheckList\n\n{ex.Message}", "Addin Artama",
-           System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao verificar CheckList");
       }
       return _return;
     }
@@ -249,8 +246,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao ordenar\n\n{ex.Message}", "Addin Artama",
-           System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao ordenar");
       }
     }
 
@@ -268,8 +264,7 @@ namespace AddinArtama {
         swCustPropMgr.Get2("Denominação", out string valOut, out string resolvedValOut);
         _return = resolvedValOut;
       } catch (Exception ex) {
-        MsgBox.Show($"Erro ao retornar denominção\n\n{ex.Message}", "Addin LM Projetos",
-                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Msg.Erro(ex, "Erro ao retornar denominção");
       }
 
       return _return;

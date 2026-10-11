@@ -131,7 +131,7 @@ namespace AddinArtama {
           Wpf.MsgBox.Show($"Comando Apenas para Montagem", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Information);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao carregar componentes\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao carregar componentes");
       }
     }
 
@@ -257,7 +257,7 @@ namespace AddinArtama {
             AlterarCorCelulas(rpt, 0, 5);
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Não foi possível verificar erros\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Não foi possível verificar erros");
       } finally {
         dgv.Items.Refresh();
       }
@@ -285,7 +285,7 @@ namespace AddinArtama {
       try {
         DeletearLinha();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao deletar linha\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao deletar linha");
       }
     }
 
@@ -293,7 +293,7 @@ namespace AddinArtama {
       try {
         if (!Open3D()) return;
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao abrir arquivo\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao abrir arquivo");
       }
     }
 
@@ -301,7 +301,7 @@ namespace AddinArtama {
       try {
         DeletearLinha();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao deletar linha\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao deletar linha");
       }
     }
 
@@ -325,7 +325,7 @@ namespace AddinArtama {
         dgv.SelectedItem = novo;
         dgv.ScrollIntoView(novo);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao adicionar linha\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao adicionar linha");
       }
     }
 
@@ -376,7 +376,7 @@ namespace AddinArtama {
           }
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao salvar dados\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao salvar dados");
       } finally {
         if (!string.IsNullOrEmpty(fileName)) {
           swModel.Save();
@@ -421,7 +421,7 @@ namespace AddinArtama {
           leitor.Close();
         }
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao ler arquivo\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao ler arquivo");
       } finally {
         Mouse.OverrideCursor = null;
       }
@@ -460,7 +460,7 @@ namespace AddinArtama {
 
         return true;
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao escrever arquivo\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao escrever arquivo");
       } finally {
         Mouse.OverrideCursor = null;
       }
@@ -526,7 +526,7 @@ namespace AddinArtama {
         dgv.CommitEdit(DataGridEditingUnit.Row, true);
         visao?.Refresh();
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao filtrar Seriado\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao filtrar Seriado");
       }
     }
 
@@ -553,7 +553,7 @@ namespace AddinArtama {
 
         Wpf.MsgBox.Show("Substituido com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
       } catch (Exception ex) {
-        Wpf.MsgBox.Show($"Erro ao substituir componentes\n\n{ex.Message}", "Addin LM Projetos", MessageBoxButton.OK, MessageBoxImage.Error);
+        Msg.Erro(ex, "Erro ao substituir componentes");
       }
     }
   }

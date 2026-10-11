@@ -35,15 +35,15 @@
                            IsEnabled="{Binding MaquinaObrigatoria}"
                            IsEditable="True" IsTextSearchEnabled="True" Height="30" />
 
-            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+            <StackPanel x:Name="PnlSituacao" Orientation="Horizontal" Margin="0,12,0,0">
               <TextBlock Text="Situação" Style="{StaticResource RotuloCampo}" VerticalAlignment="Center" Margin="0,0,12,0" />
               <lm:LmCheckBox Content="Ativo" IsChecked="{Binding Ativo}" VerticalAlignment="Center" />
             </StackPanel>
 
             <WrapPanel Margin="0,14,0,0">
-              <lm:LmButton Content="Salvar" Icone="&#xE74E;" Width="100" Margin="0,0,6,6" Click="BtnSalvar_Click" />
-              <lm:LmButton Content="Limpar" Icone="&#xE894;" Estilo="Gray" Width="100" Margin="0,0,6,6" Command="{Binding LimparCommand}" />
-              <lm:LmButton Content="Excluir" Icone="&#xE74D;" Estilo="Gray" Width="100" Margin="0,0,6,6"
+              <lm:LmButton x:Name="BtnSalvar" Content="Salvar" Icone="&#xE74E;" Width="100" Margin="0,0,6,6" Click="BtnSalvar_Click" />
+              <lm:LmButton x:Name="BtnLimpar" Content="Limpar" Icone="&#xE894;" Estilo="Gray" Width="100" Margin="0,0,6,6" Command="{Binding LimparCommand}" />
+              <lm:LmButton x:Name="BtnExcluir" Content="Excluir" Icone="&#xE74D;" Estilo="Gray" Width="100" Margin="0,0,6,6"
                            IsEnabled="{Binding PodeExcluir}" Command="{Binding ExcluirCommand}" />
             </WrapPanel>
           </StackPanel>
@@ -67,12 +67,12 @@
       <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
         <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource TextoDica}"
                    Text="{Binding Processos.Count, StringFormat='{}{0} processos'}" />
-        <lm:LmTextBox Text="{Binding Filtro, UpdateSourceTrigger=PropertyChanged, Delay=250}" Height="30"
+        <lm:LmTextBox x:Name="TxtFiltro" Text="{Binding Filtro, UpdateSourceTrigger=PropertyChanged, Delay=250}" Height="30"
                       Watermark="Procurar por código, operação ou máquina..."
                       MostrarBotaoLimpar="True" />
       </DockPanel>
 
-      <lm:LmDataGrid ItemsSource="{Binding ProcessosView}" SelectedItem="{Binding ProcessoSelecionado}"
+      <lm:LmDataGrid x:Name="GradeProcessos" ItemsSource="{Binding ProcessosView}" SelectedItem="{Binding ProcessoSelecionado}"
                      AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow"
                      HeadersVisibility="Column" CanUserReorderColumns="False" CanUserResizeRows="False"
                      TextoSemRegistros="Nenhum processo cadastrado.">
