@@ -103,7 +103,8 @@ namespace AddinArtama {
 
       try {
         model.codigo = Convert.ToInt32(txtCodigoChapa.Text);
-        model.descricao = txtDescricao.Text;
+        // remove espaço não separável (colado do Excel/ERP) para a descrição bater com a da peça
+        model.descricao = System.Text.RegularExpressions.Regex.Replace((txtDescricao.Text ?? "").Replace(' ', ' '), @"\s+", " ").Trim();
         model.espessura = Convert.ToDouble(txtEspessura.Text);
         model.material_id = materialSelecionado.id;
         model.tipo_materia_prima = TipoMateriaPrima.Chapa;

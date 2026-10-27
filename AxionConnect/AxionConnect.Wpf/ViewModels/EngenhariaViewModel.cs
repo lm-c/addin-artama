@@ -466,11 +466,80 @@ namespace AxionConnect.Wpf.ViewModels {
 
     #region Operações
 
+    // Texto digitado nos ComboBox editáveis (código ou parte da descrição)
+    [ObservableProperty]
+    private string _operacaoTexto = string.Empty;
+
+    [ObservableProperty]
+    private string _maquinaTexto = string.Empty;
+
+    /// <summary>Localiza a operação pelo texto digitado (Enter/Tab). Retorna false se não encontrou.</summary>
+    public bool ConfirmarOperacao() {
+      if (string.IsNullOrWhiteSpace(OperacaoTexto)) {
+        OperacaoSelecionada = null;
+        return true;
+      }
+
+      var item = Resolver(Operacoes, OperacaoTexto, "Operação");
+      if (item == null)
+        return false;
+
+      if (OperacaoSelecionada != item.Codigo)
+        OperacaoSelecionada = item.Codigo;
+      OperacaoTexto = item.Descricao;
+      return true;
+    }
+
+    /// <summary>Localiza a máquina (entre as da operação selecionada) pelo texto digitado.</summary>
+    public bool ConfirmarMaquina() {
+      if (!MaquinaHabilitada)
+        return true;
+
+      if (string.IsNullOrWhiteSpace(MaquinaTexto)) {
+        MaquinaSelecionada = null;
+        return true;
+      }
+
+      var item = Resolver(Maquinas, MaquinaTexto, "Máquina");
+      if (item == null)
+        return false;
+
+      MaquinaSelecionada = item.Codigo;
+      MaquinaTexto = item.Descricao;
+      return true;
+    }
+
+    /// <summary>Código exato primeiro ("12" ou "12 - DESCRIÇÃO"); senão, parte da descrição (se for única).</summary>
+    private static OpcaoCombo Resolver(IEnumerable<OpcaoCombo> lista, string texto, string nome) {
+      texto = texto.Trim();
+
+      var codigo = texto.Split(" - ", 2)[0].Trim();
+      if (int.TryParse(codigo, out var cod)) {
+        var porCodigo = lista.FirstOrDefault(x => x.Codigo == cod);
+        if (porCodigo != null)
+          return porCodigo;
+      }
+
+      var encontrados = lista.Where(x => x.Descricao.Contains(texto, StringComparison.OrdinalIgnoreCase)).Take(2).ToList();
+      if (encontrados.Count == 1)
+        return encontrados[0];
+
+      Notificacao.Aviso(encontrados.Count == 0
+        ? $"{nome} '{texto}' não encontrada."
+        : $"Mais de uma {nome.ToLower()} contém '{texto}'.\nDigite o código ou abra a lista para escolher.");
+      return null;
+    }
+
+    partial void OnMaquinaSelecionadaChanged(int? value) {
+      MaquinaTexto = Maquinas.FirstOrDefault(x => x.Codigo == value)?.Descricao ?? string.Empty;
+    }
+
     /// <summary>
     /// TxtOperacao_SelectedValueChanched: operação interna lista as máquinas do processo e já seleciona a primeira;
     /// operação externa não usa máquina.
     /// </summary>
     partial void OnOperacaoSelecionadaChanged(int? value) {
+      OperacaoTexto = Operacoes.FirstOrDefault(x => x.Codigo == value)?.Descricao ?? string.Empty;
       MaquinaSelecionada = null;
       try {
         if (value != null) {
@@ -499,6 +568,7 @@ namespace AxionConnect.Wpf.ViewModels {
 
     private void LimparCamposOperacao() {
       OperacaoSelecionada = null;
+      OperacaoTexto = MaquinaTexto = string.Empty;
       TempoOperacao = TempoPadrao;
       NumeroOperadores = OperadoresPadrao;
     }
@@ -511,6 +581,10 @@ namespace AxionConnect.Wpf.ViewModels {
           Notificacao.Info($"Nenhum produto selecionado");
           return;
         }
+
+        // Texto digitado e ainda não confirmado com Enter/Tab
+        if (!ConfirmarOperacao() || !ConfirmarMaquina())
+          return;
 
         if (OperacaoSelecionada == null) {
           Notificacao.Aviso("Selecione a Operação.");

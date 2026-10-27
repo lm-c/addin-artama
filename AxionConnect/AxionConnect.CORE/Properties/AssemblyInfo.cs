@@ -29,9 +29,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion(InfoAssembly.Version)]
 
 public class InfoAssembly {
-  public const bool EhAmbienteOficial = true;
+  public const bool EhAmbienteOficial = false;
 
-  public const string Version = "5.0.1";
+  public const string Version = "5.0.2";
 
   public const string TitleView = "Axion Connect Leonardo Michalak";
 

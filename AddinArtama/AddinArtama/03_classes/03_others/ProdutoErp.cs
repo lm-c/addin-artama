@@ -828,7 +828,7 @@ namespace AddinArtama {
           var prod = db.produto_erp.FirstOrDefault(x => x.codigo_produto == cod && x.name == produtoErp.Name && x.referencia == produtoErp.Referencia);
 
           if (prod != null) {
-            var engenharia = await Api.GetEngenhariaAsync(produtoErp.CodProduto);
+            var engenharia = await Api.GetEngenhariaAsync(produtoErp.CodProduto, ignorarMsgError: true);
             produtoErp.SobremetalLarg = prod.sobremetal_largura;
             produtoErp.SobremetalCompr = prod.sobremetal_comprimento;
             produtoErp.CadastrarProdutoErp = produtoErp.CadastrarAddin = false;
@@ -848,7 +848,7 @@ namespace AddinArtama {
               await VerificarOperacaoERPAsync(db, produtoErp, swModel, engenharia.operacoes);
             }
           } else {
-            var engenharia = await Api.GetEngenhariaAsync(produtoErp.CodProduto);
+            var engenharia = await Api.GetEngenhariaAsync(produtoErp.CodProduto, ignorarMsgError: true);
             if (!produtoErp.Referencia.StartsWith("Item da lista de corte")) {
               var itemERP = await Api.GetItemGenericoAsync(produtoErp.CodProduto);
 

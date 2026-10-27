@@ -119,6 +119,8 @@ namespace AxionConnect.Wpf.Views {
         "• Operação INTERNA lista só as máquinas cadastradas para ela e já seleciona a primeira. Operação EXTERNA não usa máquina.\n" +
         "• O par operação + máquina precisa existir no Cadastro de Processo.\n" +
         "• A mesma operação com a mesma máquina não pode ser inserida duas vezes.\n\n" +
+        "Pelo teclado: digite o código (ou parte da descrição) e tecle Enter — cada Enter confirma o campo e passa ao próximo " +
+        "(Operação → Máquina → Tempo → QTD), e o Enter em QTD insere o processo. " +
         "As setas ← e → no campo Operação passam para o componente anterior e o próximo.",
         FormOperacao);
 
@@ -214,18 +216,98 @@ namespace AxionConnect.Wpf.Views {
         Grade.ScrollIntoView(Grade.SelectedItem);
     }
 
-    /// <summary>← / → no campo Operação navegam entre os componentes (TxtOperacao_KeyDown).</summary>
-    private void CmbOperacao_PreviewKeyDown(object sender, KeyEventArgs e) {
-      if ((e.Key != Key.Left && e.Key != Key.Right) || CmbOperacao.IsDropDownOpen || Keyboard.Modifiers != ModifierKeys.None)
+    #region Digitação na aba Operações (mesmo fluxo do Axion Connect da TGM)
+
+    /// <summary>
+    /// Enter/Tab confirmam o texto digitado e seguem: Operação → Máquina → Tempo → QTD.
+    /// Enter em QTD insere o processo e volta para a Operação.
+    /// </summary>
+    private void CampoEditavel_PreviewKeyDown(object sender, KeyEventArgs e) {
+      if (_vm == null)
         return;
 
-      e.Handled = true;
-      var comando = e.Key == Key.Left ? _vm.AnteriorCommand : _vm.ProximoCommand;
-      comando.Execute(null);
+      // ← / → no campo Operação navegam entre os componentes (TxtOperacao_KeyDown).
+      if (sender == CmbOperacao && (e.Key == Key.Left || e.Key == Key.Right)
+          && Keyboard.Modifiers == ModifierKeys.None && !CmbOperacao.IsDropDownOpen) {
+        e.Handled = true;
+        var comando = e.Key == Key.Left ? _vm.AnteriorCommand : _vm.ProximoCommand;
+        comando.Execute(null);
 
-      // A troca de componente recarrega os campos: volta o foco para seguir navegando.
-      Dispatcher.BeginInvoke(() => CmbOperacao.Focus(), System.Windows.Threading.DispatcherPriority.Input);
+        // A troca de componente recarrega os campos: volta o foco para seguir navegando ou digitar.
+        Dispatcher.BeginInvoke(() => {
+          CmbOperacao.Focus();
+          SelecionarTexto(CmbOperacao);
+        }, System.Windows.Threading.DispatcherPriority.Input);
+        return;
+      }
+
+      var enter = e.Key == Key.Enter;
+      var tab = e.Key == Key.Tab && Keyboard.Modifiers == ModifierKeys.None;
+      if (!enter && !tab)
+        return;
+
+      // Lista aberta: o Enter escolhe o item destacado (comportamento padrão do ComboBox)
+      if (sender is ComboBox { IsDropDownOpen: true })
+        return;
+
+      if (sender == CmbOperacao) {
+        e.Handled = true;
+        if (!_vm.ConfirmarOperacao()) {
+          SelecionarTexto(CmbOperacao);
+          return;
+        }
+        if (CmbMaquina.IsEnabled)
+          CmbMaquina.Focus();
+        else
+          TxtTempo.Focus();
+      } else if (sender == CmbMaquina) {
+        e.Handled = true;
+        if (!_vm.ConfirmarMaquina()) {
+          SelecionarTexto(CmbMaquina);
+          return;
+        }
+        TxtTempo.Focus();
+      } else if (sender == TxtTempo && enter) {
+        e.Handled = true;
+        TxtOperadores.Focus();
+      } else if (sender == TxtOperadores && enter) {
+        e.Handled = true;
+        _vm.InserirOperacaoCommand.Execute(null);
+        CmbOperacao.Focus();
+      }
     }
+
+    /// <summary>Saiu do campo com o mouse: confirma o que foi digitado.</summary>
+    private void CampoEditavel_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+      var combo = (ComboBox)sender;
+      if (_vm == null || combo.IsDropDownOpen || (e.NewFocus is DependencyObject novo && EhDescendente(combo, novo)))
+        return;
+
+      if (combo == CmbOperacao)
+        _vm.ConfirmarOperacao();
+      else if (combo == CmbMaquina)
+        _vm.ConfirmarMaquina();
+    }
+
+    /// <summary>Ao entrar no campo, seleciona o texto para digitar por cima.</summary>
+    private void CampoEditavel_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+      if (e.OriginalSource is TextBox caixa)
+        Dispatcher.BeginInvoke(caixa.SelectAll, System.Windows.Threading.DispatcherPriority.Input);
+    }
+
+    private static void SelecionarTexto(ComboBox combo) =>
+      (combo.Template.FindName("PART_EditableTextBox", combo) as TextBox)?.SelectAll();
+
+    private static bool EhDescendente(DependencyObject pai, DependencyObject elemento) {
+      while (elemento != null) {
+        if (elemento == pai)
+          return true;
+        elemento = elemento is Visual ? VisualTreeHelper.GetParent(elemento) : LogicalTreeHelper.GetParent(elemento);
+      }
+      return false;
+    }
+
+    #endregion
 
     #region eDrawings
 

@@ -297,25 +297,34 @@
               <StackPanel Grid.ColumnSpan="3">
                 <TextBlock Style="{StaticResource RotuloCampo}">Operação <Run Text="*" Foreground="#D32F2F" /></TextBlock>
                 <lm:LmComboBox x:Name="CmbOperacao" ItemsSource="{Binding Operacoes}" DisplayMemberPath="Descricao" SelectedValuePath="Codigo"
-                               SelectedValue="{Binding OperacaoSelecionada}" IsEditable="True" IsTextSearchEnabled="True" Height="30"
-                               PreviewKeyDown="CmbOperacao_PreviewKeyDown"
-                               ToolTip="← / → navegam entre os componentes" />
+                               SelectedValue="{Binding OperacaoSelecionada}" Text="{Binding OperacaoTexto, UpdateSourceTrigger=PropertyChanged}"
+                               IsEditable="True" IsTextSearchEnabled="False" Height="30"
+                               Watermark="Digite o código ou parte da descrição"
+                               PreviewKeyDown="CampoEditavel_PreviewKeyDown" LostKeyboardFocus="CampoEditavel_LostKeyboardFocus"
+                               GotKeyboardFocus="CampoEditavel_GotKeyboardFocus"
+                               ToolTip="Digite o código (ou parte da descrição) e tecle Enter ou Tab · ← / → navegam entre os componentes" />
               </StackPanel>
 
               <StackPanel Grid.Row="2" Grid.ColumnSpan="3">
                 <TextBlock Style="{StaticResource RotuloCampo}">Máquina <Run Text="*" Foreground="#D32F2F" /></TextBlock>
-                <lm:LmComboBox ItemsSource="{Binding Maquinas}" DisplayMemberPath="Descricao" SelectedValuePath="Codigo"
-                               SelectedValue="{Binding MaquinaSelecionada}" IsEditable="True" IsTextSearchEnabled="True"
-                               IsEnabled="{Binding MaquinaHabilitada}" Height="30" />
+                <lm:LmComboBox x:Name="CmbMaquina" ItemsSource="{Binding Maquinas}" DisplayMemberPath="Descricao" SelectedValuePath="Codigo"
+                               SelectedValue="{Binding MaquinaSelecionada}" Text="{Binding MaquinaTexto, UpdateSourceTrigger=PropertyChanged}"
+                               IsEditable="True" IsTextSearchEnabled="False" IsEnabled="{Binding MaquinaHabilitada}" Height="30"
+                               PreviewKeyDown="CampoEditavel_PreviewKeyDown" LostKeyboardFocus="CampoEditavel_LostKeyboardFocus"
+                               GotKeyboardFocus="CampoEditavel_GotKeyboardFocus"
+                               ToolTip="Digite o código (ou parte da descrição) e tecle Enter ou Tab" />
               </StackPanel>
 
               <StackPanel Grid.Row="4">
                 <TextBlock Text="Tempo Operação (m:ss)" Style="{StaticResource RotuloCampo}" />
-                <lm:LmTextBox Text="{Binding TempoOperacao, UpdateSourceTrigger=PropertyChanged}" Valor="Hora" Height="30" />
+                <lm:LmTextBox x:Name="TxtTempo" Text="{Binding TempoOperacao, UpdateSourceTrigger=PropertyChanged}" Valor="Hora" Height="30"
+                              PreviewKeyDown="CampoEditavel_PreviewKeyDown" GotKeyboardFocus="CampoEditavel_GotKeyboardFocus" />
               </StackPanel>
               <StackPanel Grid.Row="4" Grid.Column="2">
                 <TextBlock Text="QTD Operadores" Style="{StaticResource RotuloCampo}" />
-                <lm:LmTextBox Text="{Binding NumeroOperadores, UpdateSourceTrigger=PropertyChanged}" Valor="Num_Inteiro" Height="30" />
+                <lm:LmTextBox x:Name="TxtOperadores" Text="{Binding NumeroOperadores, UpdateSourceTrigger=PropertyChanged}" Valor="Num_Inteiro" Height="30"
+                              PreviewKeyDown="CampoEditavel_PreviewKeyDown" GotKeyboardFocus="CampoEditavel_GotKeyboardFocus"
+                              ToolTip="Enter insere o processo" />
               </StackPanel>
 
               <DockPanel Grid.Row="6" Grid.ColumnSpan="3">

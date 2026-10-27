@@ -31,5 +31,16 @@ namespace AddinArtama {
     [DisplayName("Ativo")]
     [LarguraColunaGrid(60)]
     public bool Ativo { get; set; }
+
+    /// <summary>
+    /// Padroniza a descrição para comparação: troca espaço não separável (comum ao colar do Excel/ERP)
+    /// por espaço normal, junta espaços repetidos, tira espaços das pontas e ignora maiúsculas.
+    /// </summary>
+    public static string NormalizarDescricao(string texto) {
+      if (string.IsNullOrEmpty(texto))
+        return string.Empty;
+      var limpo = System.Text.RegularExpressions.Regex.Replace(texto.Replace(' ', ' '), @"\s+", " ");
+      return limpo.Trim().ToUpperInvariant();
+    }
   }
 }

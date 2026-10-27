@@ -458,11 +458,13 @@ namespace AddinArtama {
           txtMaterial.ItemsSource = list;
 
           if (list.Count > 0) {
-            materialIdeal = list.FirstOrDefault(x => x.DescricaoChapa == produtoErp.ItemCorte.Material);
+            var materialNorm = Z_Chapa.NormalizarDescricao(produtoErp.ItemCorte.Material);
+            var descricNorm = Z_Chapa.NormalizarDescricao(descricMaterial);
+            materialIdeal = list.FirstOrDefault(x => Z_Chapa.NormalizarDescricao(x.DescricaoChapa) == materialNorm);
             if (materialIdeal != null) {
               txtMaterial.SelectedValue = materialIdeal.Id;
             } else {
-              materialIdeal = list.FirstOrDefault(x => x.DescricaoChapa == descricMaterial);
+              materialIdeal = list.FirstOrDefault(x => Z_Chapa.NormalizarDescricao(x.DescricaoChapa) == descricNorm);
               if (materialIdeal != null)
                 txtMaterial.SelectedValue = materialIdeal.Id;
             }

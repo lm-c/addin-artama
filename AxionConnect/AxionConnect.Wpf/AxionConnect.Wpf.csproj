@@ -14,7 +14,7 @@
     <!-- Mesmo nome do executável WinForms (atalhos e instalador) -->
     <AssemblyName>AxionConnect</AssemblyName>
     <!-- Versão: 3 dígitos, a mesma do Addin Artama -->
-    <Version>5.0.1</Version>
+    <Version>5.0.2</Version>
     <ApplicationIcon>Assets\axion_connect.ico</ApplicationIcon>
     <Product>Axion Connect Artama</Product>
     <Company>Leonardo Adriano Michalak</Company>
